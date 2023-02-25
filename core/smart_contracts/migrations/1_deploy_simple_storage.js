@@ -1,5 +1,5 @@
-const SimpleStorage = artifacts.require("SimpleStorage");
+const raedaMarketPlace = artifacts.require("raedaMarketPlace");
 
 module.exports = function (deployer) {
-  deployer.deploy(SimpleStorage);
+  deployer.deploy(raedaMarketPlace);
 };
