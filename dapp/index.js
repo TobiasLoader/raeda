@@ -16,16 +16,16 @@ app.set('view engine', 'pug');
 const port = process.env.PORT || 3000;
 
 var fetchid = 0;
-function raedaAPIReqObj(method,data=null){
+function raedaAPIReqObj(method, params = null){
 	fetchid += 1;
 	var resobj = {"jsonrpc": "2.0", "method": method, "id":fetchid };
-	if (data!==null) resobj['data'] = data;
+	if (params!==null) resobj['params'] = params;
 	return resobj;
 }
-function raedaAPICall(method,data=null){
-	return fetch('http://localhost:3030/say_hello', {
+function raedaAPICall(method, params = null){
+	return fetch('http://localhost:3030/'+method, {
 		method: 'post',
-		body: JSON.stringify(raedaAPIReqObj(method,data)),
+		body: JSON.stringify(raedaAPIReqObj(method,params)),
 		headers: {'Content-Type': 'application/json'}
 	}).then((res) => res.json()).then((body) => {
 		return body;
@@ -33,7 +33,7 @@ function raedaAPICall(method,data=null){
 }
 
 app.get('/', (req, res) => {
-	raedaAPICall('say_hello').then((rust_res)=>{
+	raedaAPICall('message',{'from':'0x02','to':'0x01','msg':'Yoo heya fellow raeda user. this is an example message'}).then((rust_res)=>{
 		console.log(rust_res)
 		res.render('index',{rust_res:rust_res['result']});
 	});
