@@ -8,8 +8,10 @@ html(lang="en-GB")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 	body
 		include ui-components
-		h1 Raeda Dapp
-		+mainbutton('messenger','messenger','/messenger')
+		h1 Raeda Dapp – SUPPLIERS
+		.buttonrow
+			+mainbutton('messenger','messenger','/messenger')
+			+mainbutton('bid','bid','/bid')
 		img(id="logo", src="/assets/img/raeda_logo_modern.png", alt="Raeda Logo")
 		script(src='/js/jquery.min.js')
 		script(src='/js/script.js')

@@ -28,6 +28,18 @@ app.get('/', (req, res) => {
 	res.render('index');
 });
 
+app.get('/profile', (req, res) => {
+	res.render('profile');
+});
+
+app.get('/bid', (req, res) => {
+	res.render('bid');
+});
+
+app.post('/accept_bid', (req, res) => {
+	res.send('eg. accepted bid success');
+});
+
 app.get('/messenger', (req, res) => {
 	raedaAPICall('messages',{'from':'0x02','to':'0x01'}).then((rust_res)=>{
 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
