@@ -7,6 +7,11 @@ html(lang="en-GB")
 		link(href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 	body
-		h1 Raeda Dapp
-		h3= rust_res
+		include ui-components
+		h1 Raeda Dapp – SUPPLIERS
+		.buttonrow
+			+mainbutton('messenger','messenger','/messenger')
+			+mainbutton('bid','bid','/bid')
+		img(id="logo", src="/assets/img/raeda_logo_modern.png", alt="Raeda Logo")
 		script(src='/js/jquery.min.js')
+		script(src='/js/script.js')
