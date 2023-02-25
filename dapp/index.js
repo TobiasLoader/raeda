@@ -1,14 +1,23 @@
+const express = require('express')
+const app = express()
 const http = require('http');
+const server = http.createServer(app);
+// for Socket IO
+// const { Server } = require("socket.io");
+// const io = new Server(server);
+const pug = require('pug');
+app.use(express.static('public'));
 
-const hostname = '127.0.0.1';
-const port = 3000;
+app.set('views', './views')
+app.set('view engine', 'pug');
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World');
-});
+const port = process.env.PORT || 3000;
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.get('/', (req, res) => {
+	res.render('index');
+})
+app.get('/favicon', (req, res) => {
+	res.send('no favicon yet');
+})
+
+server.listen(port);
