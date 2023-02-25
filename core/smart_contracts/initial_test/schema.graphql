@@ -1,0 +1,31 @@
+type logEntry @entity(immutable: true) {
+  id: Bytes!
+  _idb: BigInt! # uint256
+  _providerID: BigInt! # uint256
+  _providerName: String! # string
+  _providerAddress: Bytes! # address
+  _initialGeohash: String! # string
+  _finalGeohash: String! # string
+  _storageSpace: BigInt! # uint256
+  _live: Boolean! # bool
+  _askingPrice: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type supEntry @entity(immutable: true) {
+  id: Bytes!
+  _idb: BigInt! # uint256
+  _supplierID: BigInt! # uint256
+  _supplierName: String! # string
+  _supplierAddress: Bytes! # address
+  _initialGeohash: String! # string
+  _finalGeohash: String! # string
+  _storageQuantity: BigInt! # uint256
+  _live: Boolean! # bool
+  _offerPrice: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
