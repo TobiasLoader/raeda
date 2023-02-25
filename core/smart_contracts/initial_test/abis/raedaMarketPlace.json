@@ -1,0 +1,246 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_providerID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_providerName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_providerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_initialGeohash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_finalGeohash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_storageSpace",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "_live",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_askingPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "logEntry",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_supplierID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_supplierName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_supplierAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_initialGeohash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_finalGeohash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_storageQuantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "_live",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_offerPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "supEntry",
+    "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "logCollection",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "uint256", "name": "providerID", "type": "uint256" },
+      { "internalType": "string", "name": "providerName", "type": "string" },
+      {
+        "internalType": "address",
+        "name": "providerAddress",
+        "type": "address"
+      },
+      { "internalType": "string", "name": "initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "finalGeohash", "type": "string" },
+      { "internalType": "uint256", "name": "storageSpace", "type": "uint256" },
+      { "internalType": "bool", "name": "live", "type": "bool" },
+      { "internalType": "uint256", "name": "askingPrice", "type": "uint256" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "supCollection",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "uint256", "name": "supplierID", "type": "uint256" },
+      { "internalType": "string", "name": "supplierName", "type": "string" },
+      {
+        "internalType": "address",
+        "name": "supplierAddress",
+        "type": "address"
+      },
+      { "internalType": "string", "name": "initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "finalGeohash", "type": "string" },
+      {
+        "internalType": "uint256",
+        "name": "storageQuantity",
+        "type": "uint256"
+      },
+      { "internalType": "bool", "name": "live", "type": "bool" },
+      { "internalType": "uint256", "name": "offerPrice", "type": "uint256" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "_providerID", "type": "uint256" },
+      { "internalType": "string", "name": "_providerName", "type": "string" },
+      { "internalType": "string", "name": "_initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "_finalGeohash", "type": "string" },
+      { "internalType": "uint256", "name": "_storageSpace", "type": "uint256" },
+      { "internalType": "uint256", "name": "_askingPrice", "type": "uint256" }
+    ],
+    "name": "uploadLogisticsRequest",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "_supplierID", "type": "uint256" },
+      { "internalType": "string", "name": "_supplierName", "type": "string" },
+      { "internalType": "string", "name": "_initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "_finalGeohash", "type": "string" },
+      {
+        "internalType": "uint256",
+        "name": "_storageQuantity",
+        "type": "uint256"
+      },
+      { "internalType": "uint256", "name": "_offerPrice", "type": "uint256" }
+    ],
+    "name": "uploadSupplyRequest",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "_id", "type": "uint256" },
+      { "internalType": "string", "name": "_initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "_finalGeohash", "type": "string" },
+      { "internalType": "uint256", "name": "_storageSpace", "type": "uint256" },
+      { "internalType": "bool", "name": "_live", "type": "bool" },
+      { "internalType": "uint256", "name": "_askingPrice", "type": "uint256" }
+    ],
+    "name": "editLogisticsRequest",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "_id", "type": "uint256" },
+      { "internalType": "string", "name": "_initialGeohash", "type": "string" },
+      { "internalType": "string", "name": "_finalGeohash", "type": "string" },
+      {
+        "internalType": "uint256",
+        "name": "_storageQuantity",
+        "type": "uint256"
+      },
+      { "internalType": "bool", "name": "_live", "type": "bool" },
+      { "internalType": "uint256", "name": "_offerPrice", "type": "uint256" }
+    ],
+    "name": "editSupplyRequest",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
