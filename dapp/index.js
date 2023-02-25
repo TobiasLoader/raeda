@@ -14,18 +14,10 @@ app.set('views', './views')
 app.set('view engine', 'pug');
 
 const port = process.env.PORT || 3000;
-
-var fetchid = 0;
-function raedaAPIReqObj(method, params = null){
-	fetchid += 1;
-	var resobj = {"jsonrpc": "2.0", "method": method, "id":fetchid };
-	if (params!==null) resobj['params'] = params;
-	return resobj;
-}
 function raedaAPICall(method, params = null){
-	return fetch('http://localhost:3030/'+method, {
+	return fetch('http://127.0.0.1:8000/api/'+method, {
 		method: 'post',
-		body: JSON.stringify(raedaAPIReqObj(method,params)),
+		body: JSON.stringify(params),
 		headers: {'Content-Type': 'application/json'}
 	}).then((res) => res.json()).then((body) => {
 		return body;
@@ -33,11 +25,23 @@ function raedaAPICall(method, params = null){
 }
 
 app.get('/', (req, res) => {
-	raedaAPICall('message',{'from':'0x02','to':'0x01','msg':'Yoo heya fellow raeda user. this is an example message'}).then((rust_res)=>{
-		console.log(rust_res)
-		res.render('index',{rust_res:rust_res['result']});
+	res.render('index');
+});
+
+app.get('/messenger', (req, res) => {
+	raedaAPICall('messages',{'from':'0x02','to':'0x01'}).then((rust_res)=>{
+		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+		res.render('messenger',{res:txt});
 	});
-})
+});
+
+app.post('/post_message', (req, res) => {
+	raedaAPICall('message',{from:'0x02',to:'0x01', msg:"some msg"}).then((rust_res)=>{
+		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+		res.send(txt);
+	});
+});
+
 app.get('/favicon', (req, res) => {
 	res.send('no favicon yet');
 })

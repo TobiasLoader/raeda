@@ -1,4 +1,26 @@
 body {
-	background: rgb(240,240,255);
+	background: rgb(243, 248, 255);
 	font-family: "Montserrat", sans-serif;
+}
+
+h3 {
+	margin:0;
+	line-height: 40px;
+	color: rgb(30,30,30);
+}
+
+#logo {
+	width:300px;
+}
+
+.mainbutton {
+	display: block;
+	background: linear-gradient(45deg, white 0%, rgb(214, 230, 252) 100%);
+	box-shadow: 0 0 10px 5px rgba(0,0,0,0.1);
+	width: fit-content;
+	padding: 0 20px;
+	border-radius: 40px;
+	height: 40px;
+	cursor: pointer;
+	text-decoration: none;
 }
