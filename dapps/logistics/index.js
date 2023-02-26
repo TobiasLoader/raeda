@@ -15,7 +15,7 @@ app.set('view engine', 'pug');
 
 const port = process.env.PORT || 3000;
 function raedaAPICall(method, params = null){
-	return fetch('http://127.0.0.1:8000/api/'+method, {
+	return fetch('https://rust-raeda.onrender.com/api/'+method, {
 		method: 'post',
 		body: JSON.stringify(params),
 		headers: {'Content-Type': 'application/json'}
