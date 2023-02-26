@@ -1,8 +1,2 @@
-[development]
-address = "localhost"
-
-[staging]
-address = "0.0.0.0
-
-[production]
+[global]
 address = "0.0.0.0"

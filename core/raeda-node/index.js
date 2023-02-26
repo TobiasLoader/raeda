@@ -1,3 +1,5 @@
+// (see EtherscanProvider above for other network examples)
+let provider = new InfuraProvider("maticmum");
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
