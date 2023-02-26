@@ -13,13 +13,17 @@ app.use(express.static('public'));
 app.set('views', './views')
 app.set('view engine', 'pug');
 
+let local = false;
+
 const port = process.env.PORT || 3000;
 function raedaAPICall(method, params = null){
-	return fetch('http://127.0.0.1:8000/api/'+method, {
+	let url = 'https://rust.raeda.app';
+	if (local) url = 'http://127.0.0.1:8000'
+	return fetch(url+'/api/'+method, {
 		method: 'post',
 		body: JSON.stringify(params),
 		headers: {'Content-Type': 'application/json'}
-	}).then((res) => res.json()).then((body) => {
+	}).then((res) => {console.log(res);res.json();}).then((body) => {
 		return body;
 	});
 }
