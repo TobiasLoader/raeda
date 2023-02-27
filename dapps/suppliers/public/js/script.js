@@ -61,28 +61,3 @@ fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDugTSHPjCq4
 		console.log(body['error']);
 	}
 });
-
-// 
-// function initMap() {
-// 	let lat = 30;
-// 	let lng = 30;
-// 	let radius = 10000;
-// 	console.log(lat,lng,radius);
-// 	const map = new google.maps.Map(document.getElementById("quick-map"), {
-// 		zoom: 10,
-// 		center: { lat: lat, lng: lng },
-// 		mapTypeId: "terrain",
-// 	});
-// 	const drawingManager = new google.maps.Circle({
-// 		strokeColor: "rgb(83, 130, 201)",
-// 		strokeOpacity: 0.5,
-// 		strokeWeight: 1,
-// 		fillColor: "rgb(83, 130, 201)",
-// 		fillOpacity: 0.35,
-// 		map,
-// 		center: { lat: lat, lng: lng },
-// 		radius: radius,
-// 	});
-// 	drawingManager.setMap(map);
-// }
-// window.initMap = initMap;
