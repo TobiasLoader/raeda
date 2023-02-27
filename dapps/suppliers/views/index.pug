@@ -1,18 +1,28 @@
-doctype html
-html(lang="en-GB")
-	head
-		meta(charset="utf-8")
-		title Raeda Dapp
-		link(rel='stylesheet', href='styles/styles.css')
-		link(href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-	body
-		include ui-components
-		#topbar
-			img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
-			.buttonrow
-				+mainbutton('messenger','messenger','/messenger')
-				+mainbutton('bid','bid','/bid')
-				+mainbutton('login','login','/login')
-		script(src='/js/jquery.min.js')
-		script(src='/js/script.js')
+extends ../../templates/layout.pug
+
+block content
+	.area-container
+		.area-column
+			.area
+				h3 OPEN BIDS
+				ul#bid-list.area-ul
+					+bidli("0.12","post1 on rishin")
+					+bidli("0.10","post2 on hamzah")
+					+bidli("0.09","post3 on mary")
+			.area
+				h3 POST MARKETPLACE
+				#map
+		.area-column
+			.area
+				h3 OPEN POSTS
+				ul#post-list.area-ul
+					+postli("POTATOES",true,"0.11")
+					+postli("CARROTS",false,"")
+					+postli("PAPER",true,"0.08")
+					+postli("CHIPS",false,"")
+
+block headerscripts
+	script(src="https://polyfill.io/v3/polyfill.min.js?features=default")
+
+block scripts
+	script(defer, src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDugTSHPjCq4RHm7XFFC-07jptl0v8E3PE&callback=initMap&v=weekly")

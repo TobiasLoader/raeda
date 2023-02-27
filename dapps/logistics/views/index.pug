@@ -1,17 +1,4 @@
-doctype html
-html(lang="en-GB")
-	head
-		meta(charset="utf-8")
-		title Raeda Dapp
-		link(rel='stylesheet', href='styles/styles.css')
-		link(href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-	body
-		include ui-components
-		h1 Raeda Dapp – LOGISTICS PROVIDERS (River)
-		.buttonrow
-			+mainbutton('messenger','messenger','/messenger')
-			+mainbutton('bid','bid','/bid')
-		img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
-		script(src='/js/jquery.min.js')
-		script(src='/js/script.js')
+extends ../../templates/layout.pug
+
+block content
+  h3 yoo

@@ -1,0 +1,24 @@
+mixin mainbutton(buttonid,title,href)
+	a.mainbutton(id=buttonid,href=href)
+		h3.mainbuttontitle !{title}
+
+mixin bidli(price,txt)
+	li.bidli
+		div.bidprice
+			h2 !{price}
+			span.bidcurrency eth
+		// img(src=src,alt="bid list item image")
+		p.biddesc !{txt}
+// img(id="lake", src="/assets/img/lake.svg", alt="Raeda Lake (supplier)")
+
+mixin postli(postname,hasbid,bestprice)
+	if hasbid==true
+		li.postli
+			p !{postname}
+			div.postbidprice
+				h2 !{bestprice}
+				span.bidcurrency eth
+	else
+		li.postli.postlinobid
+			p !{postname}
+			p.postnobid NO BID

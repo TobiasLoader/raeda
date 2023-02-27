@@ -6,6 +6,7 @@ use crate::routes::msg_handling::Msg;
 pub fn get_messages() -> Msg {
 	// get messages
 	//{vec!([Msg {"a","b","msg"}])}
+	println!("message {:?}",Msg {from:"a".to_string(),to:"b".to_string(),msg:"msg".to_string()});
 	Msg {from:"a".to_string(),to:"b".to_string(),msg:"msg".to_string()}
 }
 

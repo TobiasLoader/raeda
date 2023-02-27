@@ -1,12 +1,5 @@
-doctype html
-html(lang="en-GB")
-	head
-		meta(charset="utf-8")
-		title Raeda Dapp
-		link(rel='stylesheet', href='styles/styles.css')
-		link(href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-	body
-		h1 Messenger feature of Raeda
-		h3= res
-		script(src='/js/jquery.min.js')
+extends ../../templates/layout.pug
+	
+block content
+  h1 Messenger
+  h3= res
