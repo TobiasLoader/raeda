@@ -1,18 +1,59 @@
-doctype html
-html(lang="en-GB")
-	head
-		meta(charset="utf-8")
-		title Raeda Dapp
-		link(rel='stylesheet', href='styles/styles.css')
-		link(href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-	body
-		include ui-components
-		#topbar
-			img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
-			.buttonrow
-				+mainbutton('messenger','messenger','/messenger')
-				+mainbutton('bid','bid','/bid')
-				+mainbutton('login','login','/login')
-		script(src='/js/jquery.min.js')
-		script(src='/js/script.js')
+extends ../../templates/layout.pug
+
+block content
+	.area-container
+		.area-row
+			.area
+				h3 YOUR OPEN BIDS
+				ul#bid-list.area-ul
+					+lakebidli("0.12","post1 on Rishin")
+					+lakebidli("0.10","post2 on Hamzah")
+					+lakebidli("0.09","post3 on Mary")
+			.area
+				h3 YOUR OPEN POSTS
+				ul#post-list.area-ul
+					+lakepostli("POTATOES",true,"0.11")
+					+lakepostli("CARROTS",false,"")
+					+lakepostli("PAPER",true,"0.08")
+					+lakepostli("CHIPS",false,"")
+		.area-row
+			.area
+				h3 SEARCH POSTS
+				#marketplace-split
+					#map-container
+						#quick-map
+					#price-area
+						#price-range
+							.input-range
+								label Min Price
+								input(id="minprice",placeholder="10 MATIC")
+							.input-range
+								label Max Price
+								input(id="maxprice",placeholder="100 MATIC")
+							.input-range
+								label Search Radius
+								input(id="searchradius",placeholder="20 miles")
+						#searchpost-buttonrow
+							#advancedsearch
+								a(href="/advanced-search") advanced search
+							+mainbutton('search','search','/search-post')
+			.area
+				h3 SEARCH RESULTS
+				table.posttable
+					thead.riverpostli
+						th 
+						th 
+						th.prices Min Price
+						th.prices Best Bid
+					tbody
+						+riverpostli("CHAIR","Hamzah",true,"0.08","0.10")
+						+riverpostli("TABLE","Mary",false,"0.14","")
+						+riverpostli("CLOTH","Rishin",false,"0.16","")
+						+riverpostli("CLOAK","Toby",true,"0.13","0.13")
+						+riverpostli("COAT","Juuso",true,"0.10","0.14")
+
+block headerscripts
+	script(src="https://polyfill.io/v3/polyfill.min.js?features=default")
+
+block scripts
+	script(defer, src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDugTSHPjCq4RHm7XFFC-07jptl0v8E3PE&callback=initMap&libraries=drawing&v=weekly")

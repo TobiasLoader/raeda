@@ -1,10 +1,256 @@
-html {
-	width: 100%;
-	height:100%;
-	margin:0;
-	padding:0;
-	background: rgb(36, 36, 36);
+#lake {
+	width:500px;
+	right:0;
+	top:0;
+	position: fixed;
 }
+
+.area-container {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	/* margin:20px 0; */
+}
+
+.area-row {
+	display: flex;
+	flex:1;
+}
+
+.area {
+	flex:1; 
+	border: rgba(168, 168, 168,0.2) 1px solid;
+	background: linear-gradient(20deg, rgb(10, 17, 30) 20%, rgb(36, 36, 36) 100%);
+	border-radius: 10px;
+	padding: 20px 20px 10px 20px;
+	margin: 20px 20px 40px 20px;
+	height: fit-content;
+	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+	max-height: 500px;
+	overflow: scroll;
+}
+
+.area h2 {
+	font-size: 21px;
+	margin: auto 0;
+}
+
+.area > h3 {
+	font-family: "Montserrat Alt";
+}
+
+.area-ul {
+	padding-left:0;
+	margin-bottom:0;
+}
+
+.bidli {
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	height:32px;
+	padding: 2px 0;
+	border-bottom: rgb(36, 36, 36) 1px solid;
+	cursor:pointer;
+}
+
+.bidli:last-child {
+	border: none;
+}
+
+.bidli:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.15) 100%);
+}
+
+/* .bidli img {
+	width:30px;
+	height:30px;
+} */
+
+.bidprice {
+	display: flex;
+	color:rgb(83, 130, 201);
+}
+
+.biddesc, .bidcurrency {
+	color:rgb(168, 168, 168);
+	font-family: "Montserrat Italic";
+	line-height:35px;
+}
+
+.bidcurrency {
+	margin-left:10px;
+}
+
+
+.postli {
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	height:32px;
+	padding: 2px 0;
+	border-bottom: rgb(36, 36, 36) 1px solid;
+	cursor:pointer;
+}
+
+.postli:last-child {
+	border: none;
+}
+
+.postli:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.15) 100%);
+}
+
+.postli.postlinobid:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(201, 83, 83, 0.15) 100%);
+}
+
+.postli > p {
+	margin: auto 0;
+}
+
+.postbidprice {
+	display: flex;
+	color:rgb(83, 130, 201);
+}
+
+.postnobid {
+	color:rgb(201, 83, 83);
+}
+
+.posttable {
+	width:100%;
+	margin-top:-17px;
+	/* margin-top:16px; */
+	border-collapse: collapse; 
+}
+
+.riverpostli {
+	height:32px;
+	padding: 2px 0;
+	border-bottom: rgb(36, 36, 36) 1px solid;
+}
+.riverpostli th {
+	color:rgb(83, 130, 201);
+	text-align:left;
+}
+
+.riverpostli th.prices {
+	text-align:right;
+}
+
+tr.riverpostli {
+	cursor:pointer;
+}
+
+.riverpostli:last-child {
+	border: none;
+}
+
+tr.riverpostli:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(168,168,168, 0.15) 100%);
+}
+
+tr.riverpostli.postlinobid:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.15) 100%);
+}
+
+.riverpostbidprice > div {
+	display: inline-flex;
+	float: right;
+}
+
+.riverpostli .riverpostbidprice.rivermin {
+	color:rgba(168, 168, 168,0.5);
+}
+
+.riverpostli.postlinobid .riverpostbidprice.rivermin {
+	color:rgb(83, 130, 201);
+}
+
+.riverpostli .riverpostbidprice.bestbid {
+	color:rgb(168, 168, 168);
+}
+
+.riverpostli.postlinobid .riverpostbidprice.bestbid {
+	color:rgb(201, 83, 83);
+}
+
+#marketplace-split {
+	display: flex;
+}
+
+#marketplace-split > * {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	flex: 1;
+}
+
+#map-container {
+	padding-right: 10px;
+}
+
+#quick-map {
+	height: 300px;
+	border-radius: 10px;
+}
+
+#price-area {
+	padding-left: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#price-range {
+	/* display: flex;
+	flex-direction: column;
+	justify-content: space-between; */
+}
+
+.input-range {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 30px;
+}
+
+.input-range input {
+	background: black;
+	outline: none;
+	color: white;
+	border: none;
+	margin-top: 5px;
+	height: 30px;
+	font-family: 'Montserrat Italic';
+	font-size: 15px;
+	padding-left:10px;
+	border-radius: 5px;
+}
+
+#searchpost-buttonrow {
+	display: flex;
+	justify-content: space-between;
+}
+
+#advancedsearch {
+	position: relative;
+	height: 42px;
+	flex: 1;
+}
+
+#advancedsearch a {
+	font-family: 'Montserrat Italic';
+	color:rgb(139, 162, 193);
+	bottom: 11px;
+	margin: auto;
+	position: absolute;
+}
+
+#advancedsearch a:hover {
+	color:rgb(168, 168, 168);
+}
+
+/* TEMPLATE layout.pug */
 
 /*
 PRI:     rgb(83, 130, 201)
@@ -15,47 +261,79 @@ SEC BG:  rgb(10, 17, 30)
 DARK BG: rgb(25, 25, 25)
 */
 
+html {
+	width: 100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	background: rgb(36, 36, 36);
+}
+
 body {
 	background: linear-gradient(20deg, rgb(36, 36, 36) 0%, rgb(10, 17, 30) 100%);
-	height:calc(100% - 40px);
+	min-height:100%;
 	font-family: "Montserrat", sans-serif;
-	margin:0px;
-	padding:20px;
+	margin:0;
+	padding:0;
+	color: rgb(168, 168, 168);
 }
 
 h1 {
 	color: rgb(83, 130, 201);
 }
 
-h3 {
+h2 {
 	margin:0;
-	line-height: 40px;
+}
+
+h3 {
+	font-size:16px;
+	margin:0;
 	color: rgb(168, 168, 168);
 }
 
+h4 {
+	font-size:16px;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+p {
+	margin: 0;
+}
+
+#content {
+	padding:20px;
+}
+
 #topbar {
+	padding:20px;
 	justify-content: space-between;
 	display:flex;
 	border-bottom: rgba(168, 168, 168,0.1) 1px solid;
-	padding-bottom: 20px;
+	/* padding-bottom: 20px; */
+	background: linear-gradient(20deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.1) 100%);
+}
+
+#logo-a {
+	display: inherit;
+	width: 100%;
+	margin-left:20px;
 }
 
 #logo {
 	max-width: 30%;
+	min-width:100px;
 	max-height:40px;
 	margin: auto 0;
 }
 
-#lake {
-	width:500px;
-	right:0;
-	top:0;
-	position: fixed;
-}
-
 .buttonrow {
 	display: flex;
-	margin: 5px 0;
+	margin: 5px 10px 5px 0;
 }
 .buttonrow > * {
 	margin-right: 10px;
@@ -79,6 +357,21 @@ h3 {
 	border-color: rgba(139, 162, 193, 0.5);
 }
 
+.mainbutton h3 {
+	line-height: 40px;
+}
+
 .mainbutton:hover h3 {
 	color: rgb(139, 162, 193);
 }
+
+.toitalic {
+	font-family: "Montserrat Italic";
+}
+
+@media screen and (max-width: 1400px) {
+	#marketplace-split {
+		flex-direction: column;
+	}
+}
+

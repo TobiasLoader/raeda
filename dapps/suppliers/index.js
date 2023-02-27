@@ -1,5 +1,3 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
 const express = require('express')
 const app = express()
 const http = require('http');
@@ -13,20 +11,9 @@ app.use(express.static('public'));
 app.set('views', './views')
 app.set('view engine', 'pug');
 
-let local = false;
-
+// raeda package
+const raeda = require('./../../core/raeda-node');
 const port = process.env.PORT || 3000;
-function raedaAPICall(method, params = null){
-	let url = 'https://rust.raeda.app';
-	if (local) url = 'http://127.0.0.1:8000'
-	return fetch(url+'/api/'+method, {
-		method: 'post',
-		body: JSON.stringify(params),
-		headers: {'Content-Type': 'application/json'}
-	}).then((res) => {console.log(res);res.json();}).then((body) => {
-		return body;
-	});
-}
 
 app.get('/', (req, res) => {
 	res.render('index');
@@ -37,7 +24,8 @@ app.get('/profile', (req, res) => {
 });
 
 app.get('/bid', (req, res) => {
-	res.render('bid');
+	let bids = raeda.lakeGetBids('1')[0].bidPrice;
+	res.render('bid',{bids:bids});
 });
 
 app.post('/accept_bid', (req, res) => {
@@ -45,14 +33,14 @@ app.post('/accept_bid', (req, res) => {
 });
 
 app.get('/messenger', (req, res) => {
-	raedaAPICall('messages',{'from':'0x02','to':'0x01'}).then((rust_res)=>{
+	raeda.getMessages('0x02','0x01').then((rust_res)=>{
 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
 		res.render('messenger',{res:txt});
 	});
 });
 
 app.post('/post_message', (req, res) => {
-	raedaAPICall('message',{from:'0x02',to:'0x01', msg:"some msg"}).then((rust_res)=>{
+	raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
 		res.send(txt);
 	});
