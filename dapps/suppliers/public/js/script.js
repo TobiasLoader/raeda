@@ -1,31 +1,27 @@
 $(document).ready(function() {
-	console.log('ready');
 });
 
+function buildSearchMap(lat,lng,radius){
+	const map = new google.maps.Map(document.getElementById("quick-map"), {
+		zoom: 7,
+		center: { lat: lat, lng: lng },
+		mapTypeId: "terrain",
+	});
+	const searchCircle = new google.maps.Circle({
+		strokeColor: "rgb(83, 130, 201)",
+		strokeOpacity: 0.5,
+		strokeWeight: 1,
+		fillColor: "rgb(83, 130, 201)",
+		fillOpacity: 0.35,
+		map,
+		center: { lat: lat, lng: long },
+		radius: radius,
+	});
+	drawingManager.setMap(map);
+}
+
 function initMap() {
-  const map = new google.maps.Map(document.getElementById("quick-map"), {
-	center: { lat: -34.397, lng: 150.644 },
-	zoom: 8,
-  });
-  const drawingManager = new google.maps.drawing.DrawingManager({
-	drawingMode: google.maps.drawing.OverlayType.MARKER,
-	drawingControl: true,
-	drawingControlOptions: {
-	  position: google.maps.ControlPosition.TOP_CENTER,
-	  drawingModes: [
-		google.maps.drawing.OverlayType.CIRCLE
-	  ],
-	},
-	circleOptions: {
-	  fillColor: "rgb(83, 130, 201)",
-	  fillOpacity: 0.3,
-	  strokeWeight: 0,
-	  clickable: true,
-	  editable: true,
-	  zIndex: 1,
-	},
-  });
-  drawingManager.setMap(map);
+	buildSearchMap(37.09,-95.712,10);
 }
 
 window.initMap = initMap;

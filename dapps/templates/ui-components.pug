@@ -2,7 +2,7 @@ mixin mainbutton(buttonid,title,href)
 	a.mainbutton(id=buttonid,href=href)
 		h3.mainbuttontitle !{title}
 
-mixin bidli(price,txt)
+mixin lakebidli(price,txt)
 	li.bidli
 		div.bidprice
 			h2 !{price}
@@ -11,7 +11,7 @@ mixin bidli(price,txt)
 		p.biddesc !{txt}
 // img(id="lake", src="/assets/img/lake.svg", alt="Raeda Lake (supplier)")
 
-mixin postli(postname,hasbid,bestprice)
+mixin lakepostli(postname,hasbid,bestprice)
 	if hasbid==true
 		li.postli
 			p !{postname}
@@ -22,3 +22,29 @@ mixin postli(postname,hasbid,bestprice)
 		li.postli.postlinobid
 			p !{postname}
 			p.postnobid NO BID
+
+mixin riverpostli(postname,river,hasbid,rivermin,bestprice)
+	if hasbid==true
+		tr.riverpostli
+			td !{postname}
+			td.toitalic by !{river}
+			td.riverpostbidprice.rivermin
+				div
+					h2 !{rivermin}
+					span.bidcurrency eth
+			td.riverpostbidprice.bestbid
+				div
+					h2 !{bestprice}
+					span.bidcurrency eth
+	else
+		tr.riverpostli.postlinobid
+			td !{postname}
+			td.toitalic by !{river}
+			td.riverpostbidprice.rivermin
+				div
+					h2 !{rivermin}
+					span.bidcurrency eth
+			td.riverpostbidprice.bestbid
+				div
+					h2 ––
+					span.bidcurrency eth

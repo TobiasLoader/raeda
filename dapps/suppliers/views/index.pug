@@ -2,13 +2,21 @@ extends ../../templates/layout.pug
 
 block content
 	.area-container
-		.area-column
+		.area-row
 			.area
-				h3 OPEN BIDS
+				h3 YOUR OPEN BIDS
 				ul#bid-list.area-ul
-					+bidli("0.12","post1 on rishin")
-					+bidli("0.10","post2 on hamzah")
-					+bidli("0.09","post3 on mary")
+					+lakebidli("0.12","post1 on Rishin")
+					+lakebidli("0.10","post2 on Hamzah")
+					+lakebidli("0.09","post3 on Mary")
+			.area
+				h3 YOUR OPEN POSTS
+				ul#post-list.area-ul
+					+lakepostli("POTATOES",true,"0.11")
+					+lakepostli("CARROTS",false,"")
+					+lakepostli("PAPER",true,"0.08")
+					+lakepostli("CHIPS",false,"")
+		.area-row
 			.area
 				h3 SEARCH POSTS
 				#marketplace-split
@@ -18,22 +26,31 @@ block content
 						#price-range
 							.input-range
 								label Min Price
-								input(id="minprice",placeholder="5eth")
+								input(id="minprice",placeholder="10 MATIC")
 							.input-range
 								label Max Price
-								input(id="maxprice",placeholder="20eth")
+								input(id="maxprice",placeholder="100 MATIC")
+							.input-range
+								label Search Radius
+								input(id="searchradius",placeholder="20 miles")
 						#searchpost-buttonrow
 							#advancedsearch
 								a(href="/advanced-search") advanced search
 							+mainbutton('search','search','/search-post')
-		.area-column
 			.area
-				h3 OPEN POSTS
-				ul#post-list.area-ul
-					+postli("POTATOES",true,"0.11")
-					+postli("CARROTS",false,"")
-					+postli("PAPER",true,"0.08")
-					+postli("CHIPS",false,"")
+				h3 SEARCH RESULTS
+				table.posttable
+					thead.riverpostli
+						th 
+						th 
+						th.prices Min Price
+						th.prices Best Bid
+					tbody
+						+riverpostli("CHAIR","Hamzah",true,"0.08","0.10")
+						+riverpostli("TABLE","Mary",false,"0.14","")
+						+riverpostli("CLOTH","Rishin",false,"0.16","")
+						+riverpostli("CLOAK","Toby",true,"0.13","0.13")
+						+riverpostli("COAT","Juuso",true,"0.10","0.14")
 
 block headerscripts
 	script(src="https://polyfill.io/v3/polyfill.min.js?features=default")
