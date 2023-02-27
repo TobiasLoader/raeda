@@ -23,7 +23,7 @@
 	padding: 20px 20px 10px 20px;
 	margin: 20px 20px 40px 20px;
 	height: fit-content;
-	box-shadow: 0 0 10px 5px rgb(0 0 0 / 20%);
+	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 	max-height: 500px;
 	overflow: scroll;
 }
@@ -116,6 +116,79 @@
 	color:rgb(201, 83, 83);
 }
 
+#marketplace-split {
+	display: flex;
+}
+
+#marketplace-split > * {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	flex: 1;
+}
+
+#map-container {
+	padding-right: 10px;
+}
+
+#quick-map {
+	height: 300px;
+	border-radius: 10px;
+}
+
+#price-area {
+	padding-left: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#price-range {
+	/* display: flex;
+	flex-direction: column;
+	justify-content: space-between; */
+}
+
+.input-range {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 30px;
+}
+
+.input-range input {
+	background: black;
+	outline: none;
+	color: white;
+	border: none;
+	margin-top: 5px;
+	height: 30px;
+	font-family: 'Montserrat Italic';
+	font-size: 15px;
+	padding-left:10px;
+	border-radius: 5px;
+}
+
+#searchpost-buttonrow {
+	display: flex;
+	justify-content: space-between;
+}
+
+#advancedsearch {
+	position: relative;
+	height: 42px;
+	flex: 1;
+}
+
+#advancedsearch a {
+	font-family: 'Montserrat Italic';
+	color:rgb(139, 162, 193);
+	bottom: 11px;
+	margin: auto;
+	position: absolute;
+}
+
+#advancedsearch a:hover {
+	color:rgb(168, 168, 168);
+}
 
 /* TEMPLATE layout.pug */
 
@@ -162,6 +235,10 @@ h3 {
 h4 {
 	font-size:16px;
 	margin: 0;
+}
+
+a {
+	text-decoration: none;
 }
 
 p {

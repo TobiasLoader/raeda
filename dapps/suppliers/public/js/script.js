@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 
 function initMap() {
-  const map = new google.maps.Map(document.getElementById("map"), {
+  const map = new google.maps.Map(document.getElementById("quick-map"), {
 	center: { lat: -34.397, lng: 150.644 },
 	zoom: 8,
   });
@@ -18,7 +18,7 @@ function initMap() {
 	},
 	circleOptions: {
 	  fillColor: "rgb(83, 130, 201)",
-	  fillOpacity: 0.5,
+	  fillOpacity: 0.3,
 	  strokeWeight: 0,
 	  clickable: true,
 	  editable: true,

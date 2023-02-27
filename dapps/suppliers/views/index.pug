@@ -10,8 +10,22 @@ block content
 					+bidli("0.10","post2 on hamzah")
 					+bidli("0.09","post3 on mary")
 			.area
-				h3 POST MARKETPLACE
-				#map
+				h3 SEARCH POSTS
+				#marketplace-split
+					#map-container
+						#quick-map
+					#price-area
+						#price-range
+							.input-range
+								label Min Price
+								input(id="minprice",placeholder="5eth")
+							.input-range
+								label Max Price
+								input(id="maxprice",placeholder="20eth")
+						#searchpost-buttonrow
+							#advancedsearch
+								a(href="/advanced-search") advanced search
+							+mainbutton('search','search','/search-post')
 		.area-column
 			.area
 				h3 OPEN POSTS
