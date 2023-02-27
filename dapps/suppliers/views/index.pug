@@ -6,16 +6,11 @@ block content
 			.area
 				h3 YOUR OPEN BIDS
 				ul#bid-list.area-ul
-					+lakebidli("0.12","post1 on Rishin")
-					+lakebidli("0.10","post2 on Hamzah")
-					+lakebidli("0.09","post3 on Mary")
+					+buildopenlakebids()
 			.area
 				h3 YOUR OPEN POSTS
 				ul#post-list.area-ul
-					+lakepostli("POTATOES",true,"0.11")
-					+lakepostli("CARROTS",false,"")
-					+lakepostli("PAPER",true,"0.08")
-					+lakepostli("CHIPS",false,"")
+					+buildopenlakeposts()
 		.area-row
 			.area
 				h3 SEARCH POSTS
@@ -31,29 +26,17 @@ block content
 								label Max Price
 								input(id="maxprice",placeholder="100 MATIC")
 							.input-range
-								label Search Radius
-								input(id="searchradius",placeholder="20 miles")
+								label
+									| Search Radius
+									span.toitalic  (miles)
+								input(id="searchradius",placeholder="10 miles")
 						#searchpost-buttonrow
 							#advancedsearch
 								a(href="/advanced-search") advanced search
-							+mainbutton('search','search','/search-post')
-			.area
+							+jsmainbutton('search','search')
+			#simplesearch.area
 				h3 SEARCH RESULTS
-				table.posttable
-					thead.riverpostli
-						th 
-						th 
-						th.prices Min Price
-						th.prices Best Bid
-					tbody
-						+riverpostli("CHAIR","Hamzah",true,"0.08","0.10")
-						+riverpostli("TABLE","Mary",false,"0.14","")
-						+riverpostli("CLOTH","Rishin",false,"0.16","")
-						+riverpostli("CLOAK","Toby",true,"0.13","0.13")
-						+riverpostli("COAT","Juuso",true,"0.10","0.14")
+				#searchtable
 
 block headerscripts
 	script(src="https://polyfill.io/v3/polyfill.min.js?features=default")
-
-block scripts
-	script(defer, src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDugTSHPjCq4RHm7XFFC-07jptl0v8E3PE&callback=initMap&libraries=drawing&v=weekly")

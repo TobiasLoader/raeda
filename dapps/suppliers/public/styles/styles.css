@@ -23,8 +23,8 @@
 	background: linear-gradient(20deg, rgb(10, 17, 30) 20%, rgb(36, 36, 36) 100%);
 	border-radius: 10px;
 	padding: 20px 20px 10px 20px;
-	margin: 20px 20px 40px 20px;
-	height: fit-content;
+	margin: 20px;
+	/* height: fit-content; */
 	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 	max-height: 500px;
 	overflow: scroll;
@@ -375,3 +375,12 @@ p {
 	}
 }
 
+@media screen and (max-width: 900px) {
+	.area-row {
+		flex-direction: column;
+	}
+	.area {
+		margin:0;
+		margin-bottom:20px;
+	}
+}

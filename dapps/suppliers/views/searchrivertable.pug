@@ -1,0 +1,39 @@
+
+mixin riverpostli(postname,river,hasbid,rivermin,bestprice)
+	if hasbid==true
+		tr.riverpostli
+			td !{postname}
+			td.toitalic by !{river}
+			td.riverpostbidprice.rivermin
+				div
+					h2 !{rivermin}
+					span.bidcurrency eth
+			td.riverpostbidprice.bestbid
+				div
+					h2 !{bestprice}
+					span.bidcurrency eth
+	else
+		tr.riverpostli.postlinobid
+			td !{postname}
+			td.toitalic by !{river}
+			td.riverpostbidprice.rivermin
+				div
+					h2 !{rivermin}
+					span.bidcurrency eth
+			td.riverpostbidprice.bestbid
+				div
+					h2 ––
+					span.bidcurrency eth
+
+table.posttable
+	thead.riverpostli
+		th 
+		th 
+		th.prices Min Price
+		th.prices Best Bid
+	tbody
+		- for(let i = 0; i < searchresults.length; i+=1)
+			if searchresults[i].bestprice!=''
+				+riverpostli(searchresults[i].postname,searchresults[i].river,true,searchresults[i].rivermin,searchresults[i].bestprice)
+			else
+				+riverpostli(searchresults[i].postname,searchresults[i].river,false,searchresults[i].rivermin,'-')

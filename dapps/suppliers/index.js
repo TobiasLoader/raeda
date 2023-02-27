@@ -15,8 +15,14 @@ app.set('view engine', 'pug');
 const raeda = require('./../../core/raeda-node');
 const port = process.env.PORT || 3000;
 
+const searchrivertablefn = pug.compileFile('views/searchrivertable.pug');
+
 app.get('/', (req, res) => {
-	res.render('index');
+	// console.log(raeda.lakeMyOpenBids());
+	res.render('index',{
+		openbids: raeda.lakeMyOpenBids(),
+		openposts: raeda.lakeMyOpenPosts()
+	});
 });
 
 app.get('/profile', (req, res) => {
@@ -28,7 +34,7 @@ app.get('/bid', (req, res) => {
 	res.render('bid',{bids:bids});
 });
 
-app.post('/accept_bid', (req, res) => {
+app.post('/api/accept_bid', (req, res) => {
 	res.send('eg. accepted bid success');
 });
 
@@ -39,10 +45,27 @@ app.get('/messenger', (req, res) => {
 	});
 });
 
-app.post('/post_message', (req, res) => {
+app.post('/api/post_message', (req, res) => {
 	raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
 		res.send(txt);
+	});
+});
+
+app.post('/api/lake-simple-search', (req, res) => {
+	const { headers, method, url } = req;
+	let body = [];
+	req.on('error', (err) => {
+		console.error(err);
+	}).on('data', (chunk) => {
+		body.push(chunk);
+	}).on('end', () => {
+		body = Buffer.concat(body).toString();
+		body = JSON.parse(body);
+		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
+			console.log(search_res)
+			res.send(searchrivertablefn({searchresults:search_res}));
+		});
 	});
 });
 
