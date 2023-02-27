@@ -1,10 +1,10 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const ethers = require('ethers');
+// const ethers = require('ethers');
 // const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
 // const signer = new ethers.Wallet("WALLET_PRIVATE_KEY", provider);
 
-const p = process.env;
+// const p = process.env;
 
 const watersourceABI = [
 	'function bids(uint id) public view returns (Bid)',
