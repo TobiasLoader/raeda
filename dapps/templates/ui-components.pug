@@ -2,14 +2,27 @@ mixin mainbutton(buttonid,title,href)
 	a.mainbutton(id=buttonid,href=href)
 		h3.mainbuttontitle !{title}
 
-mixin lakebidli(price,txt)
+mixin jsmainbutton(buttonid,title)
+	.mainbutton(id=buttonid)
+		h3.mainbuttontitle !{title}
+
+mixin buildopenlakebids()
+	- for(let i = 0; i < openbids.length; i+=1)
+		+lakebidli(openbids[i].bidprice,openbids[i].info)
+
+mixin lakebidli(bidprice,info)
 	li.bidli
 		div.bidprice
-			h2 !{price}
+			h2 !{bidprice}
 			span.bidcurrency eth
-		// img(src=src,alt="bid list item image")
-		p.biddesc !{txt}
-// img(id="lake", src="/assets/img/lake.svg", alt="Raeda Lake (supplier)")
+		p.biddesc !{info}
+
+mixin buildopenlakeposts()
+	- for(let i = 0; i < openposts.length; i+=1)
+		if openposts[i].bestprice!=''
+			+lakepostli(openposts[i].postname,true,openposts[i].bestprice)
+		else
+			+lakepostli(openposts[i].postname,false,'-')
 
 mixin lakepostli(postname,hasbid,bestprice)
 	if hasbid==true
@@ -22,29 +35,3 @@ mixin lakepostli(postname,hasbid,bestprice)
 		li.postli.postlinobid
 			p !{postname}
 			p.postnobid NO BID
-
-mixin riverpostli(postname,river,hasbid,rivermin,bestprice)
-	if hasbid==true
-		tr.riverpostli
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
-				div
-					h2 !{rivermin}
-					span.bidcurrency eth
-			td.riverpostbidprice.bestbid
-				div
-					h2 !{bestprice}
-					span.bidcurrency eth
-	else
-		tr.riverpostli.postlinobid
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
-				div
-					h2 !{rivermin}
-					span.bidcurrency eth
-			td.riverpostbidprice.bestbid
-				div
-					h2 ––
-					span.bidcurrency eth

@@ -58,6 +58,86 @@ function lakeGetBids(postId){
 	}];
 }
 
+// get the users (a lake) open bids
+function lakeMyOpenBids(){
+	return [
+		{
+			'bidprice':'0.12',
+			'info':'post1 on Rishin'
+		},
+		{
+			'bidprice':'0.10',
+			'info':'post2 on Hamzah'
+		},
+		{
+			'bidprice':'0.09',
+			'info':'post3 on Mary'
+		}
+	];
+}
+
+// get the users (a lake) open posts
+function lakeMyOpenPosts(){
+	return [
+		{
+			'postname':'POTATOES',
+			'maxprice':'0.16',
+			'bestprice':'0.11',
+		},
+		{
+			'postname':'CARROTS',
+			'maxprice':'0.10',
+			'bestprice':'',
+		},
+		{
+			'postname':'PAPER',
+			'maxprice':'0.12',
+			'bestprice':'0.08',
+		},
+		{
+			'postname':'CHIPS',
+			'maxprice':'0.06',
+			'bestprice':'',
+		}
+	];
+}
+
+// search for river posts (as a lake) wrt simple criteria
+async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
+	return [
+		{
+			'postname':'CHAIR',
+			'river':'Hamzah',
+			'rivermin':'0.08',
+			'bestprice':'0.10'
+		},
+		{
+			'postname':'TABLE',
+			'river':'Mary',
+			'rivermin':'0.14',
+			'bestprice':''
+		},
+		{
+			'postname':'CLOTH',
+			'river':'Rishin',
+			'rivermin':'0.16',
+			'bestprice':''
+		},
+		{
+			'postname':'CLOAK',
+			'river':'Toby',
+			'rivermin':'0.13',
+			'bestprice':'0.13'
+		},
+		{
+			'postname':'COAT',
+			'river':'Juuso',
+			'rivermin':'0.10',
+			'bestprice':'0.14'
+		}
+	];
+}
+
 /////////////// RIVER -- LOGISTICS ///////////////////
 
 // post as a river (ie. logistics)
@@ -108,10 +188,17 @@ function postMessage(from,to,msg){
 	return _rustCall('messages',{'from':from,'to':to,'msg':msg},l);
 }
 
-
-
 module.exports = {
-	lakePost, lakeBid, lakeGetBids,
-	riverPost, riverBid, riverGetBids,
-	getMessages, postMessage, _rustCall
+	lakePost,
+	lakeBid,
+	lakeGetBids,
+	lakeMyOpenBids,
+	lakeMyOpenPosts,
+	lakeSimpleSearch,
+	riverPost,
+	riverBid,
+	riverGetBids,
+	getMessages,
+	postMessage,
+	_rustCall
 }
