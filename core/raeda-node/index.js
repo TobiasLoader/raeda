@@ -1,4 +1,4 @@
-// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // const ethers = require('ethers');
 // const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
@@ -86,7 +86,7 @@ function riverGetBids(postId){
 
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 
-let l = true;
+let l = false;
 
 function _rustCall(method, params = null, local=false){
 	let url = 'https://rust.raeda.app';

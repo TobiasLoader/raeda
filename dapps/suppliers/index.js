@@ -11,6 +11,7 @@ app.use(express.static('public'));
 app.set('views', './views')
 app.set('view engine', 'pug');
 
+// raeda package
 const raeda = require('./../../core/raeda-node');
 const port = process.env.PORT || 3000;
 
