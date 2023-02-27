@@ -1,70 +1,88 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-contract waterSource {
+import "./profile.sol";
 
-    uint private postIdCount = -1;
-    uint private bidIdCount = -1;
+abstract contract waterSource {
+
+    profile profileContract;
+
+    uint32 private postIdCount = 0;
+    uint32 private bidIdCount = 0;
 
     enum whichBucketValue {INT,BOOL,STRING}
+    enum dealStates {notClosed,lakeClosed,riverClosed,bothClosed}
+    enum waterTypes {LAKE,RIVER}
+
 
     struct bucketValues {
         whichBucketValue valType;
-        uint intVal;
+        uint32 intVal;
         bool boolVal;
         string strVal;
     }
 
     struct Post {
-        // uint postId;
-        uint userId;
+        // uint32 postId;
+        uint32 userId;
         address EOA;
-        uint price;
+        uint32 price;
         string iX;
         string fX;
-        uint iT;
-        uint fT;
-        uint exp;
+        uint32 iT;
+        uint32 fT;
+        uint32 exp;
         bool live;
         mapping(string => bucketValues) bucket;
+        uint32 winningBidId;
     }
 
     struct Bid {
-        uint bidId;
-        uint bidderId;
+        // uint32 bidId;
+        uint32 bidderId;
         address bidderEOA;
-        uint bidAmount;
+        uint32 bidAmount;
+        bool accepted;
     }
 
-    event postEvent(uint indexed _postId,Post _post);
-    event bidEvent(uint indexed _postId, Bid _bid);
+    event postEvent(uint32 indexed _postId, bool indexed _live);
+    event bidEvent(uint32 indexed _postId, uint32 indexed _bidId, bool indexed _accepted);
 
-    event bucketEvent(uint indexed _postId, string indexed _category, whichBucketValue indexed _bucketValType);
+    event bucketEvent(uint32 indexed _postId, string indexed _category, whichBucketValue indexed _bucketValType);
 
-    mapping(uint => Post) public collection;
-    mapping(uint => Bid) public bids;
+    mapping(uint32 => Post) public collection;
+    mapping(uint32 => mapping(uint32=>Bid)) public bids;
+    mapping(uint32 => dealStates) public pendingDeals;
 
-    function authorise(uint _userId,address _EOA) internal {
-        return true;
+    constructor(address profileContractAddress) public{
+        profileContract = profile(profileContractAddress);
     }
 
+    function authorise(uint32 _userId,address _EOA) internal view returns(bool){
+        return profileContract.checkEOA(_userId,_EOA);
+    }
 
-    //add profile check to ensure EOA in profile
-    function initPost(uint _userId,uint _price,string calldata _iX,string calldata _fX) payable external {
-        require(waterSource.authorise(_userId, msg.sender));
+    function expiryCheck(uint32 _postId) internal view returns (bool){
+        return now < collection[_postId].exp;
+    }
+
+    //instead of price as parameter, have it just be the amount sent to the contract
+    function initPost(uint32 _userId,string calldata _iX,string calldata _fX,uint32 _exp) payable external {
+        require(waterSource.authorise(_userId, msg.sender),"Error: EOA is not associated with this user");
         postIdCount +=1;        
         collection[postIdCount].userId = _userId; 
         collection[postIdCount].EOA = msg.sender; 
-        collection[postIdCount].price = _price; 
+        collection[postIdCount].price = msg.value; 
         collection[postIdCount].iX = _iX;
         collection[postIdCount].fX = _fX;
         collection[postIdCount].live = true;
-        emit postEvent(postIdCount, collection[postIdCount]);
+        collection[postIdCount].exp = _exp;
+        emit postEvent(postIdCount,true);
         
     }
     
     //nb default values
-    function addToBucket(uint _postId,string calldata _category,whichBucketValue calldata _valType, uint _intVal, bool _boolVal, string calldata _strVal) external {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender));
+    function addToBucket(uint32 _postId,string calldata _category,whichBucketValue _valType, uint32 _intVal, bool _boolVal, string calldata _strVal) external {
+        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
         if (_valType==whichBucketValue.INT){
             collection[_postId].bucket[_category].valType = whichBucketValue.INT;
             collection[_postId].bucket[_category].intVal = _intVal;
@@ -81,28 +99,84 @@ contract waterSource {
 
     }
 
-    function takeDownBid(uint _postId, ) public {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender));
+    function checkBucket(uint32 _postId, string memory _category) public view returns(uint32,bool,string memory){
+        return (collection[_postId].bucket[_category].intVal,collection[_postId].bucket[_category].boolVal,collection[_postId].bucket[_category].strVal);
     }
 
-    function bid(uint _postId, uint _bidderId, uint _bidAmount) payable external {
+    function takeDownPost(uint32 _postId) public {
+        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].live = false;
+        emit postEvent(_postId,false);
+    }
+
+    function bidReqs(uint32 _postId,uint _bidAmount) internal view returns(bool);
+
+    function bid(uint32 _postId, uint32 _bidderId) payable external {
+        require(waterSource.bidReqs(_postId,msg.value),"Does not meet criteria for dutch/english bid");
         bidIdCount += 1;
-        bids[_postId].bidId = bidIdCount;
-        bids[_postId].bidderId = _bidderId;
-        bids[_postId].bidderEOA = msg.sender;
-        bids[_postId].bidAmount = _bidAmount;
-        //add funds to contract EOA
-        emit bidEvent(_postId, bids[_postId]);       
+        bids[_postId][bidIdCount].bidderId = _bidderId;
+        bids[_postId][bidIdCount].bidderEOA = msg.sender;
+        bids[_postId][bidIdCount].bidAmount = msg.value;
+        bids[_postId][bidIdCount].accepted = false;
+        emit bidEvent(_postId, bidIdCount,false);       
+    }
+    
+//add requirements for expiry time
+    function acceptBid(uint32 _postId, uint32 _bidId) external{
+        require(waterSource.authorise(collection[_postId].userId,msg.sender),"Error: EOA is not associated with this user");
+        require(water.Source.expiryCheck(_postId),"Error: post has expired");
+        waterSource.takeDownPost();
+        bids[_postId][_bidId].accepted=true;
+        pendingDeals[_postId]=dealStates.notClosed;
+        collection[_postId].winningBidId = _bidId;
+        emit bidEvent(_postId,_bidId,true);
     }
 
-    // function receiveBid() payable external {
-
-    // }
-    function acceptBid(uint _postId, uint _bidId) external{
-        waterSource.takeDownBid();
+    function involvedInDeal(uint32 _postId, uint32 _userId) returns (bool){
+        if (collection[_postId].userId==_userId){
+            return true;
+        }
+        else if (bids[_postId][collection[_postId].winningBidId].bidderId==_userId){
+            return true;
+        }
+        return false;
     }
 
-    function closeDeal() external {
+    function payout(uint32 _postId) internal;
+
+    function closeDeal(uint32 _postId,uint32 _userId) external {
+        require(waterSource.involvedInDeal(_postId,_userId),"Error: userId not associated with this deal");
+        if (pendingDeals[_postId] == dealStates.notClosed){
+            if (profileContract.profiles(_userId).waterType == waterTypes.LAKE){
+                pendingDeals[_postId] = dealStates.lakeClosed;
+            }
+            else if (profileContract.profiles(_userId).waterType == waterTypes.RIVER){
+                pendingDeals[_postId] = dealStates.riverClosed;
+            }
+        }
+        else if (pendingDeals[_postId] == dealStates.lakeClosed){
+            if (profileContract.profiles(_userId).waterType == waterTypes.RIVER){
+                pendingDeals[_postId] = dealStates.bothClosed;
+                waterSource.payout(_postId);
+            }
+            else if (profileContract.profiles(_userId).waterType == waterTypes.LAKE){
+                assert("Already closed deal on your side");
+            }
+        }
+        else if (pendingDeals[_postId] == dealStates.riverClosed){
+            if (profileContract.profiles(_userId).waterType == waterTypes.LAKE){
+                pendingDeals[_postId] = dealStates.bothClosed;
+                waterSource.payout(_postId);
+            }
+            else if (profileContract.profiles(_userId).waterType == waterTypes.RIVER){
+                assert("Already closed deal on your side");
+            }
+        }
+        else if (pendingDeals[_postId] == dealStates.riverClosed){
+            assert("Already closed");
+        }
+
+        //add payments!!
 
     }
 
