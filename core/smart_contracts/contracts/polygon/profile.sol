@@ -1,10 +1,12 @@
-pragma solidity >=0.4.21 <0.7.0;
+pragma solidity ^0.8.18;
+
+enum waterTypes {LAKE,RIVER}
+
 
 contract profile {
 
     uint32 private userIdCount = 0;
 
-    enum waterTypes {LAKE,RIVER}
 
     //Profile contains: id,name,EOAs,brief summary, lake/river
     struct Profile {
