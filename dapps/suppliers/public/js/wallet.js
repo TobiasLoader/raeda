@@ -11,12 +11,14 @@ let login;
 
 let contracts;
 
+let profileid;
+
 $(document).ready(function() {
 	const {ethereum} = window;
 	const {Web3} = window;
 
 	if (ethereum===undefined){
-		utils.notification('Oops', ['The ethereum library didn\'t load correctly','Please refresh the page, this will most likely fix it.','If this occurs repeatedly please make an issue on the LensPy Github repo.'])
+		utils.notification('Oops', ['The ethereum library didn\'t load correctly','Please refresh the page, this will most likely fix it.'],true)
 	}
 	
 	// init local wallet state
@@ -31,7 +33,6 @@ $(document).ready(function() {
 	login = false;
 	
 	raeda.initContracts(provider).then((res)=>{
-		console.log(res);
 		initWalletConnection().then(()=>{
 			afterConnectTry();
 		});
@@ -56,9 +57,6 @@ async function connectWallet() {
 	signer = provider.getSigner(address);
 	connected = isConnected();
 	raeda.connectSignerContracts(signer);
-	// console.log(address)
-	raeda.lakePost(address,0.01,{postName:'cool post',lakeId:0,iXx:0,iXy:0,fXx:0,fXy:0,exp:0});
-	console.log(address);
 }
 
 function isConnected(){
@@ -76,7 +74,6 @@ async function initWalletConnection() {
 function amendConnectWalletButton(){
 	if (connected) {
 		console.log("user connected");
-		$('#login').addClass('hide');
 		$('#connected').removeClass('hide');
 	}
 	//  else {
@@ -92,25 +89,57 @@ function afterConnectTry(){
 
 export function requiresConnected(func,argsArray=[]){
 	if (connected) func.apply(this,argsArray);
-	else notification('Not connected wallet!',['You need to connect your wallet to proceed.']);
+	else utils.notification('Not connected wallet!',['You need to connect your wallet to proceed.']);
 }
 
 export function requiresLogin(func,argsArray=[]){
 	if (login){
 		func.apply(this,argsArray);
 	} else {
-		if (connected) notification('Not logged in!',['The following action is a mutation and you need to be authenticated to perform it. You have connected your wallet but not logged in.']);
-		else notification('Not connected your wallet or logged in!',['You need to connect your wallet and then login.']);
+		if (connected) utils.notification('Not logged in!',['The following action is a mutation and you need to be authenticated to perform it. You have connected your wallet but not logged in.'],true);
+		else utils.notification('Not connected your wallet or logged in!',['You need to connect your wallet and then login.'],true);
 	}
 }
 
 $('#login').click(function(){
-	if (connected) {
-		notification('Already connected!',['You have already connected your wallet!']);
-	}
-	else {
-		connectWallet().then((v)=>{
-			afterConnectTry();
+	if (login) {
+		utils.notification('Already logged in!',['You have already logged in!'],true);
+	} else {
+		utils.buttonnotification('Login',[],[{name:'Connect Wallet',classes:['connect']},{name:'Login',classes:['login','greyedout']}]);
+		
+		$('#notification #notifinputarea label').text('Enter your Profile Name:')
+		$('#notification #notifinputarea input').attr("placeholder", "Profile Name");
+		$('#notification #notifinputarea').addClass('active');
+
+		$('#notification .notifbtn.connect').click(function(){
+			if (isConnected()){
+				$('.notifbtn.login').removeClass('greyedout');
+				$('.notifbtn.connect').addClass('greyedout');
+			} else {
+				connectWallet().then((v)=>{
+					afterConnectTry();
+					if (isConnected()){
+						$('.notifbtn.login').removeClass('greyedout');
+						$('.notifbtn.connect').addClass('greyedout');
+					} else {
+						notification('Oops', ['Error connecting your wallet'], true);
+					}
+				});
+			}
+		});
+		
+		$('.notifbtn.login').click(function(){
+			let profilename = $('#notification input').val();
+			if (profilename.length>0){
+				raeda.lakeLogin(address,profilename,signer).then((res)=>{
+					if (res['success']) {
+						$('#login').addClass('hide');
+						profileid = res['profileid'];
+						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+profileid.toString()]);
+					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
+				});
+			} else utils.notification('Oops', ['Login failed – no profile name provided'], true);
 		});
 	}
 });
+

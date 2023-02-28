@@ -17,7 +17,6 @@ export async function initContracts(provider){
 	riverContract = new ethers.Contract(RIVER_ADDR, abi.getABI('river'), provider);
 	contractsInitiated = true;
 	return true;
-	// return {profile:profileContract,lake:lakeContract,river:riverContract};
 }
 
 export async function connectSignerContracts(signer){
@@ -47,6 +46,28 @@ export async function lakePost(addr,maxprice,{postName,lakeId,iXx,iXy,fXx,fXy,ex
 	});	
 }
 
+export async function lakeLogin(addr,profilename,signer){
+	return await _checkSignerConnectedAsync(async ()=>{
+		let signature = signer.signMessage(profilename);
+		return await _raedaLakeAPICall('lakelogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
+			console.log(body);
+			return body;
+		});
+	});
+}
+
+function _raedaLakeAPICall(method, params = null, local=false){
+	let url = 'https://lake.raeda.app';
+	if (local) url = 'http://127.0.0.1:3000'
+	return fetch(url+'/api/'+method, {
+		method: 'post',
+		body: JSON.stringify(params),
+		headers: {'Content-Type': 'application/json'}
+	}).then((res) => res.json()).then((body) => {
+		return body;
+	});
+}
+
 
 function _checkContractsInitiated(fnc,argsArray=[]){
 	if (contractsInitiated) {
@@ -58,10 +79,14 @@ function _checkContractsInitiated(fnc,argsArray=[]){
 		return false;
 	}
 }
-function _checkSignerConnected(fnc,argsArray=[]){
+async function _checkSignerConnectedAsync(fnc,argsArray=[]){
 	if (contractsInitiated) {
 		if (signerConnected) {
-			return fnc.apply(this,argsArray);
+			console.log('pre res')
+			let res = await fnc.apply(this,argsArray);
+			console.log(res)
+			return res;
+			// return {'success':true}
 		} else {
 			console.log('ERROR');
 			console.log('Connect the signer to the contract.')

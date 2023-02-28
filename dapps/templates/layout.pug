@@ -21,8 +21,9 @@ html(lang="en-GB")
 				img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
 			.buttonrow
 				+mainbutton('messenger','messenger','/messenger')
-				+mainbutton('bid','bid','/bid')
+				+mainbutton('createpost','create post','/createpost')
 				+jsmainbutton('login','login')
+				+jsmainbutton('signup','signup')
 				+jsmainbutton('connected','wallet connected!','hide done')
 		#content
 			block content
@@ -33,6 +34,10 @@ html(lang="en-GB")
 					.notifcrossline.right
 				h2#notiftitle
 				#notifdesc
+				#notifinputarea
+					label#notifinputlabel
+					input#notifinput
+				#notifbtnrow
 		script(src='https://cdn.ethers.io/lib/ethers-5.2.umd.min.js')
 		script(src='/js/jquery.min.js')
 		script(src='/js/utils.js',type="module" )
