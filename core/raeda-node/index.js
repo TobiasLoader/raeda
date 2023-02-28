@@ -1,25 +1,25 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // test pub/pri keys used also in LensPy
-pub = "0xb8CE9ab6943e0eCED004cDe8e3bBed6568B2Fa01"
-pri = "0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709"
+// pub = "0xb8CE9ab6943e0eCED004cDe8e3bBed6568B2Fa01"
+// pri = "0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709"
 
-var fs = require('fs');
-const ethers = require('ethers');
-const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
+// var fs = require('fs');
+// const ethers = require('ethers');
+// const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
 // const signer = new ethers.Wallet(pri, provider);
 
 // const watersourceABI = [
 // 	'function bids(uint id) public view returns (Bid)',
 // ];
 
-function getABI(filename){
-	return JSON.parse(fs.readFileSync('../../core/subgraph/ABIs/'+filename+'.json', 'utf8'))['abi'];
-}
+// function getABI(filename){
+	// return JSON.parse(fs.readFileSync('../../core/subgraph/ABIs/'+filename+'.json', 'utf8'))['abi'];
+// }
 
-const profileABI = getABI('profile');
-const lakeABI = getABI('lake');
-const riverABI = getABI('river');
+// const profileABI = getABI('profile');
+// const lakeABI = getABI('lake');
+// const riverABI = getABI('river');
 
 // const watersourceContract = new ethers.Contract(p.WATERSOURCE_ADDR, watersourceABI, provider);
 // const profileContract = new ethers.Contract(process.env.PROFILE_ADDR, profileABI, provider);
