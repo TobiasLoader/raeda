@@ -1,55 +1,69 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-// const ethers = require('ethers');
-// const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
-// const signer = new ethers.Wallet("WALLET_PRIVATE_KEY", provider);
+// test pub/pri keys used also in LensPy
+pub = "0xb8CE9ab6943e0eCED004cDe8e3bBed6568B2Fa01"
+pri = "0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709"
 
-// const p = process.env;
+var fs = require('fs');
+const ethers = require('ethers');
+const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
+// const signer = new ethers.Wallet(pri, provider);
 
-const watersourceABI = [
-	'function bids(uint id) public view returns (Bid)',
-];
-const profileABI = [
-	'function profiles(uint id) public view returns (Profile)',
-];
-const driptokenABI = [
-];
-const lakeABI = [
-	'function initPost(uint postId, uint lakeId, address lakeAddress, address authAddress, uint maxPrice, string iX, string fX, uint exp) public returns (bool success)',
-	'function setInitialTime(uint iT) public returns (bool success)',
-];
-const riverABI = [
-	'function initPost(uint postId, uint riverId, address riverAddress, address authAddress, uint minPrice, string iX, string fX, uint exp) public returns (bool success)',
-	// 'function bids(id) public view returns (Bid)',
-];
+// const watersourceABI = [
+// 	'function bids(uint id) public view returns (Bid)',
+// ];
+
+function getABI(filename){
+	return JSON.parse(fs.readFileSync('../../core/subgraph/ABIs/'+filename+'.json', 'utf8'))['abi'];
+}
+
+const profileABI = getABI('profile');
+const lakeABI = getABI('lake');
+const riverABI = getABI('river');
 
 // const watersourceContract = new ethers.Contract(p.WATERSOURCE_ADDR, watersourceABI, provider);
-// const profileContract = new ethers.Contract(p.PROFILE_ADDR, profileABI, provider);
-// const driptokenContract = new ethers.Contract(p.DRIPTOKEN_ADDR, driptokenABI, provider);
-// const lakeContract = new ethers.Contract(p.LAKE_ADDR, lakeABI, provider);
-// const riverContract = new ethers.Contract(p.RIVER_ADDR, riverABI, provider);
+// const profileContract = new ethers.Contract(process.env.PROFILE_ADDR, profileABI, provider);
+// const streamTokenContract = new ethers.Contract(p.streamToken_ADDR, streamTokenABI, provider);
+// const lakeContract = new ethers.Contract(process.env.LAKE_ADDR, lakeABI, provider);
+// const riverContract = new ethers.Contract(process.env.RIVER_ADDR, riverABI, provider);
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
 // post as a lake (ie. supplier)
-function lakePost({postId,lakeId,lakeAddress,authAddress,maxPrice,iX,fX,exp,iT=null,fT=null}){
-	// initPost(postId,lakeId,lakeAddress,authAddress,maxPrice,iX,fX,exp)
-	// if (iT!=null) setInitialTime(iT)
-	// if (fT!=null) setFinalTime(fT)
-	// returns bool success
-	return true;
+// authAddress -- to be added
+function lakePost(addr,maxprice,{postName,lakeId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
+	try {
+		lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:eth.utils(maxprice,towei)});
+		// 'the graph' retrieves post info -- in particular postId
+		// (SC emits event for post creation including postId)
+		let postId = 0; // <-- replace
+		if (iT!=null) lakeContract.addInitialTime(postId,iT);
+		if (fT!=null) lakeContract.addFinalTime(postId,fT);
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 }
 
 // bid as a lake (ie. supplier)
-function lakeBid({postId,lakeAddress,bidPrice}){
-	// bidPrice > minPrice (of riverPost)
-	// returns bool success
-	return true;
+function lakeBid(addr,bidprice,{postId,lakeId}){
+	try {
+		// bidPrice > minPrice (of riverPost)
+		lakeContract.bid(postId,lakeId,{from:addr,value:eth.utils(bidprice,towei)});
+		// returns bool success
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 }
 
 // get the bids as a lake (ie. supplier)
 // -> for the <lakePost> with id <postId>: get all the <riverBid>'s.
 function lakeGetBids(postId){
+	// get from `the graph`
+	// PARAMS: postId
 	return [{
 		'postId':postId,
 		'riverAddress':'0x01',
@@ -59,7 +73,9 @@ function lakeGetBids(postId){
 }
 
 // get the users (a lake) open bids
-function lakeMyOpenBids(){
+function lakeMyOpenBids(addr){
+	// get from `the graph`
+	// PARAMS: addr
 	return [
 		{
 			'bidprice':'0.12',
@@ -77,7 +93,9 @@ function lakeMyOpenBids(){
 }
 
 // get the users (a lake) open posts
-function lakeMyOpenPosts(){
+function lakeMyOpenPosts(addr){
+	// get from `the graph`
+	// PARAMS: addr
 	return [
 		{
 			'postname':'POTATOES',
@@ -104,6 +122,8 @@ function lakeMyOpenPosts(){
 
 // search for river posts (as a lake) wrt simple criteria
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
+	// get from `the graph`
+	// PARAMS: lat,lng,radius,minprice,maxprice
 	return [
 		{
 			'postname':'CHAIR',
@@ -141,22 +161,41 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 /////////////// RIVER -- LOGISTICS ///////////////////
 
 // post as a river (ie. logistics)
-function riverPost({postId,riverId,riverAddress,authAddress,minPrice,iX,fX,exp,iT=null,fT=null}){
-	// initPost(postId,riverId,riverAddress,authAddress,minPrice,iX,fX,exp)
-	// if (iT!=null) setInitialTime(iT)
-	// if (fT!=null) setFinalTime(fT)
-	return 'post uploaded successfully';
+// TODO -- add authAddress
+function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
+	try {
+		riverContract.initPost(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:eth.utils(minprice,towei)});
+		// 'the graph' retrieves post info -- in particular postId
+		// (SC emits event for post creation including postId)
+		let postId = 0; // <-- replace
+		if (iT!=null) riverContract.addInitialTime(postId,iT);
+		if (fT!=null) riverContract.addFinalTime(postId,fT);
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+	
 }
 
 // bid as a river (ie. logistics)
-function riverBid({postId,riverAddress,bidPrice}){
-	// bidPrice < maxPrice (of lakePost)
-	return 'bid registered successfully';
+function riverBid(addr,bidprice,{postId,riverId}){
+	try {
+		// bidprice < maxprice (of lakePost)
+		riverContract.bid(postId,riverId,{from:addr,value:eth.utils(bidprice,towei)});
+		// returns bool success
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 }
 
 // get the bids as a river (ie. logistics)
 // -> for the <riverPost> with id <postId>: get all the <lakeBid>'s.
 function riverGetBids(postId){
+	// get from `the graph`
+	// PARAMS: postId
 	return [{
 		'postId':postId,
 		'lakeAddress':'0x01',
@@ -166,7 +205,7 @@ function riverGetBids(postId){
 
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 
-let l = false;
+let l = true;
 
 function _rustCall(method, params = null, local=false){
 	let url = 'https://rust.raeda.app';

@@ -1,3 +1,11 @@
+$(document).ready(function() {
+	lakeSimpleSearch();
+	$('#search').click(function (){
+		lakeSimpleSearch();
+	});
+});
+
+
 var minprice = 10;
 var maxprice = 100;
 var searchlat = 0;
@@ -26,14 +34,6 @@ function buildSimpleSearchRow(obj){
 	let row = $('tr');
 	row.append();
 }
-
-
-$(document).ready(function() {
-	lakeSimpleSearch();
-	$('#search').click(function (){
-		lakeSimpleSearch();
-	});
-});
 
 document.getElementById('minprice').addEventListener('keyup', function() {
 	let v = document.getElementById('minprice').value;
