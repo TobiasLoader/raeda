@@ -1,0 +1,184 @@
+type profileEvent @entity(immutable: true) {
+  id: Bytes!
+  _userId: BigInt! # uint32
+  _waterType: Int! # uint8
+  _userName: String! # string
+  _summary: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type bidEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _bidId: BigInt! # uint32
+  _accepted: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type bucketEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _category: String! # string
+  _bucketValType: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type postEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _live: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type riverbidEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _bidId: BigInt! # uint32
+  _accepted: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type riverbucketEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _category: String! # string
+  _bucketValType: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type riverpostEvent @entity(immutable: true) {
+  id: Bytes!
+  _postId: BigInt! # uint32
+  _live: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+enum waterTypes {
+  LAKE
+  RIVER
+}
+
+enum dealStates {
+  NOTCLOSED
+  LAKECLOSED
+  RIVERCLOSED
+  BOTHCLOSED
+}
+
+type Profile @entity {
+  id: Bytes!
+  userId: BigInt!
+  userName: String!
+  waterType: waterTypes!
+  EOAs: [Address!]!
+  Summary: String!
+  Bids: [Bid] @derivedFrom(field: "Bid")
+  Posts: [Post] @derivedFrom(field: "Post")
+}
+
+type Post @entity {
+  id: Bytes!
+  postId: BigInt!
+  postName: String!
+  # posterId: address!
+  # posterWaterType: waterTypes!
+  EOA: address!
+  price: BigInt!
+  iXx: BigInt!
+  iXy: BigInt!
+  fXx: BigInt!
+  fXy: BigInt!
+  iT: BigInt
+  fT: BigInt
+  exp: BigInt!
+  live: Boolean!
+  # bucketCategories: [String!]
+  # bucketValues: [String!]
+  bucket: [Bucket] @derivedFrom(field: "Bucket")
+  pendingValue: dealStates
+  poster: Profile!
+  Bids: [Bid] @derivedFrom(field: "Bid")
+}
+
+type Bucket @entity {
+  id: Bytes!
+  category: String!
+  value: String!
+  post: Post
+}
+
+# type lakePost @entity {
+#   id: Bytes!
+#   postName: String!
+#   EOA: address!
+#   price: BigInt!
+#   iXx: BigInt!
+#   iXy: BigInt!
+#   fXx: BigInt!
+#   fXy: BigInt!
+#   iT: BigInt
+#   fT: BigInt
+#   exp: BigInt!
+#   live: Boolean!
+#   bucketCategories: [String!]
+#   bucketValues: [String!]
+#   pendingValue: dealStates
+# }
+
+type Bid @entity {
+  id: Bytes!
+  bidId: BigInt!
+  # postId: BigInt!
+  # bidderId: BigInt!
+  EOA: address!
+  amount: BigInt!
+  accepted: Boolean
+  bidder: Profile!
+  post: Post!
+}
+
+# type lakeBidOnRiver @entity {
+#   id: Bytes!
+#   EOA: address!
+#   amount: BigInt!
+#   accepted: Boolean
+# }
+# "ADD GRAPH STRUCTURE"
+
+"DECLARE SEARCH"
+type _Schema_
+  @fulltext(
+    name: "postSearch"
+    language: en
+    algorithm: rank
+    include: [{entity: "Post", fields: [{name: "postName"}]}]
+)
+
+type _Schema_
+    @fulltext(
+      name: "bucketSearch"
+      language: en
+      algorithm: rank
+      include: [{entity: "Bucket",[{name: category},{name: value}]}]
+)
+
+type _Schema_
+    @fulltext(
+      name: "profileSearch"
+      language:en
+      algorithm: rank
+      include: [{entity: "Profile",[{name:userName,name:Summary}]}]
+    )
