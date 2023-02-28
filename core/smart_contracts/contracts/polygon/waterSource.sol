@@ -10,7 +10,7 @@ abstract contract waterSource {
     uint32 private bidIdCount = 0;
 
     enum whichBucketValue {INT,BOOL,STRING}
-    enum dealStates {notClosed,lakeClosed,riverClosed,bothClosed}
+    enum dealStates {NOTCLOSED,LAKECLOSED,RIVERCLOSED,BOTHCLOSED}
     // enum waterTypes {LAKE,RIVER}
 
 
@@ -79,7 +79,6 @@ abstract contract waterSource {
     //instead of price as parameter, have it just be the amount sent to the contract
     function initPost(string calldata _postName, uint32 _userId,uint32 _iXx,uint32 _iXy,uint32 _fXx,uint32 _fXy,uint32 _exp) payable external {
         require(waterSource.authorise(_userId, msg.sender),"Error: EOA is not associated with this user");
-        emit postEvent(postIdCount,true);
         postIdCount +=1;
         collection[postIdCount].EOA = msg.sender; 
         collection[postIdCount].price = msg.value; 
@@ -89,12 +88,16 @@ abstract contract waterSource {
         collection[postIdCount].fX = Location(_fXx,_fXy);
         collection[postIdCount].exp = _exp;
         collection[postIdCount].live = true;
-        
+        emit postEvent(postIdCount,true);        
     }
 
-    function addTimes(uint32 _postId,uint32 _iT,uint32 _fT) external {
+    function addInitialTime(uint32 _postId,uint32 _iT) external {
         require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
         collection[_postId].iT=_iT;
+    }
+
+    function addFinalTime(uint32 _postId,uint32 _fT) external {
+        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
         collection[_postId].fT=_fT;
     }
     
@@ -145,7 +148,7 @@ abstract contract waterSource {
         require(waterSource.expiryCheck(_postId),"Error: post has expired");
         waterSource.takeDownPost(_postId);
         bids[_postId][_bidId].accepted=true;
-        pendingDeals[_postId]=dealStates.notClosed;
+        pendingDeals[_postId]=dealStates.NOTCLOSED;
         collection[_postId].winningBidId = _bidId;
         emit bidEvent(_postId,_bidId,true);
     }
@@ -166,38 +169,37 @@ abstract contract waterSource {
         require(waterSource.involvedInDeal(_postId,_userId),"Error: userId not associated with this deal");
         waterTypes userWaterType;
         (userWaterType, , ) = profileContract.profiles(_userId);
-        if (pendingDeals[_postId] == dealStates.notClosed){
+        if (pendingDeals[_postId] == dealStates.NOTCLOSED){
             if (userWaterType == waterTypes.LAKE){
-                pendingDeals[_postId] = dealStates.lakeClosed;
+                pendingDeals[_postId] = dealStates.LAKECLOSED;
             }
             else if (userWaterType == waterTypes.RIVER){
-                pendingDeals[_postId] = dealStates.riverClosed;
+                pendingDeals[_postId] = dealStates.RIVERCLOSED;
             }
         }
-        else if (pendingDeals[_postId] == dealStates.lakeClosed){
+        else if (pendingDeals[_postId] == dealStates.LAKECLOSED){
             if (userWaterType == waterTypes.RIVER){
-                pendingDeals[_postId] = dealStates.bothClosed;
+                pendingDeals[_postId] = dealStates.BOTHCLOSED;
                 waterSource.payout(_postId);
             }
             else if (userWaterType == waterTypes.LAKE){
                 assert(false);
             }
         }
-        else if (pendingDeals[_postId] == dealStates.riverClosed){
+        else if (pendingDeals[_postId] == dealStates.RIVERCLOSED){
             if (userWaterType == waterTypes.LAKE){
-                pendingDeals[_postId] = dealStates.bothClosed;
+                pendingDeals[_postId] = dealStates.BOTHCLOSED;
                 waterSource.payout(_postId);
             }
             else if (userWaterType == waterTypes.RIVER){
                 assert(false);
             }
         }
-        else if (pendingDeals[_postId] == dealStates.riverClosed){
+        else if (pendingDeals[_postId] == dealStates.RIVERCLOSED){
             assert(false);
         }
 
-        //add payments!!
-
+        //add emit
     }
 
 
