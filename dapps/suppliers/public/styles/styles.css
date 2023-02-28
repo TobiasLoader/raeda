@@ -344,9 +344,9 @@ p {
 	background: linear-gradient(200deg, rgb(25, 25, 25) 0%,  rgba(83, 130, 201,0.2) 100%);
 	border: rgba(168, 168, 168,0.3) 1px solid;
 	box-shadow: 0 0 10px 5px rgba(0,0,0, 0.2);
-	width: fit-content;
+	width: max-content;
 	padding: 0 20px;
-	border-radius: 40px;
+	border-radius: 5px;
 	height: 40px;
 	cursor: pointer;
 	text-decoration: none;
@@ -363,6 +363,18 @@ p {
 
 .mainbutton:hover h3 {
 	color: rgb(139, 162, 193);
+}
+
+.mainbutton.done {
+	background: rgb(25, 25, 25);
+	border: rgba(168, 168, 168,0.1) 1px solid;
+	cursor:default;
+}
+.mainbutton.done h3 {
+	color:rgba(168, 168, 168,0.5);
+}
+.mainbutton.done:hover h3 {
+	color:rgba(168, 168, 168,0.5);
 }
 
 .toitalic {
@@ -383,4 +395,121 @@ p {
 		margin:0;
 		margin-bottom:20px;
 	}
+}
+
+/* notifications */
+
+#notification {
+	top: 50%;
+	left:50%;
+	position: absolute;
+	transform: translate(-50%,-50%);
+	padding: 40px;
+	height: fit-content;
+	min-width: 300px;
+	max-width: 400px;
+	background: rgb(25, 25, 25);
+	/* background: linear-gradient(20deg, rgb(60, 41, 41) 20%, rgb(36, 36, 36) 100%); */
+	box-shadow: rgba(0,0,0, 1) 0px 0px 50px;
+	border: rgba(83, 130, 201,0.5) 1px solid;
+	overflow: auto;
+}
+#notification.error {
+	border: rgb(201, 83, 83) 1px solid;
+	background: linear-gradient(20deg, rgb(60, 41, 41) 20%, rgb(36, 36, 36) 100%);
+}
+
+#notification #notiftitle {
+	padding-right: 40px;
+	margin-bottom:10px;
+}
+
+#notification #notifcross {
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	top: 0;
+	right: 0;
+	margin: 20px;
+	cursor: pointer;
+}
+#notification .notifcrossline {
+	position: absolute;
+	height: 40px;
+	width: 1px;
+	margin-left: 20px;
+	border-left: rgb(83, 130, 201) 1px solid;
+}
+#notification.error .notifcrossline {
+	border-left: rgb(201, 83, 83) 1px solid;
+}
+#notification .notifcrossline.left { transform: rotate(45deg);}
+#notification .notifcrossline.right {	transform: rotate(315deg);}
+
+#notification #notifinputarea {
+	display: none;
+	padding-top: 10px;
+}
+#notification #notifinputarea.active {
+	display: flex;
+	flex-direction: column;
+}
+#notification label {
+	color:rgb(83, 130, 201);
+}
+#notification input {
+	background:rgb(0,0,0);
+	color:white;
+	margin-top: 5px;
+	border: none;
+	padding: 10px;
+	outline:none;
+}
+#notification input::placeholder {
+	color:rgba(168, 168, 168, 0.7);
+}
+
+#notification #notifbtnrow {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+
+#notification #notifbtnrow > .notifbtn {
+	padding:5px 10px;
+	border: rgba(168, 168, 168, 0.4) 1px solid;
+	cursor: pointer;
+	background:rgba(83, 130, 201, 0.3);
+}
+
+#notification #notifbtnrow > .notifbtn:hover {
+	border: rgba(168, 168, 168, 0.6) 1px solid;
+	background:rgb(25,25,25);
+}
+
+#notification #notifbtnrow > .notifbtn.greyedout {
+	border: rgba(168, 168, 168, 0.3) 1px solid;
+	background: transparent;
+	color:rgba(168, 168, 168, 0.7);
+	cursor: default;
+}
+
+#notification #notifbtnrow > .notifbtn.greyedout:hover {
+	border: rgba(168, 168, 168, 0.3) 1px solid;
+	background: transparent;
+	color:rgba(168, 168, 168, 0.7);
+}
+
+.hide {
+	opacity: 0 !important;
+	visibility: hidden;
+	max-height: 0;
+	max-width: 0;
+	margin: 0;
+	padding: 0;
+}
+
+* {
+	opacity: 1;
+	transition: opacity 500ms;
 }

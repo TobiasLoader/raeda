@@ -2,8 +2,8 @@ mixin mainbutton(buttonid,title,href)
 	a.mainbutton(id=buttonid,href=href)
 		h3.mainbuttontitle !{title}
 
-mixin jsmainbutton(buttonid,title)
-	.mainbutton(id=buttonid)
+mixin jsmainbutton(buttonid,title,c)
+	.mainbutton(id=buttonid,class=c)
 		h3.mainbuttontitle !{title}
 
 mixin buildopenlakebids()

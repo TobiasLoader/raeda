@@ -17,6 +17,20 @@ const port = process.env.PORT || 3000;
 
 const searchrivertablefn = pug.compileFile('views/searchrivertable.pug');
 
+function postExtractBody(req,callback){
+	const { headers, method, url } = req;
+	let body = [];
+	req.on('error', (err) => {
+		console.error(err);
+	}).on('data', (chunk) => {
+		body.push(chunk);
+	}).on('end', () => {
+		body = Buffer.concat(body).toString();
+		body = JSON.parse(body);
+		callback(body);
+	});
+}
+
 app.get('/', (req, res) => {
 	// console.log(raeda.lakeMyOpenBids());
 	res.render('index',{
@@ -29,9 +43,20 @@ app.get('/profile', (req, res) => {
 	res.render('profile');
 });
 
+app.get('/createpost', (req, res) => {
+	res.render('createpost');
+});
+
 app.get('/bid', (req, res) => {
 	let bids = raeda.lakeGetBids('1')[0].bidPrice;
 	res.render('bid',{bids:bids});
+});
+
+app.post('/api/lakelogin', (req, res) => {
+	postExtractBody(req,(body)=>{
+		console.log(body);
+		res.send(JSON.stringify({success:false,profileid:10}));
+	});
 });
 
 app.post('/api/accept_bid', (req, res) => {
@@ -53,15 +78,7 @@ app.post('/api/post_message', (req, res) => {
 });
 
 app.post('/api/lake-simple-search', (req, res) => {
-	const { headers, method, url } = req;
-	let body = [];
-	req.on('error', (err) => {
-		console.error(err);
-	}).on('data', (chunk) => {
-		body.push(chunk);
-	}).on('end', () => {
-		body = Buffer.concat(body).toString();
-		body = JSON.parse(body);
+	postExtractBody(req,(body)=>{
 		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
 			console.log(search_res)
 			res.send(searchrivertablefn({searchresults:search_res}));
