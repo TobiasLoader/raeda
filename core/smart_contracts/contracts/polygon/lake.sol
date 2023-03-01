@@ -13,8 +13,8 @@ contract lake is waterSource{
     }
         
     function payout(uint16 _postId) internal override {
-        (bool sentRiver,bytes memory dataRiver) = collection[_postId].EOA.call{value:bids[_postId][collection[_postId].winningBidId].bidAmount}("");
-        (bool sentLake, bytes memory dataLake) = bids[_postId][collection[_postId].winningBidId].bidderEOA.call{value:collection[_postId].price}("");
+        collection[_postId].EOA.call{value:bids[_postId][collection[_postId].winningBidId].bidAmount}("");
+        bids[_postId][collection[_postId].winningBidId].bidderEOA.call{value:collection[_postId].price}("");
     }
 
 }
