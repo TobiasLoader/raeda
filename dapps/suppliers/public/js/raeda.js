@@ -101,7 +101,7 @@ export async function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,
 	});	
 }
 
-function _raedaLakeAPICall(method, params = null, local=true){
+function _raedaLakeAPICall(method, params = null, local=false){
 	let url = 'https://lake.raeda.app';
 	if (local) url = 'http://127.0.0.1:3000'
 	return fetch(url+'/api/'+method, {
@@ -129,7 +129,6 @@ async function _checkSignerConnectedAsync(fnc,argsArray=[]){
 		if (signerConnected) {
 			let res = await fnc.apply(this,argsArray);
 			return res;
-			// return {'success':true}
 		} else {
 			console.log('ERROR');
 			console.log('Connect the signer to the contract.')

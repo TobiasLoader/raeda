@@ -2,4 +2,31 @@ extends ../../templates/layout.pug
 	
 block content
 	.area-container
-		h1 New Post
+		.area
+			h2 New Post
+			.textlabelfield
+				label * Post Name
+				input(id="postname",placeholder="Carrot Delivery")
+			.textlabelfield
+				label * Max Price
+				input(id="postmaxprice",placeholder="£100")
+			.textlabelfield
+				label Expiry Time
+				input(id="postexp",placeholder="24h")
+			.textlabelfield
+				label Start Location
+				input(id="poststartloclat",placeholder="Latitude")
+				input(id="poststartloclng",placeholder="Longitude")
+			.textlabelfield
+				label End Location
+				input(id="postendloclat",placeholder="Latitude")
+				input(id="postendloclng",placeholder="Longitude")
+			.buttonrow
+				+jsmainbutton('connect-prepost','Connect Wallet')
+				+jsmainbutton('lake-post','Post!','done')
+
+block styles
+	link(rel='stylesheet', href='styles/newpost.css')
+
+block scripts
+	script(src="/js/newpost.js",type="module")
