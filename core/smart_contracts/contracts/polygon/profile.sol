@@ -5,37 +5,43 @@ enum waterTypes {LAKE,RIVER}
 
 contract profile {
 
-    uint32 private userIdCount = 0;
+    uint16 private userIdCount = 0;
 
 
-    //Profile contains: id,name,EOAs,brief summary, lake/river
+    //Profile contains: id,name,EOAs,brief description, lake/river
     struct Profile {
-        // uint32 _userId;
+        // uint16 _userId;
         waterTypes waterType;
-        string userName;
+        string profileName;
         mapping(address => bool) EOAs;
-        string summary;         
+        string description;         
     }
 
-    mapping(uint32 => Profile) public profiles;
-    event profileEvent(uint32 indexed _userId, waterTypes indexed _waterType, string _userName, string _summary);
+    mapping(uint16 => Profile) public profiles;
+    event profileEvent(uint16 indexed _userId);
+    event addressEvent(uint16 indexed _userId, address indexed );
+    mapping(string=>bool) public profileNames;
 
 //check parameter of function with enum
-    function addProfile(waterTypes _waterType,string calldata _userName, string calldata _summary) external{
+    function createProfile(waterTypes _waterType,string calldata _profileName, string calldata _description) external{
+        require(!profileNames[_profileName],"This profile name has been taken");
         userIdCount +=1;
         profiles[userIdCount].waterType = _waterType;
-        profiles[userIdCount].userName = _userName;
+        profiles[userIdCount].profileName = _profileName;
         profiles[userIdCount].EOAs[msg.sender]=true;
-        profiles[userIdCount].summary = _summary;
-        emit profileEvent(userIdCount,_waterType,_userName,_summary);
+        profiles[userIdCount].description = _description;
+        profileNames[_profileName]=true;
+        emit profileEvent(userIdCount);
+        emit addressEvent(userIdCount, msg.sender);
     }
 
-    function addEOA(uint32 _userId, address _newEOA) external {
+    function addEOA(uint16 _userId, address _newEOA) external {
         require(profiles[_userId].EOAs[msg.sender]);
         profiles[_userId].EOAs[_newEOA]=true;
+        emit addressEvent(_userId, _newEOA);
     }
 
-    function checkEOA(uint32 _userId, address _EOA) public view returns(bool){
+    function checkEOA(uint16 _userId, address _EOA) public view returns(bool){
         return profiles[_userId].EOAs[_EOA];
     }
 

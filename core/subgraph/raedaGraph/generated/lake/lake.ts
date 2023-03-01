@@ -53,8 +53,8 @@ export class bucketEvent__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get _category(): Bytes {
-    return this._event.parameters[1].value.toBytes();
+  get _category(): string {
+    return this._event.parameters[1].value.toString();
   }
 
   get _bucketValType(): i32 {
