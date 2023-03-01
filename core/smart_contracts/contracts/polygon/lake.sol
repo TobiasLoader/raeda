@@ -6,13 +6,13 @@ import "./waterSource.sol";
 
 contract lake is waterSource{
 
-    constructor(address _profileContractAddress) waterSource(_profileContractAddress) public {}
+    constructor(address _profileContractAddress) waterSource(_profileContractAddress) {}
 
-    function bidReqs(uint32 _postId,uint _bidAmount) internal view override returns(bool){
+    function bidReqs(uint16 _postId,uint _bidAmount) internal view override returns(bool){
         return (_bidAmount < collection[_postId].price);
     }
         
-    function payout(uint32 _postId) internal override {
+    function payout(uint16 _postId) internal override {
         (bool sentRiver,bytes memory dataRiver) = collection[_postId].EOA.call{value:bids[_postId][collection[_postId].winningBidId].bidAmount}("");
         (bool sentLake, bytes memory dataLake) = bids[_postId][collection[_postId].winningBidId].bidderEOA.call{value:collection[_postId].price}("");
     }

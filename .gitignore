@@ -122,3 +122,5 @@ dist
 
 # TernJS port file
 .tern-port
+core/smart_contracts/test.js
+core/smart_contracts/abi.js

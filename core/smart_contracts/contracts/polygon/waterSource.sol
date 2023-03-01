@@ -6,84 +6,86 @@ abstract contract waterSource {
 
     profile profileContract;
 
-    uint32 private postIdCount = 0;
-    uint32 private bidIdCount = 0;
+    uint16 private postIdCount = 0;
+    uint16 private bidIdCount = 0;
 
-    enum whichBucketValue {INT,BOOL,STRING}
+    // enum whichBucketValue {INT,BOOL,STRING}
     enum dealStates {NOTCLOSED,LAKECLOSED,RIVERCLOSED,BOTHCLOSED}
     // enum waterTypes {LAKE,RIVER}
 
 
-//change id type to bytes..
-    struct BucketValues {
-        whichBucketValue valType;
-        uint32 intVal;
-        bool boolVal;
-        string strVal;
-    }
+    // struct BucketValues {
+    //     whichBucketValue valType;
+    //     uint16 intVal;
+    //     bool boolVal;
+    //     string strVal;
+    // }
 
     struct Location {
-        uint32 x;
-        uint32 y;
+        uint16 x;
+        uint16 y;
     }
 
     struct Post {
-        // uint32 postId;
+        // uint16 postId;
         string postName;
-        uint32 userId;
+        uint16 profileId;
         address EOA;
         uint256 price;
         Location iX;
         Location fX;
-        uint32 iT;
-        uint32 fT;
-        uint32 exp;
+        uint16 iT;
+        uint16 fT;
+        uint16 exp;
         bool live;
-        mapping(string => BucketValues) bucket;
-        uint32 winningBidId;
+        mapping(string => string) bucket;
+        uint16 winningBidId;
     }
 
     struct Bid {
-        // uint32 bidId;
-        uint32 bidderId;
+        // uint16 bidId;
+        uint16 bidderId;
         address bidderEOA;
         uint256 bidAmount;
         bool accepted;
     }
 
-    event postEvent(uint32 indexed _postId, bool indexed _live);
-    event bidEvent(uint32 indexed _postId, uint32 indexed _bidId, bool indexed _accepted);
+    event postEvent(uint16 indexed _postId, bool indexed _live);
+    event bidEvent(uint16 indexed _postId, uint16 indexed _bidId, bool indexed _accepted);
+    event resetEvent(uint16 indexed _postId);
+    event bucketEvent(uint16 indexed _postId, string indexed _category);
 
-    event bucketEvent(uint32 indexed _postId, string indexed _category, whichBucketValue indexed _bucketValType);
-
-    mapping(uint32 => Post) public collection;
-    mapping(uint32 => mapping(uint32=>Bid)) public bids;
-    mapping(uint32 => dealStates) public pendingDeals;
+    mapping(uint16 => Post) public collection;
+    mapping(uint16 => mapping(uint16=>Bid)) public bids;
+    mapping(uint16 => uint16[]) public bidsArray;
+    mapping(uint16 => dealStates) public pendingDeals;
+    address owner;
 
     constructor(address _profileContractAddress) {
         profileContract = profile(_profileContractAddress);
+        owner = msg.sender;
     }
 
     // fallback() external payable {
 
     // }
 
-    function authorise(uint32 _userId,address _EOA) internal view returns(bool){
-        return profileContract.checkEOA(_userId,_EOA);
+    function authorise(uint16 _profileId,address _EOA) internal view returns(bool){
+        return profileContract.checkEOA(_profileId,_EOA);
     }
 
-    function expiryCheck(uint32 _postId) internal view returns (bool){
+    function expiryCheck(uint16 _postId) internal view returns (bool){
         return block.timestamp < collection[_postId].exp;
     }
 
     //instead of price as parameter, have it just be the amount sent to the contract
-    function initPost(string calldata _postName, uint32 _userId,uint32 _iXx,uint32 _iXy,uint32 _fXx,uint32 _fXy,uint32 _exp) payable external {
-        require(waterSource.authorise(_userId, msg.sender),"Error: EOA is not associated with this user");
+    function initPost(string calldata _postName, uint16 _profileId,uint16 _iXx,uint16 _iXy,uint16 _fXx,uint16 _fXy,uint16 _exp) payable external {
+        require(waterSource.authorise(_profileId, msg.sender),"Error: EOA is not associated with this user");
         postIdCount +=1;
         collection[postIdCount].EOA = msg.sender; 
         collection[postIdCount].price = msg.value; 
         collection[postIdCount].postName = _postName;        
-        collection[postIdCount].userId = _userId; 
+        collection[postIdCount].profileId = _profileId; 
         collection[postIdCount].iX = Location(_iXx,_iXy);
         collection[postIdCount].fX = Location(_fXx,_fXy);
         collection[postIdCount].exp = _exp;
@@ -91,84 +93,118 @@ abstract contract waterSource {
         emit postEvent(postIdCount,true);        
     }
 
-    function addInitialTime(uint32 _postId,uint32 _iT) external {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
-        collection[_postId].iT=_iT;
+    function resetBids(uint16 _postId) internal {
+
+        for (uint i=0; i<bidsArray[_postId].length;i++){
+            bids[_postId][bidsArray[_postId][i]].bidderEOA.call{value:bids[_postId][bidsArray[_postId][i]].bidAmount};
+            delete bids[_postId][bidsArray[_postId][i]];      
+        }
+        delete bidsArray[_postId];
+        emit resetEvent(_postId);
+        //might have to include a thing that clears the bids mapping, but for gas efficiency, will not
     }
 
-    function addFinalTime(uint32 _postId,uint32 _fT) external {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
+    function addInitialTime(uint16 _postId,uint16 _iT) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].iT=_iT;
+        waterSource.resetBids(_postId);
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+
+    function addFinalTime(uint16 _postId,uint16 _fT) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
         collection[_postId].fT=_fT;
+        waterSource.resetBids(_postId);
+        emit postEvent(_postId, collection[postIdCount].live);
     }
     
     //nb default values
-    function addToBucket(uint32 _postId,string calldata _category,whichBucketValue _valType, uint32 _intVal, bool _boolVal, string calldata _strVal) external {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
-        if (_valType==whichBucketValue.INT){
-            collection[_postId].bucket[_category].valType = whichBucketValue.INT;
-            collection[_postId].bucket[_category].intVal = _intVal;
-        }
-        else if (_valType == whichBucketValue.BOOL) {
-            collection[_postId].bucket[_category].valType = whichBucketValue.BOOL;
-            collection[_postId].bucket[_category].boolVal = _boolVal;
-        }
-        else if (_valType == whichBucketValue.STRING){
-            collection[_postId].bucket[_category].valType = whichBucketValue.STRING;
-            collection[_postId].bucket[_category].strVal = _strVal;
-        }
-        emit bucketEvent(_postId, _category, _valType);
+    function addToBucket(uint16 _postId,string calldata _category,string calldata _value) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].bucket[_category] = _value;
+        // if (_valType==whichBucketValue.INT){
+        //     collection[_postId].bucket[_category].valType = whichBucketValue.INT;
+        //     collection[_postId].bucket[_category].intVal = _intVal;
+        // }
+        // else if (_valType == whichBucketValue.BOOL) {
+        //     collection[_postId].bucket[_category].valType = whichBucketValue.BOOL;
+        //     collection[_postId].bucket[_category].boolVal = _boolVal;
+        // }
+        // else if (_valType == whichBucketValue.STRING){
+        //     collection[_postId].bucket[_category].valType = whichBucketValue.STRING;
+        //     collection[_postId].bucket[_category].strVal = _strVal;
+        // }
+        waterSource.resetBids(_postId);
+        // emit postEvent(_postId, collection[postIdCount].live);
+        emit bucketEvent(_postId, _category);
 
     }
 
-    function checkBucket(uint32 _postId, string memory _category) public view returns(uint32,bool,string memory){
-        return (collection[_postId].bucket[_category].intVal,collection[_postId].bucket[_category].boolVal,collection[_postId].bucket[_category].strVal);
+    function checkBucket(uint16 _postId, string memory _category) public view returns(string memory){
+        return collection[_postId].bucket[_category];
     }
 
-    function takeDownPost(uint32 _postId) public {
-        require(waterSource.authorise(collection[_postId].userId, msg.sender),"Error: EOA is not associated with this user");
+    function takeDownPost(uint16 _postId) public {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
         collection[_postId].live = false;
-        emit postEvent(_postId,false);
+        waterSource.resetBids(_postId);
+        collection[_postId].EOA.call{value:collection[_postId].price};
+        emit postEvent(_postId,false);        
     }
 
-    function bidReqs(uint32,uint) internal view virtual returns(bool){return true;}
+    function bidReqs(uint16,uint) internal view virtual returns(bool){return true;}
 
-    function bid(uint32 _postId, uint32 _bidderId) payable external {
+    function bid(uint16 _postId, uint16 _bidderId) payable external {
         require(waterSource.bidReqs(_postId,msg.value),"Does not meet criteria for dutch/english bid");
+        waterTypes bidderWaterType;
+        waterTypes posterWaterType;
+        (bidderWaterType,,) = profileContract.profiles(_bidderId);
+        (posterWaterType,,) = profileContract.profiles(collection[_postId].profileId);
+        require(!(bidderWaterType==posterWaterType),"Error: not allowed to bid on post of same water type");
         bidIdCount += 1;
         bids[_postId][bidIdCount].bidderId = _bidderId;
         bids[_postId][bidIdCount].bidderEOA = msg.sender;
         bids[_postId][bidIdCount].bidAmount = msg.value;
         bids[_postId][bidIdCount].accepted = false;
-        emit bidEvent(_postId, bidIdCount,false);       
+        bidsArray[_postId].push(bidIdCount);
+        emit bidEvent(_postId, bidIdCount,false);
     }
-    
-//add requirements for expiry time
-    function acceptBid(uint32 _postId, uint32 _bidId) external{
-        require(waterSource.authorise(collection[_postId].userId,msg.sender),"Error: EOA is not associated with this user");
+
+    function returnFailedBids(uint16 _postId, uint16 _successfulBidId) internal view {
+        for(uint i=0;i < bidsArray[_postId].length - 1; i++) {
+            if (bidsArray[_postId][i]!=_successfulBidId){
+                bids[_postId][bidsArray[_postId][i]].bidderEOA.call{value:bids[_postId][bidsArray[_postId][i]].bidAmount};
+            }
+        }
+    }
+
+    function acceptBid(uint16 _postId, uint16 _bidId) external{
+        require(waterSource.authorise(collection[_postId].profileId,msg.sender),"Error: EOA is not associated with this user");
         require(waterSource.expiryCheck(_postId),"Error: post has expired");
         waterSource.takeDownPost(_postId);
         bids[_postId][_bidId].accepted=true;
         pendingDeals[_postId]=dealStates.NOTCLOSED;
         collection[_postId].winningBidId = _bidId;
+        waterSource.returnFailedBids(_postId,_bidId);
         emit bidEvent(_postId,_bidId,true);
     }
 
-    function involvedInDeal(uint32 _postId, uint32 _userId) internal view returns (bool){
-        if (collection[_postId].userId==_userId){
+    function involvedInDeal(uint16 _postId, uint16 _profileId) internal view returns (bool){
+        if (collection[_postId].profileId==_profileId){
             return true;
         }
-        else if (bids[_postId][collection[_postId].winningBidId].bidderId==_userId){
+        else if (bids[_postId][collection[_postId].winningBidId].bidderId==_profileId){
             return true;
         }
         return false;
     }
 
-    function payout(uint32 _postId) internal virtual {}
+    function payout(uint16 _postId) internal virtual {}
 
-    function closeDeal(uint32 _postId,uint32 _userId) external {
-        require(waterSource.involvedInDeal(_postId,_userId),"Error: userId not associated with this deal");
+    function closeDeal(uint16 _postId,uint16 _profileId) external {
+        require(waterSource.involvedInDeal(_postId,_profileId),"Error: profileId not associated with this deal");
         waterTypes userWaterType;
-        (userWaterType, , ) = profileContract.profiles(_userId);
+        (userWaterType, , ) = profileContract.profiles(_profileId);
         if (pendingDeals[_postId] == dealStates.NOTCLOSED){
             if (userWaterType == waterTypes.LAKE){
                 pendingDeals[_postId] = dealStates.LAKECLOSED;
@@ -202,5 +238,13 @@ abstract contract waterSource {
         //add emit
     }
 
-
+    function refund(uint16 _postId) public view {
+        require(msg.sender == owner || msg.sender == collection[_postId].EOA || msg.sender == address(this),"Smart Contract Error: not authorised to refund from this post");
+        require(collection[_postId].exp>block.timestamp,"The post has not expired");
+    
+        collection[_postId].EOA.call{value:collection[_postId].price};
+        for (uint i=0; i<bidsArray[_postId].length;i++){
+            bids[_postId][bidsArray[_postId][i]].bidderEOA.call{value:bids[_postId][bidsArray[_postId][i]].bidAmount};
+        }
+    }
 }
