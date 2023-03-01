@@ -81,6 +81,7 @@ abstract contract waterSource {
     //instead of price as parameter, have it just be the amount sent to the contract
     function initPost(string calldata _postName, uint16 _profileId,uint16 _iXx,uint16 _iXy,uint16 _fXx,uint16 _fXy,uint16 _exp) payable external {
         require(waterSource.authorise(_profileId, msg.sender),"Error: EOA is not associated with this user");
+        require(_exp>block.timestamp,"Error: expiry time is in the past");
         postIdCount +=1;
         collection[postIdCount].EOA = msg.sender; 
         collection[postIdCount].price = msg.value; 
@@ -117,6 +118,52 @@ abstract contract waterSource {
         waterSource.resetBids(_postId);
         emit postEvent(_postId, collection[postIdCount].live);
     }
+
+    function getInitialLocation(uint16 _postId) external view returns (uint16,uint16){
+        Location memory location;
+        location = collection[_postId].iX;
+        return (location.x,location.y);
+    }
+
+    function getFinalLocation(uint16 _postId) external view returns  (uint16,uint16){
+        Location memory location;
+        location = collection[_postId].fX;
+        return (location.x,location.y);
+    }
+
+    function editInitialLocation(uint16 _postId,uint16 _x, uint16 _y) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].iX.x = _x;
+        collection[_postId].iX.y = _y;
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+
+    function editFinalLocation(uint16 _postId,uint16 _x, uint16 _y) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].fX.x = _x;
+        collection[_postId].fX.y = _y;
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+
+    function editInitialTime(uint16 _postId, uint16 _iT) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].iT = _iT;
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+
+    function editFinalTime(uint16 _postId, uint16 _fT) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        collection[_postId].fT = _fT;
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+
+    function editExpiryTime(uint16 _postId, uint16 _exp) external {
+        require(waterSource.authorise(collection[_postId].profileId, msg.sender),"Error: EOA is not associated with this user");
+        require(_exp>block.timestamp,"Error: expiry time is in the past");
+        collection[_postId].exp = _exp;
+        emit postEvent(_postId, collection[postIdCount].live);
+    }
+        
     
     //nb default values
     function addToBucket(uint16 _postId,string calldata _category,string calldata _value) external {
