@@ -3,15 +3,18 @@ import * as raeda from "./raeda.js";
 
 let web3;
 let provider;
-let signer;
 let accounts;
-let address;
-let connected;
-let login;
-
 let contracts;
 
-let profileid;
+export let state = {
+	signer:null,
+	address:null,
+	connected:null,
+	login:null,
+	profileid:null,
+	sessionid:null
+}
+
 
 $(document).ready(function() {
 	const {ethereum} = window;
@@ -28,9 +31,9 @@ $(document).ready(function() {
 	accounts = null;
 	
 	// init local session state
-	address = window.ethereum.selectedAddress;
-	connected = false;
-	login = false;
+	state.address = window.ethereum.selectedAddress;
+	state.connected = false;
+	state.login = false;
 	
 	raeda.initContracts(provider).then((res)=>{
 		initWalletConnection().then(()=>{
@@ -39,9 +42,9 @@ $(document).ready(function() {
 	});
 	
 	ethereum.on('accountsChanged', async () => {
-		address = window.ethereum.selectedAddress;
-		if (address==null) accounts = null;
-		connected = isConnected();
+		state.address = window.ethereum.selectedAddress;
+		if (state.address==null) accounts = null;
+		state.connected = isConnected();
 		amendConnectWalletButton();
 	});
 });
@@ -50,31 +53,35 @@ function isWalletInstalled() {
 	return Boolean(window.ethereum);
 }
 
-async function connectWallet() {
+export async function connectWallet() {
 	accounts = await ethereum.request({method: 'eth_requestAccounts'});
 	await provider.send("eth_requestAccounts", []);
-	address = ethereum.selectedAddress;
-	signer = provider.getSigner(address);
-	connected = isConnected();
-	raeda.connectSignerContracts(signer);
+	state.address = ethereum.selectedAddress;
+	state.signer = provider.getSigner(state.address);
+	state.connected = isConnected();
+	raeda.connectSignerContracts(state.signer);
+	// raeda.lakePost(address, 1, 'post name', 0, 0, 0, 0, 0, 0).then((v)=>{
+	// 	console.log(v);
+	// });
 }
 
-function isConnected(){
+export function isConnected(){
 	return accounts!=null && accounts.length > 0;
 }
 
 async function initWalletConnection() {
-	if (address!=null && isWalletInstalled() && !isConnected()) await connectWallet();
+	if (state.address!=null && isWalletInstalled() && !isConnected()) await connectWallet();
 	else {
 		if (!isWalletInstalled()) console.log('Install MetaMask');
-		connected = isConnected();
+		state.connected = isConnected();
 	}
 }
 
 function amendConnectWalletButton(){
-	if (connected) {
+	if (state.connected) {
 		console.log("user connected");
-		$('#connected').removeClass('hide');
+		$('#create-profile').removeClass('done');
+		$('#connect').addClass('done');
 	}
 	//  else {
 	// 	console.log("user not connected");
@@ -84,25 +91,44 @@ function amendConnectWalletButton(){
 }
 
 function afterConnectTry(){
+	autoLoginSessionId();
 	amendConnectWalletButton();
 }
 
+function afterLoginSuccess(){
+	$('#login').addClass('hide');
+	$('#signup').addClass('hide');
+	$('#logout').removeClass('hide');
+}
+
+function autoLoginSessionId(){
+	state.sessionid = utils.getCookie('sessionid');
+	if (state.connected && state.sessionid!=null){
+		raeda.checkSessionId(state.address,state.sessionid).then((res)=>{
+			if (res['success']){
+				state.login = true;
+				afterLoginSuccess();
+			}
+		});
+	}
+}
+
 export function requiresConnected(func,argsArray=[]){
-	if (connected) func.apply(this,argsArray);
+	if (state.connected) func.apply(this,argsArray);
 	else utils.notification('Not connected wallet!',['You need to connect your wallet to proceed.']);
 }
 
 export function requiresLogin(func,argsArray=[]){
-	if (login){
+	if (state.login){
 		func.apply(this,argsArray);
 	} else {
-		if (connected) utils.notification('Not logged in!',['The following action is a mutation and you need to be authenticated to perform it. You have connected your wallet but not logged in.'],true);
+		if (state.connected) utils.notification('Not logged in!',['The following action is a mutation and you need to be authenticated to perform it. You have connected your wallet but not logged in.'],true);
 		else utils.notification('Not connected your wallet or logged in!',['You need to connect your wallet and then login.'],true);
 	}
 }
 
 $('#login').click(function(){
-	if (login) {
+	if (state.login) {
 		utils.notification('Already logged in!',['You have already logged in!'],true);
 	} else {
 		utils.buttonnotification('Login',[],[{name:'Connect Wallet',classes:['connect']},{name:'Login',classes:['login','greyedout']}]);
@@ -131,11 +157,14 @@ $('#login').click(function(){
 		$('.notifbtn.login').click(function(){
 			let profilename = $('#notification input').val();
 			if (profilename.length>0){
-				raeda.lakeLogin(address,profilename,signer).then((res)=>{
+				raeda.lakeLogin(state.address,profilename,state.signer).then((res)=>{
 					if (res['success']) {
+						state.login = true;
+						afterLoginSuccess();
+						utils.setCookie('sessionid',res['sessionid'],1);
 						$('#login').addClass('hide');
-						profileid = res['profileid'];
-						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+profileid.toString()]);
+						state.profileid = res['profileid'];
+						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+state.profileid.toString()]);
 					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
 				});
 			} else utils.notification('Oops', ['Login failed – no profile name provided'], true);
@@ -143,3 +172,7 @@ $('#login').click(function(){
 	}
 });
 
+$('#logout').click(function(){
+	utils.deleteCookie('sessionid');
+	window.location.replace("/");
+});

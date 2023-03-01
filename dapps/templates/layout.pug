@@ -5,6 +5,7 @@ html(lang="en-GB")
 		title Raeda Dapp
 		link(rel='stylesheet', href='styles/font.css')
 		link(rel='stylesheet', href='styles/styles.css')
+		block styles
 		link(href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,300&display=swap" rel="stylesheet")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		link(rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png")
@@ -21,10 +22,10 @@ html(lang="en-GB")
 				img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
 			.buttonrow
 				+mainbutton('messenger','messenger','/messenger')
-				+mainbutton('createpost','create post','/createpost')
+				+mainbutton('newpost','new post','/newpost')
+				+mainbutton('signup','sign up','/signup')
 				+jsmainbutton('login','login')
-				+jsmainbutton('signup','signup')
-				+jsmainbutton('connected','wallet connected!','hide done')
+				+jsmainbutton('logout','logout','hide')
 		#content
 			block content
 		#notifwrapper.hide

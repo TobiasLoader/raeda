@@ -174,8 +174,7 @@ function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,exp,iT=null,f
 	} catch (error) {
 		console.log(error);
 		return false;
-	}
-	
+	}	
 }
 
 // bid as a river (ie. logistics)
