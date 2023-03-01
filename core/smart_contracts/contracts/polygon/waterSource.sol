@@ -54,6 +54,7 @@ abstract contract waterSource {
     event bidEvent(uint16 indexed _postId, uint16 indexed _bidId, bool indexed _accepted);
     event resetEvent(uint16 indexed _postId);
     event bucketEvent(uint16 indexed _postId, string indexed _category);
+    event pendingEvent(uint16 indexed _postId, dealStates indexed _dealState);
 
     mapping(uint16 => Post) public collection;
     mapping(uint16 => mapping(uint16=>Bid)) public bids;
@@ -282,10 +283,12 @@ abstract contract waterSource {
             assert(false);
         }
 
+        emit pendingEvent(_postId, pendingDeals[_postId]);
+
         //add emit
     }
 
-    function refund(uint16 _postId) public view {
+    function refundExpiredPost(uint16 _postId) public view {
         require(msg.sender == owner || msg.sender == collection[_postId].EOA || msg.sender == address(this),"Smart Contract Error: not authorised to refund from this post");
         require(collection[_postId].exp>block.timestamp,"The post has not expired");
     
