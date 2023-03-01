@@ -1,12 +1,19 @@
-const express = require('express')
-const app = express()
+const fs = require('fs');
+// let sessions = JSON.parse(fs.readFileSync('./sessions.json', 'utf8'));
+let sessions = {}
+
+const express = require('express');
+const app = express();
 const http = require('http');
 const server = http.createServer(app);
-// for Socket IO
-// const { Server } = require("socket.io");
-// const io = new Server(server);
 const pug = require('pug');
 app.use(express.static('public'));
+
+const cors = require('cors');
+app.use(cors({
+	origin: ['http://localhost:3000'],
+	methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
 
 app.set('views', './views')
 app.set('view engine', 'pug');
@@ -32,7 +39,6 @@ function postExtractBody(req,callback){
 }
 
 app.get('/', (req, res) => {
-	// console.log(raeda.lakeMyOpenBids());
 	res.render('index',{
 		openbids: raeda.lakeMyOpenBids(),
 		openposts: raeda.lakeMyOpenPosts()
@@ -43,9 +49,18 @@ app.get('/profile', (req, res) => {
 	res.render('profile');
 });
 
-app.get('/createpost', (req, res) => {
-	res.render('createpost');
+app.get('/newpost', (req, res) => {
+	res.render('newpost');
 });
+
+app.get('/signup', (req, res) => {
+	res.render('signup');
+});
+
+app.get('/advancedsearch', (req, res) => {
+	res.render('advancedsearch');
+});
+
 
 app.get('/bid', (req, res) => {
 	let bids = raeda.lakeGetBids('1')[0].bidPrice;
@@ -55,7 +70,19 @@ app.get('/bid', (req, res) => {
 app.post('/api/lakelogin', (req, res) => {
 	postExtractBody(req,(body)=>{
 		console.log(body);
-		res.send(JSON.stringify({success:false,profileid:10}));
+		let sessionid = 100000 + Math.floor(Math.random()*900000);
+		sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid};
+		res.send(JSON.stringify({success:true,profileid:10,sessionid:sessionid}));
+	});
+});
+
+app.post('/api/checksessionid', (req, res) => {
+	postExtractBody(req,(body)=>{
+		if (body.addr in sessions && sessions[body.addr].sessionid==body.sessionid){
+			res.send(JSON.stringify({success:true,profileid:10}));
+		} else {
+			res.send(JSON.stringify({success:false}));
+		}
 	});
 });
 
@@ -80,7 +107,7 @@ app.post('/api/post_message', (req, res) => {
 app.post('/api/lake-simple-search', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
-			console.log(search_res)
+			// console.log(search_res)
 			res.send(searchrivertablefn({searchresults:search_res}));
 		});
 	});

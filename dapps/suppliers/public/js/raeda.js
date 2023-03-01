@@ -11,8 +11,10 @@ let RIVER_ADDR='0x4F59e9d1459381e9D0c5fFE08C596DcA9D1d7541';
 let contractsInitiated = false;
 let signerConnected = false;
 
+/// INIT contracts & signer
+
 export async function initContracts(provider){
-	profileContract = new ethers.Contract(PROFILE_ADDR, abi.getABI('profile'), provider);
+	profileContract = new ethers.Contract(PROFILE_ADDR, abi.getABI('profile'),provider);
 	lakeContract = new ethers.Contract(LAKE_ADDR, abi.getABI('lake'), provider);
 	riverContract = new ethers.Contract(RIVER_ADDR, abi.getABI('river'), provider);
 	contractsInitiated = true;
@@ -29,8 +31,42 @@ export async function connectSignerContracts(signer){
 	});
 }
 
+// RAEDA functions
+
+export async function createProfile(profilename,description){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			profileContract.addProfile(0,profilename,description);
+			console.log('create profile success');
+			return true;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});
+}
+
+export async function lakeLogin(addr,profilename,signer){
+	return await _checkSignerConnectedAsync(async ()=>{
+		let signature = await signer.signMessage(profilename);
+		return await _raedaLakeAPICall('lakelogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
+			return body;
+		});
+	});
+}
+
+export async function checkSessionId(addr,sessionid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		return await _raedaLakeAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
+			return body;
+		});
+	});
+}
+
+// post as a lake (ie. suppliers)
+// TODO -- add authAddress
 export async function lakePost(addr,maxprice,{postName,lakeId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
-	_checkSignerConnected(()=>{
+	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(maxprice.toString(),"ether")});
 			// 'the graph' retrieves post info -- in particular postId
@@ -46,14 +82,23 @@ export async function lakePost(addr,maxprice,{postName,lakeId,iXx,iXy,fXx,fXy,ex
 	});	
 }
 
-export async function lakeLogin(addr,profilename,signer){
+// post as a river (ie. logistics)
+// TODO -- add authAddress
+export async function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
 	return await _checkSignerConnectedAsync(async ()=>{
-		let signature = signer.signMessage(profilename);
-		return await _raedaLakeAPICall('lakelogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
-			console.log(body);
-			return body;
-		});
-	});
+		try {
+			riverContract.initPost(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:eth.utils(minprice,towei)});
+			// 'the graph' retrieves post info -- in particular postId
+			// (SC emits event for post creation including postId)
+			let postId = 0; // <-- replace
+			if (iT!=null) riverContract.addInitialTime(postId,iT);
+			if (fT!=null) riverContract.addFinalTime(postId,fT);
+			return true;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});	
 }
 
 function _raedaLakeAPICall(method, params = null, local=false){
@@ -82,11 +127,8 @@ function _checkContractsInitiated(fnc,argsArray=[]){
 async function _checkSignerConnectedAsync(fnc,argsArray=[]){
 	if (contractsInitiated) {
 		if (signerConnected) {
-			console.log('pre res')
 			let res = await fnc.apply(this,argsArray);
-			console.log(res)
 			return res;
-			// return {'success':true}
 		} else {
 			console.log('ERROR');
 			console.log('Connect the signer to the contract.')
