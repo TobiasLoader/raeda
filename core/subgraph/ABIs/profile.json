@@ -50,7 +50,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -79,7 +80,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -144,7 +146,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.18+commit.87f61d96\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"_userId\",\"type\":\"uint16\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"addressEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"_userId\",\"type\":\"uint16\"}],\"name\":\"profileEvent\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_userId\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"_newEOA\",\"type\":\"address\"}],\"name\":\"addEOA\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_userId\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"_EOA\",\"type\":\"address\"}],\"name\":\"checkEOA\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum waterTypes\",\"name\":\"_waterType\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"_profileName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_description\",\"type\":\"string\"}],\"name\":\"createProfile\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"profileNames\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"name\":\"profiles\",\"outputs\":[{\"internalType\":\"enum waterTypes\",\"name\":\"waterType\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"profileName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/polygon/profile.sol\":\"profile\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/polygon/profile.sol\":{\"keccak256\":\"0xd0d461fd036f5c23ae3519e688413e753e59ab9365306e51b2af7ca651a21301\",\"urls\":[\"bzz-raw://f1385df2af291327ebc7d3e1e87a1e45a45983542daa80755bb20f20802032fc\",\"dweb:/ipfs/QmXJnwos2p6wCx7S8x9tAeQGyZgBYQnGwaJKkYjG5qDJgC\"]}},\"version\":1}",
@@ -10881,16 +10884,49 @@
   },
   "networks": {
     "80001": {
-      "events": {},
+      "events": {
+        "0x98880382aef40afb0ef3c0fc9a77ba2cdadc7dfad4c7da430e12af8d9565fff8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint16",
+              "name": "_userId",
+              "type": "uint16"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "addressEvent",
+          "type": "event"
+        },
+        "0xfe6e6f6d88ab7e0a1f768be0cf14d5a5cdab779c1935b93efeb2ccef78121ed3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint16",
+              "name": "_userId",
+              "type": "uint16"
+            }
+          ],
+          "name": "profileEvent",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x94Fe0888999c9F6dac869c5d2bE15804aF4B65eF",
-      "transactionHash": "0x7dbc4221bac7bf9c72135dac596138078b612768087de6415a50b6f790fd4b05",
+      "address": "0x963Ee3D90D3f83a56940b1604b33e7C6f70d6cfF",
+      "transactionHash": "0xa9324c49d8de6fd9e812e76588cb3b4d61a040de5fe1e2581e8da921ea2dd2b9",
       "db": {
         "network": {
-          "id": "0x8c84a915ab38fe9288680e60fbb245fbbfc6d433f126afef9b840bff6d92ce61"
+          "id": "0x0c2221df4947c44adef85defa4a502aab6c8dd288d643a3e8888315656b1b6e9"
         },
         "contractInstance": {
-          "id": "0x08935f90d9734f393b1807f876d5a69ebf3f9b75e1f2f8252b9ba1a18fdeae95"
+          "id": "0x8fdb9bcaff5d238f044b263e46576d4650acd3aed9b7710c8009851b6e1e2e9d"
         }
       },
       "callBytecode": {
@@ -10902,7 +10938,8 @@
     }
   },
   "schemaVersion": "3.4.12",
-  "updatedAt": "2023-03-01T05:47:55.267Z",
+  "updatedAt": "2023-03-02T15:48:51.773Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
@@ -10921,7 +10958,7 @@
       "id": "0xdcbccb401b47defc1f4591db061a4091382a3497c576082c8aa5aa9babbf95fa"
     },
     "contract": {
-      "id": "0x4b83ca59df9225c5d8ddc6cb00c17bd36c084f642ed16736c219d8fdf3c348fd"
+      "id": "0x53e5907332598503168e96ce633c6d47b7f6999608a1bfcc3e74866698909952"
     }
   }
 }
