@@ -3,26 +3,31 @@ extends ../../templates/layout.pug
 block content
 	.area-container
 		.area
-			h2 New Post
+			h2 New Lake Post
 			.textlabelfield
-				label * Post Name
-				input(id="postname",placeholder="Carrot Delivery")
+				+requiredlabel('Post Name')
+				input(id="postname",placeholder="Carrot Supply")
 			.textlabelfield
-				label * Max Price
+				+requiredlabel('Post Description')
+				input(id="postdesc",placeholder="One pallet of carrots, handle with care.")
+			.textlabelfield
+				+requiredlabel('Max Price')
 				input(id="postmaxprice",placeholder="£100")
 			.textlabelfield
-				label Expiry Time
+				+requiredlabel('Expiry Time')
 				input(id="postexp",placeholder="24h")
 			.textlabelfield
-				label Start Location
-				input(id="poststartloclat",placeholder="Latitude")
-				input(id="poststartloclng",placeholder="Longitude")
+				+requiredlabel('Start Location')
+				.locinputrow
+					input(id="poststartloclat",placeholder="Latitude")
+					input(id="poststartloclng",placeholder="Longitude")
 			.textlabelfield
-				label End Location
-				input(id="postendloclat",placeholder="Latitude")
-				input(id="postendloclng",placeholder="Longitude")
+				+requiredlabel('End Location')
+				.locinputrow
+					input(id="postendloclat",placeholder="Latitude")
+					input(id="postendloclng",placeholder="Longitude")
 			.buttonrow
-				+jsmainbutton('connect-prepost','Connect Wallet')
+				+jsmainbutton('prepostlogin','login','loginaction')
 				+jsmainbutton('lake-post','Post!','done')
 
 block styles

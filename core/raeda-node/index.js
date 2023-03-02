@@ -1,63 +1,10 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-// test pub/pri keys used also in LensPy
-// pub = "0xb8CE9ab6943e0eCED004cDe8e3bBed6568B2Fa01"
-// pri = "0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709"
-
-// var fs = require('fs');
-// const ethers = require('ethers');
-// const provider = new ethers.InfuraProvider("maticmum",process.env.INFURA_API_KEY);
-// const signer = new ethers.Wallet(pri, provider);
-
-// const watersourceABI = [
-// 	'function bids(uint id) public view returns (Bid)',
-// ];
-
-// function getABI(filename){
-	// return JSON.parse(fs.readFileSync('../../core/subgraph/ABIs/'+filename+'.json', 'utf8'))['abi'];
-// }
-
-// const profileABI = getABI('profile');
-// const lakeABI = getABI('lake');
-// const riverABI = getABI('river');
-
-// const watersourceContract = new ethers.Contract(p.WATERSOURCE_ADDR, watersourceABI, provider);
-// const profileContract = new ethers.Contract(process.env.PROFILE_ADDR, profileABI, provider);
-// const streamTokenContract = new ethers.Contract(p.streamToken_ADDR, streamTokenABI, provider);
-// const lakeContract = new ethers.Contract(process.env.LAKE_ADDR, lakeABI, provider);
-// const riverContract = new ethers.Contract(process.env.RIVER_ADDR, riverABI, provider);
+////////// THIS IS FOR QUERYING SMART CONTRACTS WITH 'THE GRAPH'
+////////// + comms with the rust server
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-// post as a lake (ie. supplier)
-// authAddress -- to be added
-function lakePost(addr,maxprice,{postName,lakeId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
-	try {
-		lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:eth.utils(maxprice,towei)});
-		// 'the graph' retrieves post info -- in particular postId
-		// (SC emits event for post creation including postId)
-		let postId = 0; // <-- replace
-		if (iT!=null) lakeContract.addInitialTime(postId,iT);
-		if (fT!=null) lakeContract.addFinalTime(postId,fT);
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-}
-
-// bid as a lake (ie. supplier)
-function lakeBid(addr,bidprice,{postId,lakeId}){
-	try {
-		// bidPrice > minPrice (of riverPost)
-		lakeContract.bid(postId,lakeId,{from:addr,value:eth.utils(bidprice,towei)});
-		// returns bool success
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-}
 
 // get the bids as a lake (ie. supplier)
 // -> for the <lakePost> with id <postId>: get all the <riverBid>'s.
@@ -72,20 +19,51 @@ function lakeGetBids(postId){
 	}];
 }
 
+// get the bids as a lake (ie. supplier)
+async function getPost(postId){
+	// get from `the graph`
+	// PARAMS: postId
+	return {
+		'id':postId,
+		'postName':'Blabla',
+		'EOA':'0x---',
+		'price':102,
+		'iXx':1,
+		'iXy':0,
+		'fXx':1,
+		'fXy':2,
+		'iT':0,
+		'fT':0,
+		'exp':10000,
+		'live':true,
+		'bucket': {},
+		'pendingValue':'',
+		'description':'yoo this is a post description',
+		'poster':{
+			'profileName':'Toby'
+		},
+		'bids':[]
+	};
+}
+
+
 // get the users (a lake) open bids
 function lakeMyOpenBids(addr){
 	// get from `the graph`
 	// PARAMS: addr
 	return [
 		{
+			'postid':1,
 			'bidprice':'0.12',
 			'info':'post1 on Rishin'
 		},
 		{
+			'postid':2,
 			'bidprice':'0.10',
 			'info':'post2 on Hamzah'
 		},
 		{
+			'postid':3,
 			'bidprice':'0.09',
 			'info':'post3 on Mary'
 		}
@@ -98,21 +76,25 @@ function lakeMyOpenPosts(addr){
 	// PARAMS: addr
 	return [
 		{
+			'postid':4,
 			'postname':'POTATOES',
 			'maxprice':'0.16',
 			'bestprice':'0.11',
 		},
 		{
+			'postid':5,
 			'postname':'CARROTS',
 			'maxprice':'0.10',
 			'bestprice':'',
 		},
 		{
+			'postid':6,
 			'postname':'PAPER',
 			'maxprice':'0.12',
 			'bestprice':'0.08',
 		},
 		{
+			'postid':7,
 			'postname':'CHIPS',
 			'maxprice':'0.06',
 			'bestprice':'',
@@ -126,30 +108,35 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// PARAMS: lat,lng,radius,minprice,maxprice
 	return [
 		{
+			'postid':8,
 			'postname':'CHAIR',
 			'river':'Hamzah',
 			'rivermin':'0.08',
 			'bestprice':'0.10'
 		},
 		{
+			'postid':9,
 			'postname':'TABLE',
 			'river':'Mary',
 			'rivermin':'0.14',
 			'bestprice':''
 		},
 		{
+			'postid':10,
 			'postname':'CLOTH',
 			'river':'Rishin',
 			'rivermin':'0.16',
 			'bestprice':''
 		},
 		{
+			'postid':11,
 			'postname':'CLOAK',
 			'river':'Toby',
 			'rivermin':'0.13',
 			'bestprice':'0.13'
 		},
 		{
+			'postid':12,
 			'postname':'COAT',
 			'river':'Juuso',
 			'rivermin':'0.10',
@@ -158,37 +145,12 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	];
 }
 
-/////////////// RIVER -- LOGISTICS ///////////////////
-
-// post as a river (ie. logistics)
-// TODO -- add authAddress
-function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
-	try {
-		riverContract.initPost(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:eth.utils(minprice,towei)});
-		// 'the graph' retrieves post info -- in particular postId
-		// (SC emits event for post creation including postId)
-		let postId = 0; // <-- replace
-		if (iT!=null) riverContract.addInitialTime(postId,iT);
-		if (fT!=null) riverContract.addFinalTime(postId,fT);
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}	
+async function lakeGetId(addr){
+	// returns lake Id from the graph query
+	// if no such id, return null
+	return 1;
 }
 
-// bid as a river (ie. logistics)
-function riverBid(addr,bidprice,{postId,riverId}){
-	try {
-		// bidprice < maxprice (of lakePost)
-		riverContract.bid(postId,riverId,{from:addr,value:eth.utils(bidprice,towei)});
-		// returns bool success
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-}
 
 // get the bids as a river (ie. logistics)
 // -> for the <riverPost> with id <postId>: get all the <lakeBid>'s.
@@ -196,6 +158,7 @@ function riverGetBids(postId){
 	// get from `the graph`
 	// PARAMS: postId
 	return [{
+		'postid':13,
 		'postId':postId,
 		'lakeAddress':'0x01',
 		'bidPrice':'0.12eth',
@@ -227,14 +190,12 @@ function postMessage(from,to,msg){
 }
 
 module.exports = {
-	lakePost,
-	lakeBid,
+	getPost,
 	lakeGetBids,
 	lakeMyOpenBids,
 	lakeMyOpenPosts,
 	lakeSimpleSearch,
-	riverPost,
-	riverBid,
+	lakeGetId,
 	riverGetBids,
 	getMessages,
 	postMessage,

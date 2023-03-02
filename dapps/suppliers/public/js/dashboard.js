@@ -29,11 +29,6 @@ function lakeSimpleSearch(){
 	});
 }
 
-function buildSimpleSearchRow(obj){
-	let row = $('tr');
-	row.append();
-}
-
 document.getElementById('minprice').addEventListener('keyup', function() {
 	let v = document.getElementById('minprice').value;
 	if (!isNaN(v)){

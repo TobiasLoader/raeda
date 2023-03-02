@@ -1,0 +1,16 @@
+extends ../../templates/layout.pug
+	
+block content
+	.area-container
+		.area
+			h2 View Post
+			p !{post['id']}
+			p !{post['postName']}
+			p !{post['EOA']}
+			p !{post['price']}
+
+block styles
+	link(rel='stylesheet', href='styles/viewpost.css')
+
+block scripts
+	script(src="/js/viewpost.js",type="module")

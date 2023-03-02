@@ -8,10 +8,11 @@ mixin jsmainbutton(buttonid,title,c)
 
 mixin buildopenlakebids()
 	- for(let i = 0; i < openbids.length; i+=1)
-		+lakebidli(openbids[i].bidprice,openbids[i].info)
+		+lakebidli(openbids[i].postid,openbids[i].bidprice,openbids[i].info)
 
-mixin lakebidli(bidprice,info)
-	li.bidli
+mixin lakebidli(postid,bidprice,info)
+	- let url = "window.location.href='/post-"+postid+"'"
+	li.bidli(onclick=url)
 		div.bidprice
 			h2 !{bidprice}
 			span.bidcurrency eth
@@ -20,18 +21,24 @@ mixin lakebidli(bidprice,info)
 mixin buildopenlakeposts()
 	- for(let i = 0; i < openposts.length; i+=1)
 		if openposts[i].bestprice!=''
-			+lakepostli(openposts[i].postname,true,openposts[i].bestprice)
+			+lakepostli(openposts[i].postid,openposts[i].postname,true,openposts[i].bestprice)
 		else
-			+lakepostli(openposts[i].postname,false,'-')
+			+lakepostli(openposts[i].postid,openposts[i].postname,false,'-')
 
-mixin lakepostli(postname,hasbid,bestprice)
+mixin lakepostli(postid,postname,hasbid,bestprice)
+	- let url = "window.location.href='/post-"+postid+"'"
 	if hasbid==true
-		li.postli
+		li.postli(onclick=url)
 			p !{postname}
 			div.postbidprice
 				h2 !{bestprice}
 				span.bidcurrency eth
 	else
-		li.postli.postlinobid
+		li.postli.postlinobid(onclick=url)
 			p !{postname}
 			p.postnobid NO BID
+
+mixin requiredlabel(fieldname)
+	label
+		span(class="labelreq") &#x2732; 
+		| !{fieldname}

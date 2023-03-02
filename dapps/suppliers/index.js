@@ -70,16 +70,23 @@ app.get('/bid', (req, res) => {
 app.post('/api/lakelogin', (req, res) => {
 	postExtractBody(req,(body)=>{
 		console.log(body);
-		let sessionid = 100000 + Math.floor(Math.random()*900000);
-		sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid};
-		res.send(JSON.stringify({success:true,profileid:10,sessionid:sessionid}));
+		raeda.lakeGetId(body.addr).then((lakeid)=>{
+			console.log(lakeid)
+			if (lakeid==null)
+				res.send(JSON.stringify({success:false}));
+			else {
+				let sessionid = 100000 + Math.floor(Math.random()*900000);
+				sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid,profileid:lakeid};
+				res.send(JSON.stringify({success:true,profileid:lakeid,sessionid:sessionid}));
+			}
+		});
 	});
 });
 
 app.post('/api/checksessionid', (req, res) => {
 	postExtractBody(req,(body)=>{
 		if (body.addr in sessions && sessions[body.addr].sessionid==body.sessionid){
-			res.send(JSON.stringify({success:true,profileid:10}));
+			res.send(JSON.stringify({success:true,profileid:sessions[body.addr].profileid}));
 		} else {
 			res.send(JSON.stringify({success:false}));
 		}
@@ -88,6 +95,16 @@ app.post('/api/checksessionid', (req, res) => {
 
 app.post('/api/accept_bid', (req, res) => {
 	res.send('eg. accepted bid success');
+});
+
+app.get('/post-:postid', (req, res) => {
+	///:postid
+	const { headers, method, url, params } = req;
+	console.log(params['postid']);
+	raeda.getPost(params['postid']).then((postinfo)=>{
+		console.log(postinfo)
+		res.render('viewpost',{post:postinfo});
+	})
 });
 
 app.get('/messenger', (req, res) => {

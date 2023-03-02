@@ -49,6 +49,11 @@ $(document).ready(function() {
 	});
 });
 
+
+// $('body').click(()=>{
+// 	raeda.rishinfnc();
+// })
+
 function isWalletInstalled() {
 	return Boolean(window.ethereum);
 }
@@ -96,9 +101,10 @@ function afterConnectTry(){
 }
 
 function afterLoginSuccess(){
-	$('#login').addClass('hide');
+	$('.loginaction').addClass('hide');
 	$('#signup').addClass('hide');
 	$('#logout').removeClass('hide');
+	$('#lake-post').removeClass('done');
 }
 
 function autoLoginSessionId(){
@@ -106,7 +112,9 @@ function autoLoginSessionId(){
 	if (state.connected && state.sessionid!=null){
 		raeda.checkSessionId(state.address,state.sessionid).then((res)=>{
 			if (res['success']){
+				console.log(res)
 				state.login = true;
+				state.profileid = res['profileid'];
 				afterLoginSuccess();
 			}
 		});
@@ -127,7 +135,7 @@ export function requiresLogin(func,argsArray=[]){
 	}
 }
 
-$('#login').click(function(){
+$('.loginaction').click(function(){
 	if (state.login) {
 		utils.notification('Already logged in!',['You have already logged in!'],true);
 	} else {
@@ -162,7 +170,7 @@ $('#login').click(function(){
 						state.login = true;
 						afterLoginSuccess();
 						utils.setCookie('sessionid',res['sessionid'],1);
-						$('#login').addClass('hide');
+						$('.loginaction').addClass('hide');
 						state.profileid = res['profileid'];
 						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+state.profileid.toString()]);
 					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);

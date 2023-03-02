@@ -11,13 +11,16 @@
 	background: black;
 	outline: none;
 	color: white;
-	border: none;
+	border: rgba(168,168,168,0.5) 1px solid;
 	margin-top: 5px;
 	height: 30px;
 	font-family: 'Montserrat Italic';
 	font-size: 15px;
-	padding-left:10px;
+	padding: 5px 5px 5px 10px;
 	border-radius: 5px;
+}
+.textlabelfield input:focus {
+	border: rgba(83, 130, 201,1) 1px solid;
 }
 
 .textlabelfield label {

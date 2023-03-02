@@ -1,7 +1,8 @@
 
-mixin riverpostli(postname,river,hasbid,rivermin,bestprice)
+mixin riverpostli(postid,postname,river,hasbid,rivermin,bestprice)
+	- let url = "window.location.href='/post-"+postid+"'"
 	if hasbid==true
-		tr.riverpostli
+		tr.riverpostli(onclick=url)
 			td !{postname}
 			td.toitalic by !{river}
 			td.riverpostbidprice.rivermin
@@ -13,7 +14,7 @@ mixin riverpostli(postname,river,hasbid,rivermin,bestprice)
 					h2 !{bestprice}
 					span.bidcurrency eth
 	else
-		tr.riverpostli.postlinobid
+		tr.riverpostli.postlinobid(onclick=url)
 			td !{postname}
 			td.toitalic by !{river}
 			td.riverpostbidprice.rivermin
@@ -34,6 +35,6 @@ table.posttable
 	tbody
 		- for(let i = 0; i < searchresults.length; i+=1)
 			if searchresults[i].bestprice!=''
-				+riverpostli(searchresults[i].postname,searchresults[i].river,true,searchresults[i].rivermin,searchresults[i].bestprice)
+				+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,true,searchresults[i].rivermin,searchresults[i].bestprice)
 			else
-				+riverpostli(searchresults[i].postname,searchresults[i].river,false,searchresults[i].rivermin,'-')
+				+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,false,searchresults[i].rivermin,'-')

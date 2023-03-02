@@ -3,7 +3,7 @@ import * as utils from "./utils.js";
 import * as wallet from "./wallet.js";
 
 function afterLoginSuccess(){
-	$('#login').addClass('hide');
+	$('.loginaction').addClass('hide');
 	$('#signup').addClass('hide');
 	$('#logout').removeClass('hide');
 }
@@ -40,7 +40,7 @@ $('#create-profile').click(()=>{
 						wallet.state.login = true;
 						afterLoginSuccess();
 						utils.setCookie('sessionid',res['sessionid'],1);
-						$('#login').addClass('hide');
+						$('.loginaction').addClass('hide');
 						wallet.state.profileid = res['profileid'];
 						window.location.href = "/";
 					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
