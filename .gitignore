@@ -124,3 +124,7 @@ dist
 .tern-port
 core/smart_contracts/test.js
 core/smart_contracts/abi.js
+core/automation.py
+core/subgraph/raedaGraph2
+core/subgraph/raedaGraph3
+core/subgraph/raedaGraph4
