@@ -1,17 +1,22 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // import { execute } from './.graphclient'
-import { gql, createClient } from '@urql/core';
-
+// import { gql, createClient } from '@urql/core';
+const urql = require('@urql/core');
+const gql = urql.gql;
+const createClient = urql.createClient;
+const fetch = require("isomorphic-unfetch");
+// import {createRequire} from 'module'
+// const require = createRequire(import.meta.url)
 
 ////////// THIS IS FOR QUERYING SMART CONTRACTS WITH 'THE GRAPH'
 ////////// + comms with the rust server
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph5'
+let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph5'
 
 const postListInfoFragment = gql`
-	fragment {
+	fragment postListInfo on Post {
 		id
 		postName
 		price
@@ -80,7 +85,7 @@ async function getPost(postId){
 
 
 // get the users (a lake) open bids
-function lakeMyOpenBids(addr){
+function lakeMyOpenBids(profileName){
 	// get from `the graph`
 	// PARAMS: addr
 	return [
@@ -103,24 +108,25 @@ function lakeMyOpenBids(addr){
 }
 
 // get the users (a lake) open posts
-async function lakeMyOpenPosts(profileName){
+async function lakeMyOpenPosts(profileNamez){
+	console.log(profileNamez)
 	// get from `the graph`
 	// PARAMS: addr
-	const query = `
-		query lakeOwnPosts($profileName:PROFILENAME!){
-			posts(where:{poster_:{profileName:$profileName}},first:4){
+	const query = gql`
+		query lakeOwnPosts($profileNameVar:String!){
+			posts(where:{poster_:{profileName:$profileNameVar}},first:4){
 				...postListInfo
 			}
 		}
-	` + postListInfoFragment;
+		${postListInfoFragment}
+	`;
 
-	return await execute(query,{
-		variables: {
-			profileName,
-		},
-	})
+	let res=  await client.query(query,{
+		profileNameVar: profileNamez
+	}).toPromise();
 
-
+	console.log(res.data.posts)
+	return res.data.posts;
 
 	// return [
 	// 	{
@@ -156,66 +162,63 @@ async function lakeMyOpenPosts(profileName){
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	
+	// console.log('bellly')
 	const query = gql`
 		query quickSearch($waterType: WATERTYPE!,$minprice:PRICE!,$maxprice:PRICE!,$centreX:IXX!,$centreY:IXY!,$radius:IXX!){
 			posts(where:{poster_:{waterType:$waterType},iXx_gt:$centreX-$radius,iXx_lt:$centreX+$radius,iXy_gt:$centreY-$radius,iXy_lt:$centreY-$radius,price_gt:$minprice,price_lt:$maxprice}){
 				...postListInfo
+			}
 		}
-	}
-
-	${postListInfoFragment}
+		${postListInfoFragment}
 	`;
 
 	const watertype = "LAKE"
 	return await client.query(query,{
-		variables:{
-			watertype,
-			minprice,
-			maxprice,
-			lng,
-			lat,
-			radius
-		}
+		watertype,
+		minprice,
+		maxprice,
+		lng,
+		lat,
+		radius
 	}).toPromise()
 	
-	return [
-		{
-			'postid':8,
-			'postname':'CHAIR',
-			'river':'Hamzah',
-			'rivermin':'0.08',
-			'bestprice':'0.10'
-		},
-		{
-			'postid':9,
-			'postname':'TABLE',
-			'river':'Mary',
-			'rivermin':'0.14',
-			'bestprice':''
-		},
-		{
-			'postid':10,
-			'postname':'CLOTH',
-			'river':'Rishin',
-			'rivermin':'0.16',
-			'bestprice':''
-		},
-		{
-			'postid':11,
-			'postname':'CLOAK',
-			'river':'Toby',
-			'rivermin':'0.13',
-			'bestprice':'0.13'
-		},
-		{
-			'postid':12,
-			'postname':'COAT',
-			'river':'Juuso',
-			'rivermin':'0.10',
-			'bestprice':'0.14'
-		}
-	];
+	// return [
+	// 	{
+	// 		'postid':8,
+	// 		'postname':'CHAIR',
+	// 		'river':'Hamzah',
+	// 		'rivermin':'0.08',
+	// 		'bestprice':'0.10'
+	// 	},
+	// 	{
+	// 		'postid':9,
+	// 		'postname':'TABLE',
+	// 		'river':'Mary',
+	// 		'rivermin':'0.14',
+	// 		'bestprice':''
+	// 	},
+	// 	{
+	// 		'postid':10,
+	// 		'postname':'CLOTH',
+	// 		'river':'Rishin',
+	// 		'rivermin':'0.16',
+	// 		'bestprice':''
+	// 	},
+	// 	{
+	// 		'postid':11,
+	// 		'postname':'CLOAK',
+	// 		'river':'Toby',
+	// 		'rivermin':'0.13',
+	// 		'bestprice':'0.13'
+	// 	},
+	// 	{
+	// 		'postid':12,
+	// 		'postname':'COAT',
+	// 		'river':'Juuso',
+	// 		'rivermin':'0.10',
+	// 		'bestprice':'0.14'
+	// 	}
+	// ];
 }
 
 async function lakeGetId(addr){

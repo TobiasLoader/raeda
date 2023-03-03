@@ -11,7 +11,7 @@ $('#placebid').click(function(){
 	wallet.requiresLogin(()=>{
 		console.log(1)
 		if (bidprice!=''){
-			raeda.
+			console.log('place bid');
 		} else {
 			utils.notification('Blank Bid', ['You cannot leave the bid field blank!','Please enter a value and try again.'], true);
 		}

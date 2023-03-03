@@ -40,8 +40,8 @@ function postExtractBody(req,callback){
 
 app.get('/', (req, res) => {
 	res.render('index',{
-		openbids: raeda.lakeMyOpenBids(),
-		openposts: raeda.lakeMyOpenPosts()
+		openbids: raeda.lakeMyOpenBids('Toby'),
+		openposts: raeda.lakeMyOpenPosts('Toby')
 	});
 });
 

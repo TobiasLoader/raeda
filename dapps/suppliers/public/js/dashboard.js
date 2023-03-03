@@ -12,21 +12,21 @@ var searchlng = 0;
 var searchradius = 10;
 
 function lakeSimpleSearch(){
-	fetch('/api/lake-simple-search', {
-		method: 'post',
-		body:JSON.stringify({
-			'lat':searchlat,
-			'lng':searchlng,
-			'radius':searchradius,
-			'minprice':minprice,
-			'maxprice':maxprice
-		}),
-		headers: {'Content-Type': 'application/json'}
-	}).then((response) => {
-		return response.text();
-	}).then((html) => {
-		$('#searchtable').html(html);
-	});
+	// fetch('/api/lake-simple-search', {
+	// 	method: 'post',
+	// 	body:JSON.stringify({
+	// 		'lat':searchlat,
+	// 		'lng':searchlng,
+	// 		'radius':searchradius,
+	// 		'minprice':minprice,
+	// 		'maxprice':maxprice
+	// 	}),
+	// 	headers: {'Content-Type': 'application/json'}
+	// }).then((response) => {
+	// 	return response.text();
+	// }).then((html) => {
+	// 	$('#searchtable').html(html);
+	// });
 }
 
 document.getElementById('minprice').addEventListener('keyup', function() {
