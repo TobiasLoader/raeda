@@ -25,8 +25,7 @@ async function getPost(postId){
 	// PARAMS: postId
 	return {
 		'id':postId,
-		'postName':'Blabla',
-		'EOA':'0x---',
+		'postName':'Cargo trousers',
 		'price':102,
 		'iXx':1,
 		'iXy':0,
@@ -38,11 +37,26 @@ async function getPost(postId){
 		'live':true,
 		'bucket': {},
 		'pendingValue':'',
-		'description':'yoo this is a post description',
+		'description':'A good description of the product with data like general shape/size etc.',
 		'poster':{
 			'profileName':'Toby'
 		},
-		'bids':[]
+		'bids':[
+			{
+				'amount':20,
+				'accepted':false,
+				'bidder': {
+					'profileName':'Rishin'
+				}
+			},
+			{
+				'amount':25,
+				'accepted':true,
+				'bidder': {
+					'profileName':'Hamzah'
+				}
+			}
+		]
 	};
 }
 

@@ -31,7 +31,7 @@
 	max-width:800px;
 }
 
-.area h2 {
+.area > h2 {
 	font-size: 21px;
 	margin: auto 0;
 }
@@ -43,6 +43,18 @@
 .area-ul {
 	padding-left:0;
 	margin-bottom:0;
+}
+
+.minarea {
+	flex:1; 
+	border: rgba(168, 168, 168,0.3) 1px solid;
+	background: linear-gradient(20deg, rgb(10, 17, 30) 20%, rgb(36, 36, 36) 100%);
+	border-radius: 5px;
+	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+	overflow: scroll;
+	padding:10px;
+	margin:0px;
+	width:fit-content;
 }
 
 .bidli {
@@ -401,6 +413,12 @@ p {
 
 .toitalic {
 	font-family: "Montserrat Italic";
+}
+.toblue {
+	color: rgb(83, 130, 201);
+}
+.tored {
+	color: rgb(201, 83, 83);
 }
 
 @media screen and (max-width: 1400px) {
