@@ -22,9 +22,11 @@ $('#connect-prepost').click(function(){
 
 $('#lake-post').click(function(){
 	let pname = $('#postname').val();
-	let pdesc = $('#pdesc').val();
+	let pdesc = $('#postdesc').val();
 	let pmaxprice = $('#postmaxprice').val();
-	let pexp = $('#postexp').val();
+	let pexp = Math.round(new Date($('#postexp-date').val()+'T'+$('#postexp-time').val()).valueOf()/1000);
+	// console.log('pexp here',pexp);
+	// console.log(pexp);
 	let pix = $('#poststartloclat').val();
 	let piy = $('#poststartloclng').val();
 	let pfx = $('#postendloclat').val();
@@ -47,18 +49,25 @@ $('#lake-post').click(function(){
 		
 		let pid = wallet.state.profileid;
 		pmaxprice = parseFloat(pmaxprice);
-		pix = parseInt(parseFloat(pix)*locmult);
-		piy = parseInt(parseFloat(piy)*locmult);
-		pfx = parseInt(parseFloat(pfx)*locmult);
-		pfy = parseInt(parseFloat(pfy)*locmult);
-		pexp = parseInt(pexp);
-
-		raeda.lakePost(wallet.state.address,pmaxprice,pname,pid,pix,piy,pfx,pfy,pexp,{postDesc:pdesc}).then((v)=>{
-			if (v){
-				utils.notification('Yess', ['Post was uploaded successfully.']);
-			} else {
-				utils.notification('Oops', ['Something went wrong, could not create a new post.'], true);
-			}
-		});
+		pix = BigInt(parseInt(parseFloat(pix)*locmult));
+		piy = BigInt(parseInt(parseFloat(piy)*locmult));
+		pfx = BigInt(parseInt(parseFloat(pfx)*locmult));
+		pfy = BigInt(parseInt(parseFloat(pfy)*locmult));
+		pexp = BigInt(pexp);
+		if (pexp<1677783696){
+			utils.notification('Oops', ['The expiry data is in the past.'], true);
+		} else {
+			utils.notification('Sign wallet then wait :)', ['Complete wallet signature then wait for post to be added to the blockchain – it should be done shortly.']);
+			raeda.lakePost(wallet.state.address,pmaxprice,pname,pid,pix,piy,pfx,pfy,pexp,{postDesc:pdesc}).then((v)=>{
+				if (v){
+					utils.buttonnotification('Yess', ['Post was uploaded successfully.'],[{'name':'done','classes':['newpostdone']}]);
+					$('.notifbtn.newpostdone').click(function(){
+						window.location.href='/';
+					});
+				} else {
+					utils.notification('Oops', ['Something went wrong, could not create a new post.'], true);
+				}
+			});
+		}
 	}
 });
