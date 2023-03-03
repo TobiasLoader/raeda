@@ -1,44 +1,50 @@
 extends ../../templates/layout.pug
 	
 block content
-	.area-container
-		.area-row
-			#postarea.area
-				.posttitlerow
-					.titlecontent
-						h2 !{post['postName']}
-						p.toitalic.toblue (post !{post['id']})
-					.endrowcontent
-						- if (post['live'])
+	if found
+		.area-container
+			.area-row
+				#postarea.area
+					.posttitlerow
+						.titlecontent
+							h2 !{post['postName']}
+							p.toitalic.toblue (post !{post['id']})
+						.endrowcontent
+							- if (post['live'])
+								div
+									p.toblue LIVE
+							- else
+								div
+									p.tored INACTIVE
 							div
-								p.toblue LIVE
-						- else
+								- let profileurl = "/profile-"+post['poster']['profileName']
+								a(href=profileurl) !{post['poster']['profileName']}
 							div
-								p.tored INACTIVE
-						div
-							- let profileurl = "/profile-"+post['poster']['profileName']
-							a(href=profileurl) !{post['poster']['profileName']}
-						div
-							h3
-								| > 
-								span.toblue wei 
-								| !{post['price']}
-				//.minarea
-				p !{post['description']}
-				- if (post['live'])
-					.buttonrow
-						+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
-						+jsmainbutton('makebid','make bid')
+								h3
+									| > 
+									span.toblue wei 
+									| !{post['price']}
+					//.minarea
+					p !{post['description']}
+					- if (post['live'])
+						.buttonrow
+							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
+							+jsmainbutton('makebid','make bid')
+				.area
+					h2 Bids
+			.area-row
+				#makebidarea.area.hide
+					.posttitlerow
+						h2 Make Bid
+						+jsmainbutton('placebid','place bid')
+					.textlabelfield
+						label Bid Price (wei)
+						input(id="makebidprice",placeholder=post['price'])
+	else
+		.area-container
 			.area
-				h2 Bids
-		.area-row
-			#makebidarea.area.hide
-				.posttitlerow
-					h2 Make Bid
-					+jsmainbutton('placebid','place bid')
-				.textlabelfield
-					label Bid Price (wei)
-					input(id="makebidprice",placeholder=post['price'])
+				h2.tored Error
+				p No post found with this id
 
 block styles
 	link(rel='stylesheet', href='styles/viewpost.css')

@@ -23,6 +23,8 @@ const raeda = require('./../../core/raeda-node');
 const port = process.env.PORT || 3000;
 
 const searchrivertablefn = pug.compileFile('views/searchrivertable.pug');
+const myopenbidsfn = pug.compileFile('views/myopenbids.pug');
+const myopenpostsfn = pug.compileFile('views/myopenposts.pug');
 
 function postExtractBody(req,callback){
 	const { headers, method, url } = req;
@@ -51,7 +53,6 @@ app.get('/newpost', (req, res) => {
 	// let cd = d.getFullYear().toString()+'-'+d.getMonth().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+'-'+d.getDate().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
 	let cd = d.toISOString().split('T')[0];
 	let ct = d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+':'+d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
-	console.log(cd,ct)
 	res.render('newpost',{currenttime:ct,currentdate:cd});
 });
 
@@ -102,10 +103,10 @@ app.post('/api/accept_bid', (req, res) => {
 app.get('/post-:postid', (req, res) => {
 	///:postid
 	const { headers, method, url, params } = req;
-	console.log(params['postid']);
-	raeda.getPost(params['postid']).then((postinfo)=>{
-		console.log(postinfo)
-		res.render('viewpost',{post:postinfo});
+	const postid = params['postid'];
+	raeda.getPost(postid).then((postinfo)=>{
+		if (postinfo.length>0) res.render('viewpost',{found:true,post:postinfo[0]});
+		else res.render('viewpost',{found:false});
 	})
 });
 
@@ -133,17 +134,20 @@ app.post('/api/post_message', (req, res) => {
 	});
 });
 
-app.post('/api/get-my-open-bids', (req, res) => {
+app.post('/api/my-open-bids', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.lakeMyOpenBids(body['profilename']).then((openbids)=>{
 			res.send(myopenbidsfn({openbids:openbids}));
 		});	
 	});
+});
+
+app.post('/api/my-open-posts', (req, res) => {
 	postExtractBody(req,(body)=>{
-		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
-			// console.log(search_res)
-			res.send(searchrivertablefn({searchresults:search_res}));
-		});
+		raeda.lakeMyOpenPosts(body['profilename']).then((openposts)=>{
+			console.log(openposts);
+			res.send(myopenpostsfn({openposts:openposts}));
+		});	
 	});
 });
 

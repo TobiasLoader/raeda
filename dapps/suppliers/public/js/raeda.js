@@ -77,7 +77,6 @@ export async function checkSessionId(addr,sessionid){
 // post as a lake (ie. suppliers)
 // TODO -- add authAddress
 export async function lakePost(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp,{postDesc=null,iT=null,fT=null}={}){
-	console.log(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp,postDesc,iT,fT)
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			let txn = await lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(maxprice.toString(),"wei")});

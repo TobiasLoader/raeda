@@ -5,6 +5,8 @@ const urql = require('@urql/core');
 const gql = urql.gql;
 const createClient = urql.createClient;
 const fetch = require("isomorphic-unfetch");
+const { ethers } = require("ethers");
+
 // import {createRequire} from 'module'
 // const require = createRequire(import.meta.url)
 
@@ -94,10 +96,43 @@ function lakeGetBids(postId){
 	}];
 }
 
+// longToByteArray = function(/*long*/long) {
+// 	// we want to represent the input as a 8-bytes array
+// 	var byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
+// 
+// 	for ( var index = 0; index < byteArray.length; index ++ ) {
+// 		var byte = long & 0xff;
+// 		byteArray [ index ] = byte;
+// 		long = (long - byte) / 256 ;
+// 	}
+// 
+// 	return byteArray;
+// };
+// 
+const bigToLittleEndianness = (string) => {
+	const result = [];
+	let len = string.length - 2;
+	while (len >= 0) {
+	  result.push(string.substr(len, 2));
+	  len -= 2;
+	}
+	return result.join('');
+}
+
+function intToBytesLittleEndian(v){
+	return '0x'+bigToLittleEndianness(ethers.utils.hexZeroPad('0x'+(v).toString(16), 4).substring(2));	
+}
+
 // get the bids as a lake (ie. supplier)
 async function getPost(postId){
 	// get from `the graph`
 	// PARAMS: postId
+	// let v = ethers.utils.hexZeroPad(ethers.utils.hexlify(1), 32)
+	// let postid = changeEndianness(ethers.utils.hexlify(parseInt(postId)));
+	// let v = BigInt(1);
+	// console.log(postid)
+	// console.log(ethers.hexZeroPad(v.toString(16), 32))
+
 	const query = gql`
 		query onePost($idvar:ID!){
 			posts(where:{id:$idvar}){
@@ -106,13 +141,13 @@ async function getPost(postId){
 		}
 		${postDetailedFragment}
 	`;
-
-	let res=  await client.query(query,{
-		idvar: postId
+	
+	let res =  await client.query(query,{
+		idvar: intToBytesLittleEndian(postId)
 	}).toPromise();
 
-	console.log(res.data.posts);
 	return res.data.posts;
+	// return []
 
 	// return {
 	// 	'id':postId,
@@ -206,7 +241,8 @@ async function lakeMyOpenPosts(profileName){
 	let res=  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-
+	
+	console.log(res.data.posts)
 	return res.data.posts;
 
 	// return [

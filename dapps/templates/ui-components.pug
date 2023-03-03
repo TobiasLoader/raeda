@@ -6,45 +6,6 @@ mixin jsmainbutton(buttonid,title,c)
 	.mainbutton(id=buttonid,class=c)
 		h3.mainbuttontitle !{title}
 
-mixin buildopenlakebids()
-	- for(let i = 0; i < openbids.length; i+=1)
-		+lakebidli(openbids[i].postid,openbids[i].bidprice,openbids[i].info)
-
-mixin lakebidli(postid,bidprice,info)
-	- let url = "window.location.href='/post-"+postid+"'"
-	li.bidli(onclick=url)
-		div.bidprice
-			h2 !{bidprice}
-			span.bidcurrency wei
-		p.biddesc !{info}
-
-mixin buildopenlakeposts()
-	- for(let i = 0; i < openposts.length; i+=1)
-		+lakepostli(openposts[i].id,openposts[i].postName,openposts[i].price,openposts[i].bids)
-		
-mixin lakepostli(postid,postname,price,bids)
-	- let intpostid = parseInt(postid)
-	- let url = "window.location.href='/post-"+intpostid+"'"
-	- let hasbid = bids.length>0
-	if hasbid==true
-		li.postli(onclick=url)
-			p !{postname}
-			.postliendrow
-				div.postbidprice
-					h2 !{bids[0].price}
-					span.bidcurrency wei
-				div.postbidprice
-					h2 !{price}
-					span.bidcurrency wei
-	else
-		li.postli.postlinobid(onclick=url)
-			p !{postname}
-			.postliendrow
-				p.postnobid NO BID
-				div.postbidprice
-					h2 !{price}
-					span.bidcurrency wei
-
 mixin requiredlabel(fieldname)
 	label
 		span(class="labelreq") &#x2732; 
