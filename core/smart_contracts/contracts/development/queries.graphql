@@ -30,11 +30,11 @@
 # #     }
 # # }
 
-# query onePost{
-#     posts(where:{id:"0x01000000"}){
-#         ...postDetailed
-#     }
-# }
+query onePost{
+    posts(where:{id:"0x01000000"}){
+        ...postDetailed
+    }
+}
 
 # fragment postListInfo on Post {
 #     id
@@ -46,39 +46,39 @@
 # }
 
 
-# fragment postDetailed on Post {
-#     id
-#     postName
-#     description
-#     EOA
-#     price
-#     iXx
-#     iXy
-#     fXx
-#     fXy
-#     iT
-#     fT
-#     exp
-#     bucket{
-#         category
-#         value
-#     }
-#     poster{
-#         id
-#         profileName
-#         waterType
-#         description
-#     }
-#     bids{
-#         # id
-#         amount
-#         accepted
-#         bidder {
-#             profileName
-#         }
-#     }
-#     pendingValue
-# }
+fragment postDetailed on Post {
+    id
+    postName
+    description
+    EOA
+    price
+    iXx
+    iXy
+    fXx
+    fXy
+    iT
+    fT
+    exp
+    bucket{
+        category
+        value
+    }
+    poster{
+        id
+        profileName
+        waterType
+        description
+    }
+    bids{
+        # id
+        amount
+        accepted
+        bidder {
+            profileName
+        }
+    }
+    pendingValue
+}
 
 # #uncomment this
 query quickSearch($waterType: WATERTYPE!,$minprice:PRICE!,$maxprice:PRICE!,$centreX:IXX!,$centreY:IXY!,$radius:IXX!){
