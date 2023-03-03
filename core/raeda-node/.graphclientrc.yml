@@ -1,0 +1,8 @@
+sources:
+  - name: raedaGraph5
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/rishin01/raedagraph5
+ 
+# documents:
+#   - ./queries.graphql

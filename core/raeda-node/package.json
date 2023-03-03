@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "INFURA_API_KEY='52be3e1ef20a4736a66368fe21b1fcbd' node index.js"
+    "start": "INFURA_API_KEY='52be3e1ef20a4736a66368fe21b1fcbd' node index.js",
+    "build": "graphclient build --filetype js"
   },
   "author": "Tobias Loader & Rishin Madan",
   "license": "ISC",
   "dependencies": {
     "ethers": "^6.0.8",
     "node-fetch": "^3.3.0"
+  },
+  "devDependencies": {
+    "@graphprotocol/client-cli": "^2.2.19"
   }
 }

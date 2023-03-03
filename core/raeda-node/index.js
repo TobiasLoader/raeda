@@ -1,10 +1,20 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
+import { execute } from './.graphclient'
 ////////// THIS IS FOR QUERYING SMART CONTRACTS WITH 'THE GRAPH'
 ////////// + comms with the rust server
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
+const postListInfoFragment = `
+	fragment {
+		id
+		postName
+		price
+		bids(orderBy:amount,orderDirection:desc,first:1){
+			amount
+		}
+	}
+`
 
 // get the bids as a lake (ie. supplier)
 // -> for the <lakePost> with id <postId>: get all the <riverBid>'s.
@@ -85,78 +95,100 @@ function lakeMyOpenBids(addr){
 }
 
 // get the users (a lake) open posts
-function lakeMyOpenPosts(addr){
+async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	return [
-		{
-			'postid':4,
-			'postname':'POTATOES',
-			'maxprice':'0.16',
-			'bestprice':'0.11',
-		},
-		{
-			'postid':5,
-			'postname':'CARROTS',
-			'maxprice':'0.10',
-			'bestprice':'',
-		},
-		{
-			'postid':6,
-			'postname':'PAPER',
-			'maxprice':'0.12',
-			'bestprice':'0.08',
-		},
-		{
-			'postid':7,
-			'postname':'CHIPS',
-			'maxprice':'0.06',
-			'bestprice':'',
+	const query = `
+		query lakeOwnPosts($profileName:PROFILENAME!){
+			posts(where:{poster_:{profileName:$profileName}},first:4){
+				...postListInfo
+			}
 		}
-	];
+	` + postListInfoFragment;
+
+	return await execute(query,{
+		variables: {
+			profileName,
+		},
+	})
+
+
+
+
+	// return [
+	// 	{
+	// 		'postid':4,
+	// 		'postname':'POTATOES',
+	// 		'maxprice':'0.16',
+	// 		'bestprice':'0.11',
+	// 	},
+	// 	{
+	// 		'postid':5,
+	// 		'postname':'CARROTS',
+	// 		'maxprice':'0.10',
+	// 		'bestprice':'',
+	// 	},
+	// 	{
+	// 		'postid':6,
+	// 		'postname':'PAPER',
+	// 		'maxprice':'0.12',
+	// 		'bestprice':'0.08',
+	// 	},
+	// 	{
+	// 		'postid':7,
+	// 		'postname':'CHIPS',
+	// 		'maxprice':'0.06',
+	// 		'bestprice':'',
+	// 	}
+	// ];
 }
+
+// ADD FUNCTION FOR FULL PROFILE VIEW WITH BIDS
 
 // search for river posts (as a lake) wrt simple criteria
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	return [
-		{
-			'postid':8,
-			'postname':'CHAIR',
-			'river':'Hamzah',
-			'rivermin':'0.08',
-			'bestprice':'0.10'
-		},
-		{
-			'postid':9,
-			'postname':'TABLE',
-			'river':'Mary',
-			'rivermin':'0.14',
-			'bestprice':''
-		},
-		{
-			'postid':10,
-			'postname':'CLOTH',
-			'river':'Rishin',
-			'rivermin':'0.16',
-			'bestprice':''
-		},
-		{
-			'postid':11,
-			'postname':'CLOAK',
-			'river':'Toby',
-			'rivermin':'0.13',
-			'bestprice':'0.13'
-		},
-		{
-			'postid':12,
-			'postname':'COAT',
-			'river':'Juuso',
-			'rivermin':'0.10',
-			'bestprice':'0.14'
-		}
-	];
+	
+	// const query = 
+	
+	// return [
+	// 	{
+	// 		'postid':8,
+	// 		'postname':'CHAIR',
+	// 		'river':'Hamzah',
+	// 		'rivermin':'0.08',
+	// 		'bestprice':'0.10'
+	// 	},
+	// 	{
+	// 		'postid':9,
+	// 		'postname':'TABLE',
+	// 		'river':'Mary',
+	// 		'rivermin':'0.14',
+	// 		'bestprice':''
+	// 	},
+	// 	{
+	// 		'postid':10,
+	// 		'postname':'CLOTH',
+	// 		'river':'Rishin',
+	// 		'rivermin':'0.16',
+	// 		'bestprice':''
+	// 	},
+	// 	{
+	// 		'postid':11,
+	// 		'postname':'CLOAK',
+	// 		'river':'Toby',
+	// 		'rivermin':'0.13',
+	// 		'bestprice':'0.13'
+	// 	},
+	// 	{
+	// 		'postid':12,
+	// 		'postname':'COAT',
+	// 		'river':'Juuso',
+	// 		'rivermin':'0.10',
+	// 		'bestprice':'0.14'
+	// 	}
+	// ];
 }
 
 async function lakeGetId(addr){

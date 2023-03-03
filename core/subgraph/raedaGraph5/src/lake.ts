@@ -94,6 +94,7 @@ export function handlepostEvent(event: postEventEvent): void {
   postEntity.fT = postFromCont.getFT()
   postEntity.exp = postFromCont.getExp()
   postEntity.live = postFromCont.getLive()
+  postEntity.description = postFromCont.getDescription()
 
   // let ix = 0
   // let iy = 0
