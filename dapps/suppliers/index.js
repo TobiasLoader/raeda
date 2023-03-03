@@ -39,16 +39,7 @@ function postExtractBody(req,callback){
 }
 
 app.get('/', (req, res) => {
-	raeda.lakeMyOpenBids('Toby').then((openbids)=>{
-		raeda.lakeMyOpenPosts('Toby').then((openposts)=>{
-			console.log(openbids)
-			console.log(openposts);
-			res.render('index',{
-				openbids: openbids,
-				openposts: openposts
-			});
-		})
-	});	
+	res.render('index');
 });
 
 app.get('/profile', (req, res) => {
@@ -142,10 +133,23 @@ app.post('/api/post_message', (req, res) => {
 	});
 });
 
-app.post('/api/lake-simple-search', (req, res) => {
+app.post('/api/get-my-open-bids', (req, res) => {
+	postExtractBody(req,(body)=>{
+		raeda.lakeMyOpenBids(body['profilename']).then((openbids)=>{
+			res.send(myopenbidsfn({openbids:openbids}));
+		});	
+	});
 	postExtractBody(req,(body)=>{
 		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
 			// console.log(search_res)
+			res.send(searchrivertablefn({searchresults:search_res}));
+		});
+	});
+});
+
+app.post('/api/lake-simple-search', (req, res) => {
+	postExtractBody(req,(body)=>{
+		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
 			res.send(searchrivertablefn({searchresults:search_res}));
 		});
 	});

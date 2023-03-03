@@ -12,6 +12,7 @@ export let state = {
 	connected:null,
 	login:null,
 	profileid:null,
+	profilename:null,
 	sessionid:null
 }
 
@@ -112,6 +113,7 @@ function autoLoginSessionId(){
 				console.log(res)
 				state.login = true;
 				state.profileid = res['profileid'];
+				state.profilename = res['profilename'];
 				afterLoginSuccess();
 			}
 		});
@@ -169,6 +171,7 @@ $('.loginaction').click(function(){
 						utils.setCookie('sessionid',res['sessionid'],1);
 						$('.loginaction').addClass('hide');
 						state.profileid = res['profileid'];
+						state.profilename = res['profilename'];
 						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+state.profileid.toString()]);
 					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
 				});

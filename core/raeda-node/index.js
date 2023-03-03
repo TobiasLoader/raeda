@@ -156,24 +156,20 @@ async function getPost(postId){
 async function lakeMyOpenBids(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-
-	console.log(profileName)
-	// get from `the graph`
-	// PARAMS: addr
+	
 	const query = gql`
 		query lakeOwnBids($profileNameVar:String!){
-			bids(where:{bidder_:{profileName:$profileNameVar}},first:4){
+			bids(where:{bidder_:{profileName:$profileNameVar},accepted:false},first:4){
 				...bidListInfo
 			}
 		}
 		${bidListInfoFragment}
 	`;
 
-	let res=  await client.query(query,{
-		profileNameVar: profileNamez
+	let res =  await client.query(query,{
+		profileNameVar: profileName
 	}).toPromise();
 
-	console.log(res.data.bids);
 	return res.data.bids;
 	// return [
 	// 	{
@@ -211,7 +207,6 @@ async function lakeMyOpenPosts(profileName){
 		profileNameVar: profileName
 	}).toPromise();
 
-	console.log(res.data.posts);
 	return res.data.posts;
 
 	// return [
@@ -248,10 +243,14 @@ async function lakeMyOpenPosts(profileName){
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	// console.log('bellly')
+	let iXx_gt = lng-radius+180;
+	let iXx_lt = lng+radius+180;
+	let iXy_gt = lat-radius+90;
+	let iXy_lt = lat+radius+90;
+
 	const query = gql`
-		query quickSearch($waterType: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$centreX:BigInt!,$centreY:BigInt!,$radiusvar:BigInt!){
-			posts(where:{poster_:{waterType:$waterType},iXx_gt:$centreX-$radius,iXx_lt:$centreX+$radius,iXy_gt:$centreY-$radius,iXy_lt:$centreY-$radius,price_gt:$minprice,price_lt:$maxprice}){
+		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){
+			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gt:$minpricevar,price_lt:$maxpricevar}){
 				...postListInfo
 			}
 		}
@@ -260,15 +259,14 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 
 	const watertype = "LAKE";
 	let res = await client.query(query,{
-		waterType: watertype,
+		waterTypevar: watertype,
 		minpricevar: minprice,
 		maxpricevar: maxprice,
-		centreX: lng,
-		centreY: lat,
-		radiusvar: radius
+		iXx_gt: iXx_gt,
+		iXx_lt: iXx_lt,
+		iXy_gt: iXy_gt,
+		iXy_lt: iXy_lt,
 	}).toPromise();
-
-	console.log(res.data.posts);
 	return res.data.posts;
 	
 	// return [
@@ -310,11 +308,11 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// ];
 }
 
-// async function lakeGetId(addr){
-// 	// returns lake Id from the graph query
-// 	// if no such id, return null
-// 	return 1;
-// }
+async function lakeGetId(addr){
+	// returns lake Id from the graph query
+	// if no such id, return null
+	return 1;
+}
 
 
 // get the bids as a river (ie. logistics)
