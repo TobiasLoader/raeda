@@ -77,6 +77,19 @@ const bidListInfoFragment = gql`
 	}
 `
 
+const profileDetailedFragment = gql`
+	fragment profileDetailed on Profile {
+		id
+		profileName
+		waterType
+		EOAs
+		description
+		posts {
+			...postListInfo
+		}
+	}
+`
+
 
 
 const client = createClient({
@@ -135,6 +148,7 @@ async function getPost(postId){
 			}
 		}
 		${postDetailedFragment}
+		
 	`;
 	
 	let res =  await client.query(query,{
@@ -270,12 +284,28 @@ async function lakeMyOpenPosts(profileName){
 // ADD FUNCTION FOR FULL PROFILE VIEW WITH BIDS
 
 async function getProfile(profileName){
-	return {
-		id: '0x01000000',
-		profileName: 'Toby',
-		waterType: 'LAKE',
-		description: 'Writing books out of paper',
-	};
+
+	const query = gql`
+		query ProfileRetrieve($profileNameVar:String!){
+			profiles(where:{profileName:$profileNameVar}){
+				...profileDetailed
+			}
+		}
+
+		${profileDetailedFragment}
+		${postListInfoFragment}
+	`
+	let res =  await client.query(query,{
+		profileNameVar: profileName
+	}).toPromise();
+	
+	return res.data.profiles;
+	// return {
+	// 	id: '0x01000000',
+	// 	profileName: 'Toby',
+	// 	waterType: 'LAKE',
+	// 	description: 'Writing books out of paper',
+	// };
 }
 
 // search for river posts (as a lake) wrt simple criteria
