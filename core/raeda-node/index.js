@@ -1,11 +1,16 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-import { execute } from './.graphclient'
+// import { execute } from './.graphclient'
+import { gql, createClient } from '@urql/core';
+
+
 ////////// THIS IS FOR QUERYING SMART CONTRACTS WITH 'THE GRAPH'
 ////////// + comms with the rust server
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-const postListInfoFragment = `
+apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph5'
+
+const postListInfoFragment = gql`
 	fragment {
 		id
 		postName
@@ -15,6 +20,9 @@ const postListInfoFragment = `
 		}
 	}
 `
+const client = createClient({
+	url: apiEndpoint
+})
 
 // get the bids as a lake (ie. supplier)
 // -> for the <lakePost> with id <postId>: get all the <riverBid>'s.
@@ -84,19 +92,21 @@ function lakeMyOpenBids(addr){
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	const query = `
+	const query = gql`
 		query lakeOwnPosts($profileName:PROFILENAME!){
 			posts(where:{poster_:{profileName:$profileName}},first:4){
 				...postListInfo
 			}
 		}
-	` + postListInfoFragment;
 
-	return await execute(query,{
+		${postListInfoFragment}
+	`;
+
+	return await client.query(query,{
 		variables: {
 			profileName,
 		},
-	})
+	}).toPromise()
 
 
 
@@ -136,7 +146,27 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
 	
-	// const query = 
+	const query = gql`
+		query quickSearch($waterType: WATERTYPE!,$minprice:PRICE!,$maxprice:PRICE!,$centreX:IXX!,$centreY:IXY!,$radius:IXX!){
+			posts(where:{poster_:{waterType:$waterType},iXx_gt:$centreX-$radius,iXx_lt:$centreX+$radius,iXy_gt:$centreY-$radius,iXy_lt:$centreY-$radius,price_gt:$minprice,price_lt:$maxprice}){
+				...postListInfo
+		}
+	}
+
+	${postListInfoFragment}
+	`;
+
+	const watertype = "LAKE"
+	return await client.query(query,{
+		variables:{
+			watertype,
+			minprice,
+			maxprice,
+			lng,
+			lat,
+			radius
+		}
+	}).toPromise()
 	
 	// return [
 	// 	{

@@ -81,10 +81,10 @@
 # }
 
 # #uncomment this
-# # query quickSearch($waterType: WATERTYPE!,$minprice:PRICE!,$maxprice:PRICE!,$centreX:IXX!,$centreY:IXY!,$radius:IXX!){
-# #     posts(where:{poster_:{waterType:$waterType},iXx_gt:$centreX-$radius,iXx_lt:$centreX+$radius,iXy_gt:$centreY-$radius,iXy_lt:$centreY-$radius,price_gt:$minprice,price_lt:$maxprice}){
-# #         ...postListInfo
-# #     }
-# # }
+query quickSearch($waterType: WATERTYPE!,$minprice:PRICE!,$maxprice:PRICE!,$centreX:IXX!,$centreY:IXY!,$radius:IXX!){
+    posts(where:{poster_:{waterType:$waterType},iXx_gt:$centreX-$radius,iXx_lt:$centreX+$radius,iXy_gt:$centreY-$radius,iXy_lt:$centreY-$radius,price_gt:$minprice,price_lt:$maxprice}){
+        ...postListInfo
+    }
+}
 
 # # query advancedSearch()

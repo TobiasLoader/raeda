@@ -11,8 +11,11 @@
   "author": "Tobias Loader & Rishin Madan",
   "license": "ISC",
   "dependencies": {
+    "@urql/core": "^3.1.1",
     "ethers": "^6.0.8",
-    "node-fetch": "^3.3.0"
+    "graphql": "^16.6.0",
+    "node-fetch": "^3.3.0",
+    "urql": "^3.0.3"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "^2.2.19"
