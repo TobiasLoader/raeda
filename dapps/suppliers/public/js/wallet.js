@@ -65,9 +65,6 @@ export async function connectWallet() {
 	state.signer = provider.getSigner(state.address);
 	state.connected = isConnected();
 	raeda.connectSignerContracts(state.signer);
-	// raeda.lakePost(address, 1, 'post name', 0, 0, 0, 0, 0, 0).then((v)=>{
-	// 	console.log(v);
-	// });
 }
 
 export function isConnected(){

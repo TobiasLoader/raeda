@@ -50,7 +50,12 @@ app.get('/profile', (req, res) => {
 });
 
 app.get('/newpost', (req, res) => {
-	res.render('newpost');
+	let d = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+	// let cd = d.getFullYear().toString()+'-'+d.getMonth().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+'-'+d.getDate().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
+	let cd = d.toISOString().split('T')[0];
+	let ct = d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+':'+d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
+	console.log(cd,ct)
+	res.render('newpost',{currenttime:ct,currentdate:cd});
 });
 
 app.get('/signup', (req, res) => {

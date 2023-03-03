@@ -4,9 +4,9 @@ let profileContract;
 let lakeContract;
 let riverContract;
 
-let PROFILE_ADDR="0x175f097737B50406bEE7a86c0507Bc7d5a77f26F"
-let LAKE_ADDR="0x71159b5cb83892A14ed42d7F47d310338596eEB9"
-let RIVER_ADDR="0xf786c975ac9c635a5da7c68459802e5a6b19a9db"
+let PROFILE_ADDR="0x963Ee3D90D3f83a56940b1604b33e7C6f70d6cfF"
+let LAKE_ADDR="0x5c67979d86B28A3EB607c00808F3dD05fd90f63a"
+let RIVER_ADDR="0x0a6635b82e003337bbeA9325Dc3c624A2E835FdD"
 
 let contractsInitiated = false;
 let signerConnected = false;
@@ -77,15 +77,15 @@ export async function checkSessionId(addr,sessionid){
 // post as a lake (ie. suppliers)
 // TODO -- add authAddress
 export async function lakePost(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp,{postDesc=null,iT=null,fT=null}={}){
+	console.log(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp,postDesc,iT,fT)
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
-			lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(maxprice.toString(),"wei")});
-			// 'the graph' retrieves post info -- in particular postId
-			// (SC emits event for post creation including postId)
-			let postId = 0; // <-- replace
-			if (iT!=null) lakeContract.addInitialTime(postId,iT);
-			if (fT!=null) lakeContract.addFinalTime(postId,fT);
-			// if (postDesc!=null) lakeContract.addDescription(postId,postDesc);
+			let txn = await lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(maxprice.toString(),"wei")});
+			let txnreceipt = await txn.wait();
+			let postId = txnreceipt.events[1].args[0];
+			if (iT!=null) await lakeContract.addInitialTime(postId,iT);
+			if (fT!=null) await lakeContract.addFinalTime(postId,fT);
+			if (postDesc!=null) await lakeContract.editDescription(postId,postDesc);
 			return true;
 		} catch (error) {
 			console.log(error);

@@ -67,6 +67,25 @@ export function getABI(filename){
 				},
 				{
 				  "indexed": true,
+				  "internalType": "enum waterSource.dealStates",
+				  "name": "_dealState",
+				  "type": "uint8"
+				}
+			  ],
+			  "name": "pendingEvent",
+			  "type": "event"
+			},
+			{
+			  "anonymous": false,
+			  "inputs": [
+				{
+				  "indexed": true,
+				  "internalType": "uint16",
+				  "name": "_postId",
+				  "type": "uint16"
+				},
+				{
+				  "indexed": true,
 				  "internalType": "bool",
 				  "name": "_live",
 				  "type": "bool"
@@ -181,7 +200,8 @@ export function getABI(filename){
 			  "name": "bid",
 			  "outputs": [],
 			  "stateMutability": "payable",
-			  "type": "function"
+			  "type": "function",
+			  "payable": true
 			},
 			{
 			  "inputs": [
@@ -220,7 +240,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -244,7 +265,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -268,7 +290,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -304,6 +327,11 @@ export function getABI(filename){
 				  "type": "string"
 				},
 				{
+				  "internalType": "string",
+				  "name": "description",
+				  "type": "string"
+				},
+				{
 				  "internalType": "uint16",
 				  "name": "profileId",
 				  "type": "uint16"
@@ -321,14 +349,14 @@ export function getABI(filename){
 				{
 				  "components": [
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "x",
-					  "type": "uint16"
+					  "type": "uint64"
 					},
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "y",
-					  "type": "uint16"
+					  "type": "uint64"
 					}
 				  ],
 				  "internalType": "struct waterSource.Location",
@@ -338,14 +366,14 @@ export function getABI(filename){
 				{
 				  "components": [
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "x",
-					  "type": "uint16"
+					  "type": "uint64"
 					},
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "y",
-					  "type": "uint16"
+					  "type": "uint64"
 					}
 				  ],
 				  "internalType": "struct waterSource.Location",
@@ -363,9 +391,9 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
 				  "internalType": "bool",
@@ -379,6 +407,25 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
+			  "type": "function",
+			  "constant": true
+			},
+			{
+			  "inputs": [
+				{
+				  "internalType": "uint16",
+				  "name": "_postId",
+				  "type": "uint16"
+				},
+				{
+				  "internalType": "string",
+				  "name": "_description",
+				  "type": "string"
+				}
+			  ],
+			  "name": "editDescription",
+			  "outputs": [],
+			  "stateMutability": "nonpayable",
 			  "type": "function"
 			},
 			{
@@ -389,9 +436,9 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editExpiryTime",
@@ -407,14 +454,14 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_x",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_y",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editFinalLocation",
@@ -448,14 +495,14 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_x",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_y",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editInitialLocation",
@@ -492,18 +539,19 @@ export function getABI(filename){
 			  "name": "getFinalLocation",
 			  "outputs": [
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -516,18 +564,19 @@ export function getABI(filename){
 			  "name": "getInitialLocation",
 			  "outputs": [
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -542,35 +591,36 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_iXx",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_iXy",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_fXx",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_fXy",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "initPost",
 			  "outputs": [],
 			  "stateMutability": "payable",
-			  "type": "function"
+			  "type": "function",
+			  "payable": true
 			},
 			{
 			  "inputs": [
@@ -589,7 +639,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -599,10 +650,11 @@ export function getABI(filename){
 				  "type": "uint16"
 				}
 			  ],
-			  "name": "refund",
+			  "name": "refundExpiredPost",
 			  "outputs": [],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -686,6 +738,25 @@ export function getABI(filename){
 				},
 				{
 				  "indexed": true,
+				  "internalType": "enum waterSource.dealStates",
+				  "name": "_dealState",
+				  "type": "uint8"
+				}
+			  ],
+			  "name": "pendingEvent",
+			  "type": "event"
+			},
+			{
+			  "anonymous": false,
+			  "inputs": [
+				{
+				  "indexed": true,
+				  "internalType": "uint16",
+				  "name": "_postId",
+				  "type": "uint16"
+				},
+				{
+				  "indexed": true,
 				  "internalType": "bool",
 				  "name": "_live",
 				  "type": "bool"
@@ -800,7 +871,8 @@ export function getABI(filename){
 			  "name": "bid",
 			  "outputs": [],
 			  "stateMutability": "payable",
-			  "type": "function"
+			  "type": "function",
+			  "payable": true
 			},
 			{
 			  "inputs": [
@@ -839,7 +911,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -863,7 +936,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -887,7 +961,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -923,6 +998,11 @@ export function getABI(filename){
 				  "type": "string"
 				},
 				{
+				  "internalType": "string",
+				  "name": "description",
+				  "type": "string"
+				},
+				{
 				  "internalType": "uint16",
 				  "name": "profileId",
 				  "type": "uint16"
@@ -940,14 +1020,14 @@ export function getABI(filename){
 				{
 				  "components": [
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "x",
-					  "type": "uint16"
+					  "type": "uint64"
 					},
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "y",
-					  "type": "uint16"
+					  "type": "uint64"
 					}
 				  ],
 				  "internalType": "struct waterSource.Location",
@@ -957,14 +1037,14 @@ export function getABI(filename){
 				{
 				  "components": [
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "x",
-					  "type": "uint16"
+					  "type": "uint64"
 					},
 					{
-					  "internalType": "uint16",
+					  "internalType": "uint64",
 					  "name": "y",
-					  "type": "uint16"
+					  "type": "uint64"
 					}
 				  ],
 				  "internalType": "struct waterSource.Location",
@@ -982,9 +1062,9 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
 				  "internalType": "bool",
@@ -998,6 +1078,25 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
+			  "type": "function",
+			  "constant": true
+			},
+			{
+			  "inputs": [
+				{
+				  "internalType": "uint16",
+				  "name": "_postId",
+				  "type": "uint16"
+				},
+				{
+				  "internalType": "string",
+				  "name": "_description",
+				  "type": "string"
+				}
+			  ],
+			  "name": "editDescription",
+			  "outputs": [],
+			  "stateMutability": "nonpayable",
 			  "type": "function"
 			},
 			{
@@ -1008,9 +1107,9 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editExpiryTime",
@@ -1026,14 +1125,14 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_x",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_y",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editFinalLocation",
@@ -1067,14 +1166,14 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_x",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_y",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "editInitialLocation",
@@ -1111,18 +1210,19 @@ export function getABI(filename){
 			  "name": "getFinalLocation",
 			  "outputs": [
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1135,18 +1235,19 @@ export function getABI(filename){
 			  "name": "getInitialLocation",
 			  "outputs": [
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1161,35 +1262,36 @@ export function getABI(filename){
 				  "type": "uint16"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_iXx",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_iXy",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_fXx",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_fXy",
-				  "type": "uint16"
+				  "type": "uint64"
 				},
 				{
-				  "internalType": "uint16",
+				  "internalType": "uint64",
 				  "name": "_exp",
-				  "type": "uint16"
+				  "type": "uint64"
 				}
 			  ],
 			  "name": "initPost",
 			  "outputs": [],
 			  "stateMutability": "payable",
-			  "type": "function"
+			  "type": "function",
+			  "payable": true
 			},
 			{
 			  "inputs": [
@@ -1208,7 +1310,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1218,10 +1321,11 @@ export function getABI(filename){
 				  "type": "uint16"
 				}
 			  ],
-			  "name": "refund",
+			  "name": "refundExpiredPost",
 			  "outputs": [],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1288,7 +1392,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1317,7 +1422,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			},
 			{
 			  "inputs": [
@@ -1382,7 +1488,8 @@ export function getABI(filename){
 				}
 			  ],
 			  "stateMutability": "view",
-			  "type": "function"
+			  "type": "function",
+			  "constant": true
 			}
 		];
 }
