@@ -122,6 +122,14 @@
 	margin: auto 0;
 }
 
+.postliendrow {
+	display: inline-flex;
+}
+
+.postliendrow > * {
+	margin-left: 15px;
+}
+
 .postbidprice {
 	display: flex;
 	color:rgb(83, 130, 201);
@@ -129,6 +137,7 @@
 
 .postnobid {
 	color:rgb(201, 83, 83);
+	margin-top: 7px;
 }
 
 .posttable {

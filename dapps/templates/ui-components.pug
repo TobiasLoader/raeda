@@ -15,28 +15,35 @@ mixin lakebidli(postid,bidprice,info)
 	li.bidli(onclick=url)
 		div.bidprice
 			h2 !{bidprice}
-			span.bidcurrency eth
+			span.bidcurrency wei
 		p.biddesc !{info}
 
 mixin buildopenlakeposts()
 	- for(let i = 0; i < openposts.length; i+=1)
-		if openposts[i].bestprice!=''
-			+lakepostli(openposts[i].postid,openposts[i].postname,true,openposts[i].bestprice)
-		else
-			+lakepostli(openposts[i].postid,openposts[i].postname,false,'-')
-
-mixin lakepostli(postid,postname,hasbid,bestprice)
-	- let url = "window.location.href='/post-"+postid+"'"
+		+lakepostli(openposts[i].id,openposts[i].postName,openposts[i].price,openposts[i].bids)
+		
+mixin lakepostli(postid,postname,price,bids)
+	- let intpostid = parseInt(postid)
+	- let url = "window.location.href='/post-"+intpostid+"'"
+	- let hasbid = bids.length>0
 	if hasbid==true
 		li.postli(onclick=url)
 			p !{postname}
-			div.postbidprice
-				h2 !{bestprice}
-				span.bidcurrency eth
+			.postliendrow
+				div.postbidprice
+					h2 !{bids[0].price}
+					span.bidcurrency wei
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
 	else
 		li.postli.postlinobid(onclick=url)
 			p !{postname}
-			p.postnobid NO BID
+			.postliendrow
+				p.postnobid NO BID
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
 
 mixin requiredlabel(fieldname)
 	label

@@ -195,8 +195,7 @@ async function lakeMyOpenBids(profileName){
 }
 
 // get the users (a lake) open posts
-async function lakeMyOpenPosts(profileNamez){
-	console.log(profileNamez)
+async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
 	const query = gql`
@@ -209,7 +208,7 @@ async function lakeMyOpenPosts(profileNamez){
 	`;
 
 	let res=  await client.query(query,{
-		profileNameVar: profileNamez
+		profileNameVar: profileName
 	}).toPromise();
 
 	console.log(res.data.posts);

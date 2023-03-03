@@ -39,10 +39,16 @@ function postExtractBody(req,callback){
 }
 
 app.get('/', (req, res) => {
-	res.render('index',{
-		openbids: raeda.lakeMyOpenBids('Toby'),
-		openposts: raeda.lakeMyOpenPosts('Toby')
-	});
+	raeda.lakeMyOpenBids('Toby').then((openbids)=>{
+		raeda.lakeMyOpenPosts('Toby').then((openposts)=>{
+			console.log(openbids)
+			console.log(openposts);
+			res.render('index',{
+				openbids: openbids,
+				openposts: openposts
+			});
+		})
+	});	
 });
 
 app.get('/profile', (req, res) => {
