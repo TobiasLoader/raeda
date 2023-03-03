@@ -112,10 +112,20 @@ app.get('/post-:postid', (req, res) => {
 	})
 });
 
+
 app.get('/messenger', (req, res) => {
 	raeda.getMessages('0x02','0x01').then((rust_res)=>{
 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
 		res.render('messenger',{res:txt});
+	});
+});
+
+
+app.get('/messenger-:name', (req, res) => {
+	const { headers, method, url, params } = req;
+	raeda.getMessages('0x02','0x01').then((rust_res)=>{
+		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+		res.render('message',{name:params['name']});
 	});
 });
 
@@ -134,6 +144,12 @@ app.post('/api/lake-simple-search', (req, res) => {
 		});
 	});
 });
+
+app.get('/profile-:name', (req, res) => {
+	const { headers, method, url, params } = req;
+	res.render('profile',{name:params['name']});
+});
+
 
 app.get('/favicon', (req, res) => {
 	res.send('no favicon yet');

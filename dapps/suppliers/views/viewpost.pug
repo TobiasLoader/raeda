@@ -2,12 +2,43 @@ extends ../../templates/layout.pug
 	
 block content
 	.area-container
-		.area
-			h2 View Post
-			p !{post['id']}
-			p !{post['postName']}
-			p !{post['EOA']}
-			p !{post['price']}
+		.area-row
+			#postarea.area
+				.posttitlerow
+					.titlecontent
+						h2 !{post['postName']}
+						p.toitalic.toblue (post !{post['id']})
+					.endrowcontent
+						- if (post['live'])
+							div
+								p.toblue LIVE
+						- else
+							div
+								p.tored INACTIVE
+						div
+							- let profileurl = "/profile-"+post['poster']['profileName']
+							a(href=profileurl) !{post['poster']['profileName']}
+						div
+							h3
+								| > 
+								span.toblue £ 
+								| !{post['price']}
+				//.minarea
+				p !{post['description']}
+				- if (post['live'])
+					.buttonrow
+						+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
+						+jsmainbutton('makebid','make bid')
+			.area
+				h2 Bids
+		.area-row
+			#makebidarea.area.hide
+				.posttitlerow
+					h2 Make Bid
+					+jsmainbutton('placebid','place bid')
+				.textlabelfield
+					label Bid Price (£)
+					input(id="makebidprice",placeholder=post['price'])
 
 block styles
 	link(rel='stylesheet', href='styles/viewpost.css')

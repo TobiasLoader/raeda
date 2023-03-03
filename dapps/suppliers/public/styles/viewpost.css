@@ -2,6 +2,27 @@
 	max-height: 1000px;
 	padding:20px;
 }
+
+#postarea {
+	flex:2;
+}
+
+.posttitlerow {
+	margin-bottom:20px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.titlecontent {
+	display: inline-flex;
+}
+.titlecontent h2 {
+	margin-right: 10px;
+}
+.titlecontent p {
+	margin-top:5px;
+}
+
 .textlabelfield {
 	display: flex;
 	flex-direction: column;
@@ -35,4 +56,54 @@
 
 .labelreq {
 	color: rgb(83, 130, 201);
+}
+
+.endrowcontent {
+	display:flex;
+}
+.endrowcontent > div {
+	margin-left:10px;
+	border: rgba(168,168,168,0.3) 1px solid;
+	border-radius: 5px;
+	padding:10px 15px;
+}
+
+.endrowcontent a {
+	color:rgb(168,168,168);
+}
+
+.endrowcontent a:hover {
+	color:rgb(83, 130, 201);
+}
+
+.area .buttonrow {
+	margin-top:20px;
+}
+
+.textlabelfield {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	margin-top: 10px;
+}
+
+.textlabelfield input {
+	background: black;
+	outline: none;
+	color: white;
+	border: rgba(168,168,168,0.5) 1px solid;
+	margin-top: 5px;
+	height: 30px;
+	font-family: 'Montserrat Italic';
+	font-size: 15px;
+	padding: 5px 5px 5px 10px;
+	border-radius: 5px;
+}
+
+.textlabelfield input:focus {
+	border: rgba(83, 130, 201,1) 1px solid;
+}
+
+.textlabelfield label {
+	font-size:14px;
 }
