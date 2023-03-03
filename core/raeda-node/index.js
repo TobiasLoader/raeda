@@ -106,22 +106,19 @@ function lakeMyOpenBids(addr){
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	const query = gql`
+	const query = `
 		query lakeOwnPosts($profileName:PROFILENAME!){
 			posts(where:{poster_:{profileName:$profileName}},first:4){
 				...postListInfo
 			}
 		}
+	` + postListInfoFragment;
 
-		${postListInfoFragment}
-	`;
-
-	return await client.query(query,{
+	return await execute(query,{
 		variables: {
 			profileName,
 		},
-	}).toPromise()
-
+	})
 
 
 
@@ -182,43 +179,43 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 		}
 	}).toPromise()
 	
-	// return [
-	// 	{
-	// 		'postid':8,
-	// 		'postname':'CHAIR',
-	// 		'river':'Hamzah',
-	// 		'rivermin':'0.08',
-	// 		'bestprice':'0.10'
-	// 	},
-	// 	{
-	// 		'postid':9,
-	// 		'postname':'TABLE',
-	// 		'river':'Mary',
-	// 		'rivermin':'0.14',
-	// 		'bestprice':''
-	// 	},
-	// 	{
-	// 		'postid':10,
-	// 		'postname':'CLOTH',
-	// 		'river':'Rishin',
-	// 		'rivermin':'0.16',
-	// 		'bestprice':''
-	// 	},
-	// 	{
-	// 		'postid':11,
-	// 		'postname':'CLOAK',
-	// 		'river':'Toby',
-	// 		'rivermin':'0.13',
-	// 		'bestprice':'0.13'
-	// 	},
-	// 	{
-	// 		'postid':12,
-	// 		'postname':'COAT',
-	// 		'river':'Juuso',
-	// 		'rivermin':'0.10',
-	// 		'bestprice':'0.14'
-	// 	}
-	// ];
+	return [
+		{
+			'postid':8,
+			'postname':'CHAIR',
+			'river':'Hamzah',
+			'rivermin':'0.08',
+			'bestprice':'0.10'
+		},
+		{
+			'postid':9,
+			'postname':'TABLE',
+			'river':'Mary',
+			'rivermin':'0.14',
+			'bestprice':''
+		},
+		{
+			'postid':10,
+			'postname':'CLOTH',
+			'river':'Rishin',
+			'rivermin':'0.16',
+			'bestprice':''
+		},
+		{
+			'postid':11,
+			'postname':'CLOAK',
+			'river':'Toby',
+			'rivermin':'0.13',
+			'bestprice':'0.13'
+		},
+		{
+			'postid':12,
+			'postname':'COAT',
+			'river':'Juuso',
+			'rivermin':'0.10',
+			'bestprice':'0.14'
+		}
+	];
 }
 
 async function lakeGetId(addr){
