@@ -105,6 +105,7 @@ app.get('/post-:postid', (req, res) => {
 	const { headers, method, url, params } = req;
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
+		console.log(postinfo);
 		if (postinfo.length>0) res.render('viewpost',{found:true,post:postinfo[0]});
 		else res.render('viewpost',{found:false});
 	})
@@ -145,7 +146,6 @@ app.post('/api/my-open-bids', (req, res) => {
 app.post('/api/my-open-posts', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.lakeMyOpenPosts(body['profilename']).then((openposts)=>{
-			console.log(openposts);
 			res.send(myopenpostsfn({openposts:openposts}));
 		});	
 	});
@@ -160,8 +160,11 @@ app.post('/api/lake-simple-search', (req, res) => {
 });
 
 app.get('/profile-:name', (req, res) => {
-	const { headers, method, url, params } = req;
-	res.render('profile',{name:params['name']});
+	postExtractBody(req,(body)=>{
+		raeda.getProfile(body['name']).then((prof)=>{
+			res.render('profile',{name:prof['name'],desc:prof['desc']});
+		});
+	});
 });
 
 

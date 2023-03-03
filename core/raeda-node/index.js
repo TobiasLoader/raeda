@@ -127,11 +127,6 @@ function intToBytesLittleEndian(v){
 async function getPost(postId){
 	// get from `the graph`
 	// PARAMS: postId
-	// let v = ethers.utils.hexZeroPad(ethers.utils.hexlify(1), 32)
-	// let postid = changeEndianness(ethers.utils.hexlify(parseInt(postId)));
-	// let v = BigInt(1);
-	// console.log(postid)
-	// console.log(ethers.hexZeroPad(v.toString(16), 32))
 
 	const query = gql`
 		query onePost($idvar:ID!){
@@ -238,11 +233,10 @@ async function lakeMyOpenPosts(profileName){
 		${postListInfoFragment}
 	`;
 
-	let res=  await client.query(query,{
+	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
 	
-	console.log(res.data.posts)
 	return res.data.posts;
 
 	// return [
@@ -274,6 +268,15 @@ async function lakeMyOpenPosts(profileName){
 }
 
 // ADD FUNCTION FOR FULL PROFILE VIEW WITH BIDS
+
+async function getProfile(profileName){
+	return {
+		id: '0x01000000',
+		profileName: 'Toby',
+		waterType: 'LAKE',
+		description: 'Writing books out of paper',
+	};
+}
 
 // search for river posts (as a lake) wrt simple criteria
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
