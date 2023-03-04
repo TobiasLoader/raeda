@@ -6,7 +6,15 @@ import "./waterSource.sol";
 
 contract lake is waterSource{
 
-    constructor(address _profileContractAddress) waterSource(_profileContractAddress) {}
+    uint16 private postIdCount = 0;
+    uint16 private bidIdCount = 0;
+
+    constructor(address _profileContractAddress) waterSource(_profileContractAddress) {
+        profileContract = profile(_profileContractAddress);
+        owner = msg.sender;
+        postIdCount = 0;
+        bidIdCount = 1;
+    }
 
     // function verifyOnOwnPost() external {
 

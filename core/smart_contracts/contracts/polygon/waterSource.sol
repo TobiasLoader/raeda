@@ -9,8 +9,8 @@ abstract contract waterSource {
     // verifyTributary verifyTributaryContract;
     address verifyTributaryAddress;
 
-    uint16 private postIdCount = 0;
-    uint16 private bidIdCount = 0;
+    uint16 private postIdCount;
+    uint16 private bidIdCount;
 
     // enum whichBucketValue {INT,BOOL,STRING}
     enum dealStates {NOTCLOSED,VERIFIED,LAKECLOSED,RIVERCLOSED,BOTHCLOSED}
@@ -69,6 +69,8 @@ abstract contract waterSource {
     constructor(address _profileContractAddress) {
         profileContract = profile(_profileContractAddress);
         owner = msg.sender;
+        postIdCount = 0;
+        bidIdCount = 1;
     }
 
     function setVerifyTributaryAddress(address _verifyTributaryAddress) external {
@@ -219,7 +221,8 @@ abstract contract waterSource {
 
     function bid(uint16 _postId, uint16 _bidderId) payable external {
         require(waterSource.bidReqs(_postId,msg.value),"Does not meet criteria for dutch/english bid");
-        if(collection[_postId].exp>block.timestamp){
+        if(collection[_postId].exp<block.timestamp){
+            msg.sender.call{value:msg.value};
             waterSource.refundExpiredPost(_postId);
         }
         else {
@@ -228,7 +231,7 @@ abstract contract waterSource {
             (bidderWaterType,,) = profileContract.profiles(_bidderId);
             (posterWaterType,,) = profileContract.profiles(collection[_postId].profileId);
             require(!(bidderWaterType==posterWaterType),"Error: not allowed to bid on post of same water type");
-            bidIdCount += 1;
+            bidIdCount += 2;
             bids[_postId][bidIdCount].bidderId = _bidderId;
             bids[_postId][bidIdCount].bidderEOA = msg.sender;
             bids[_postId][bidIdCount].bidAmount = msg.value;
