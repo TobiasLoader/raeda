@@ -35,17 +35,19 @@ $('#create-profile').click(()=>{
 	} else {
 		raeda.createProfileRiver(pname,pdesc).then((v)=>{
 			if (v){
-				afterLoginSuccess();
-				raeda.riverLogin(wallet.state.address,pname,wallet.state.signer).then((res)=>{
-					if (res['success']) {
-						wallet.state.login = true;
-						afterLoginSuccess();
-						utils.setCookie('sessionid',res['sessionid'],1);
-						$('.loginaction').addClass('hide');
-						wallet.state.profileid = res['profileid'];
-						window.location.href = "/";
-					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
-				});
+				utils.notification('Success', ['Successfully create a new profile.','Please now sign in to the profile ('+pname+')']);
+				// afterLoginSuccess();
+				// raeda.riverLogin(wallet.state.address,pname,wallet.state.signer).then((res)=>{
+				// 	console.log(res);
+				// 	if (res['found']) {
+				// 		wallet.state.login = true;
+				// 		afterLoginSuccess();
+				// 		utils.setCookie('sessionid',res['sessionid'],1);
+				// 		$('.loginaction').addClass('hide');
+				// 		wallet.state.profileid = res['profileid'];
+				// 		window.location.href = "/";
+				// 	} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
+				// });
 			} else {
 				utils.notification('Oops', ['Something went wrong, the new profile could not be updated.'], true);
 			}

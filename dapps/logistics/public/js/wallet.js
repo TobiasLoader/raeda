@@ -105,7 +105,6 @@ function afterLoginSuccess(){
 	$('#logout').removeClass('hide');
 	$('#river-post').removeClass('done');
 	if (window.location.pathname=='/'){
-		// console.log(state.profilename)
 		raeda.riverMyOpenBids(state.profilename);
 		raeda.riverMyOpenPosts(state.profilename);
 	}

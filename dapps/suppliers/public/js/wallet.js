@@ -105,7 +105,8 @@ function afterLoginSuccess(){
 	$('#logout').removeClass('hide');
 	$('#lake-post').removeClass('done');
 	if (window.location.pathname=='/'){
-		console.log(state.profilename)
+		console.log(state.profilename);
+		// console.log('SHOULD BE HERE -- SHOULD BE HERE');
 		raeda.lakeMyOpenBids(state.profilename);
 		raeda.lakeMyOpenPosts(state.profilename);
 	}

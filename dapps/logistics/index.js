@@ -106,27 +106,27 @@ app.get('/post-:postid', (req, res) => {
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
 		console.log('pre');
-		postinfo.bids = [
-			{
-				amount: 15,
-				accepted: true,
-				bidder: {
-					profileName: 'Toby'
-				}
-			},
-			{
-				amount: 10,
-				accepted: false,
-				bidder: {
-					profileName: 'Peter'
-				}
-			}		
-		];
+		// postinfo.bids = [
+		// 	{
+		// 		amount: 15,
+		// 		accepted: true,
+		// 		bidder: {
+		// 			profileName: 'Toby'
+		// 		}
+		// 	},
+		// 	{
+		// 		amount: 10,
+		// 		accepted: false,
+		// 		bidder: {
+		// 			profileName: 'Peter'
+		// 		}
+		// 	}		
+		// ];
 		console.log('post');
 		console.log(postinfo);
 
 		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
-		else res.render('viewpost',{found:false});
+		else res.render('viewpost',{found:false,post:{id:-1}});
 	})
 });
 

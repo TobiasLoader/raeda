@@ -147,7 +147,7 @@ function verifyDriver(postId){
 }
 
 
-const client = createClient({
+let client = createClient({
 	url: apiEndpoint
 })
 
@@ -205,6 +205,9 @@ async function getPost(postId){
 		
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		idvar: intToBytesLittleEndian(postId)
 	}).toPromise();
@@ -287,7 +290,10 @@ async function lakeMyOpenBids(profileName){
 		}
 		${bidListInfoFragment}
 	`;
-
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -298,7 +304,7 @@ async function lakeMyOpenBids(profileName){
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	// console.log('lakeMyOpenPosts',profileName);
+	console.log('lakeMyOpenPosts LINE 247',profileName);
 
 	const query = gql`
 		query lakeOwnPosts($profileNameVar:String!){
@@ -308,10 +314,18 @@ async function lakeMyOpenPosts(profileName){
 		}
 		${postListInfoFragment}
 	`;
+	
+	console.log('query LINE 258',query);
 
-	let res =  await client.query(query,{
+	client = createClient({
+		url: apiEndpoint
+	});
+	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
+	
+	console.log('res LINE 264',res);
+	
 	return res.data.posts;
 }
 
@@ -329,9 +343,13 @@ async function riverMyOpenBids(profileName){
 		${bidListInfoFragment}
 	`;
 
-	let res =  await client.query(query,{
+	client = createClient({
+		url: apiEndpoint
+	});
+	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
+	console.log('BIDS',profileName,query,res)
 	return res.data.bids;
 }
 
@@ -349,6 +367,9 @@ async function riverMyOpenPosts(profileName){
 		${postListInfoFragment}
 	`;
 
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -370,6 +391,9 @@ async function getProfile(profileName){
 		${profileDetailedFragment}
 		${postListInfoFragment}
 	`
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -410,6 +434,10 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	`;
 
 	const watertype = "LAKE";
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		waterTypevar: watertype,
 		minpricevar: minprice,
@@ -443,6 +471,10 @@ async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 	`;
 
 	const watertype = "LAKE";
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		waterTypevar: watertype,
 		minpricevar: minprice,
@@ -460,20 +492,23 @@ async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 async function lakeGetId(addr,profileName){
 	query = gql`
 		query lakeGetId($profileNameVar: String!){
-			profiles(where:{profileName: $profileNameVar}){
+			profiles(where:{profileName: $profileNameVar,waterType:"LAKE"}){
 				id
 				EOAs
 			}
 		}
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	const res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
 
 	let profiles = res.data.profiles;
 	const profileobj = {}
-	
+	console.log(profiles);
 	if (profiles.length>0){
 		profileobj['found'] = true;
 		profileobj['id'] = parseInt('0x'+changeEndianness(profiles[0].id.substring(2)));
@@ -492,13 +527,16 @@ async function lakeGetId(addr,profileName){
 async function riverGetId(addr,profileName){
 	query = gql`
 		query riverGetId($profileNameVar: String!){
-			profiles(where:{profileName: $profileNameVar}){
+			profiles(where:{profileName: $profileNameVar,waterType:"RIVER"}){
 				id
 				EOAs
 			}
 		}
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	const res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();

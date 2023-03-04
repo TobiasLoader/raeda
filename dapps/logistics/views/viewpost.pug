@@ -50,13 +50,11 @@ block content
 								| !{datetime.getHours()}
 								| :
 								| !{datetime.getMinutes()}
-					if (post['live'])
-						.buttonrow
-							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
-							+jsmainbutton('makebid','make bid')
-					else
-						.buttonrow
-							+jsmainbutton('makebidexp','cannot place bid','done')
+					.buttonrow
+						+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
+						+jsmainbutton('makebid','make bid')
+					.buttonrow.hide
+						+jsmainbutton('makebidexp','cannot place bid','done')
 				.area
 					h2 Bids
 					if (post['bids'].length>0)
@@ -85,3 +83,4 @@ block scripts
 	script(src="/js/viewpost.js",type="module")
 	script.
 		let postid = '!{post["id"]}'
+		let postlive = '!{post["live"]}'

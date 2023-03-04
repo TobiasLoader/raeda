@@ -106,9 +106,9 @@ app.get('/post-:postid', (req, res) => {
 	const { headers, method, url, params } = req;
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
-		console.log(postinfo);
+		// console.log(postinfo);
 		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
-		else res.render('viewpost',{found:false});
+		else res.render('viewpost',{found:false,post:{id:-1}});
 	})
 });
 
@@ -146,7 +146,10 @@ app.post('/api/my-open-bids', (req, res) => {
 
 app.post('/api/my-open-posts', (req, res) => {
 	postExtractBody(req,(body)=>{
+		console.log('get OPEN POSTS')
+		console.log(body['profilename'])
 		raeda.lakeMyOpenPosts(body['profilename']).then((openposts)=>{
+			console.log('OPENPOSTS LINE 152',openposts)
 			res.send(myopenpostsfn({openposts:openposts}));
 		});	
 	});
