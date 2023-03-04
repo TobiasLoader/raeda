@@ -116,7 +116,7 @@ function afterLoginSuccess(){
 function autoLoginSessionId(){
 	state.sessionid = utils.getCookie('sessionid');
 	if (state.connected && state.sessionid!=null){
-		raeda.checkSessionId(state.address,state.sessionid).then((res)=>{
+		raeda.riverCheckSessionId(state.address,state.sessionid).then((res)=>{
 			if (res['success']){
 				console.log(res)
 				state.login = true;

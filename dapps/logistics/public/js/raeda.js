@@ -59,6 +59,7 @@ export async function createProfileRiver(profilename,description){
 		try {
 			let response = await profileContract.createProfile(1,profilename,description);
 			console.log('create profile success',response);
+			console.log('about to create issuer')
 			let createissuer = await fetch('/api/create-river-issuer-driver', {
 				method: 'post',
 				body:JSON.stringify({
@@ -66,7 +67,7 @@ export async function createProfileRiver(profilename,description){
 				}),
 				headers: {'Content-Type': 'application/json'}
 			}).then((res) => {
-				console.log(res);
+				console.log('/api/create-river-issuer-driver',res);
 				return true;
 			});
 			return createissuer;
@@ -89,15 +90,23 @@ export async function lakeLogin(addr,profilename,signer){
 export async function riverLogin(addr,profilename,signer){
 	return await _checkSignerConnectedAsync(async ()=>{
 		let signature = await signer.signMessage(profilename);
-		return await _raedaLakeAPICall('riverlogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
+		return await _raedaRiverAPICall('riverlogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
 			return body;
 		});
 	});
 }
 
-export async function checkSessionId(addr,sessionid){
+export async function lakeCheckSessionId(addr,sessionid){
 	return await _checkSignerConnectedAsync(async ()=>{
 		return await _raedaLakeAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
+			return body;
+		});
+	});
+}
+
+export async function riverCheckSessionId(addr,sessionid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		return await _raedaRiverAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
 			return body;
 		});
 	});
@@ -189,8 +198,37 @@ export async function riverBid(addr,bidprice,postId,bidderId){
 	});	
 }
 
+export async function addDriver(profilename,driverdid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			return _raedaRiverAPICall('river-add-driver',{
+				'rivername':profilename,
+				'driverdid':driverdid
+			}).then((body)=>{
+				console.log(body);
+				return true;
+			});
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});	
+}
+
 function _raedaLakeAPICall(method, params = null, local=true){
 	let url = 'https://lake.raeda.app';
+	if (local) url = 'http://127.0.0.1:3000'
+	return fetch(url+'/api/'+method, {
+		method: 'post',
+		body: JSON.stringify(params),
+		headers: {'Content-Type': 'application/json'}
+	}).then((res) => res.json()).then((body) => {
+		return body;
+	});
+}
+
+function _raedaRiverAPICall(method, params = null, local=true){
+	let url = 'https://river.raeda.app';
 	if (local) url = 'http://127.0.0.1:3000'
 	return fetch(url+'/api/'+method, {
 		method: 'post',
