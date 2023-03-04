@@ -21,10 +21,11 @@ html(lang="en-GB")
 			a(id="logo-a",href="/")
 				img(id="logo", src="/assets/img/raeda_logo_modern-dark-transparent-path.svg", alt="Raeda Logo")
 			.buttonrow
-				+mainbutton('messenger','messenger','/messenger')
+				// +mainbutton('messenger','messenger','/messenger')
 				+mainbutton('newpost','new post','/newpost')
 				+mainbutton('signup','sign up','/signup')
 				+jsmainbutton('topbarlogin','login','loginaction')
+				+jsmainbutton('profile','profile','hide')
 				+jsmainbutton('logout','logout','hide')
 		#content
 			block content

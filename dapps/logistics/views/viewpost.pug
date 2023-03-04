@@ -1,5 +1,12 @@
 extends ../../templates/layout.pug
-	
+
+mixin riverbidonpost(biddername,bidprice,info)
+	li.bidli
+		div.bidprice
+			h2 !{bidprice}
+			span.bidcurrency wei
+		p.biddesc !{info}
+
 block content
 	if found
 		.area-container
@@ -54,7 +61,7 @@ block content
 					h2 Bids
 					if (post['bids'].length>0)
 						- for (var i=0; i<post['bids'].length; i+=1)
-							p yess
+							+riverbidonpost(post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['bids'][i]['accepted'])
 					else
 						p.toitalic.toblue(style="margin-top:10px") Be the first to make a bid!
 			.area-row

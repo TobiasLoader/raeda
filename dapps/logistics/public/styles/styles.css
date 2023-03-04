@@ -405,7 +405,7 @@ p {
 
 .mainbutton:hover {
 	background: rgb(25, 25, 25);
-	border-color: rgba(139, 162, 193, 0.5);
+	border-color: rgba(130,192,139, 0.5);
 }
 
 .mainbutton h3 {

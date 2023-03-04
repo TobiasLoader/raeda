@@ -40,6 +40,7 @@
     "@openzeppelin/contracts-upgradeable": "^4.8.2",
     "ethers": "^6.0.8",
     "solc": "^0.8.18",
-    "solidity-bytes-utils": "^0.8.0"
+    "solidity-bytes-utils": "^0.8.0",
+    "truffle": "^5.7.9"
   }
 }

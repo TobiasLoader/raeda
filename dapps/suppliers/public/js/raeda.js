@@ -41,11 +41,11 @@ export async function connectSignerContracts(signer){
 
 // RAEDA functions
 
-export async function createProfile(watertypeid,profilename,description){
+export async function createProfileLake(profilename,description){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			console.log(profileContract)
-			let response = await profileContract.createProfile(watertypeid,profilename,description);
+			let response = await profileContract.createProfile(0,profilename,description);
 			console.log('create profile success',response);
 			return true;
 		} catch (error) {

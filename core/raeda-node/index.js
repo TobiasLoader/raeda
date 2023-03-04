@@ -482,6 +482,51 @@ function riverGetBids(postId){
 	}];
 }
 
+// this var should be stored securely on rust server (in db)
+let polygonid_dids = {};
+
+async function createRiverIssuerDriver(rivername){
+	// contact Issuer Node (on ngrok)
+	// get (private) river 'did' back
+	let privateriver_did = '1234567890';
+	polygonid_dids[rivername] = privateriver_did;
+	console.log(polygonid_dids); // for debug
+	return {
+		'rivername':rivername,
+		'success':true
+	};
+}
+async function addDriver(rivername,driverdid){
+	// contact Issuer Node (on ngrok)
+	// get unique qr code from params:
+	// - 
+	// - driverdid
+	console.log(rivername,driverdid);
+	let qr = JSON.parse({
+		"body": {
+			"credentials": [
+				{
+					"description": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld#KYCAgeCredential",
+					"id": "75d7ca20-b1ea-11ed-9bd2-2e7e0e869740"
+				}
+			],
+			"url": "http://localhost:3001/v1/agent"
+		},
+		"from": "did:polygonid:polygon:mumbai:2qPUbMiYD8qFVjM6KLTY5qSMQpR9x6aSRfNByRkckm",
+		"id": "cf858ea9-ab66-4c3c-8c55-e99885b086e0",
+		"thid": "cf858ea9-ab66-4c3c-8c55-e99885b086e0",
+		"to": "did:polygonid:polygon:mumbai:2qNZRvFrnVfANm9UTJ3Wn3AP4wmy9CUvX1qpYE28up",
+		"typ": "application/iden3comm-plain-json",
+		"type": "https://iden3-communication.io/credentials/1.0/offer"
+	});
+	console.log(qr);
+	return {
+		'rivername':rivername,
+		'success':true,
+		'qr': qr
+	};
+}
+
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 
 let l = true;
@@ -521,5 +566,7 @@ module.exports = {
 	getMessages,
 	postMessage,
 	getProfile,
+	createRiverIssuerDriver,
+	addDriver,
 	_rustCall
 }

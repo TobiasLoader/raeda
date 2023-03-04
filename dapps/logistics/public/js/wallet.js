@@ -101,12 +101,16 @@ function afterConnectTry(){
 function afterLoginSuccess(){
 	$('.loginaction').addClass('hide');
 	$('#signup').addClass('hide');
+	$('#profile').removeClass('hide');
 	$('#logout').removeClass('hide');
 	$('#river-post').removeClass('done');
 	if (window.location.pathname=='/'){
-		console.log(state.profilename)
+		// console.log(state.profilename)
 		raeda.riverMyOpenBids(state.profilename);
 		raeda.riverMyOpenPosts(state.profilename);
+	}
+	if (window.location.pathname=='/profile-'+state.profilename){
+		$('#adddriverarea').removeClass('hide');
 	}
 }
 
@@ -185,6 +189,11 @@ $('.loginaction').click(function(){
 			} else utils.notification('Oops', ['Login failed – no profile name provided'], true);
 		});
 	}
+});
+
+$('#profile').click(function(){
+	console.log('click prof')
+	window.location.replace("/profile-"+state.profilename);
 });
 
 $('#logout').click(function(){

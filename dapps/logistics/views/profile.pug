@@ -26,17 +26,24 @@ mixin riverpostli(postid,postname,price,bids)
 block content
 	if found
 		.area-container
+			.area-row
+				.area
+					.posttitlerow
+						.titlecontent
+							h2 !{name}
+							p.toitalic.toblue id !{id}
+						.endrowcontent
+							div
+								p.toblue !{waterType}
+					p.toitalic= desc
+				.area(id="adddriverarea",class="hide")
+					h3 Add Driver
+					.textlabelfield
+						+requiredlabel('Driver Public Address')
+						input(id='driver-pub-addr',placeholder='0x..')
+					+jsmainbutton('adddriver','Add Driver')
 			.area
-				.posttitlerow
-					.titlecontent
-						h2 !{name}
-						p.toitalic.toblue (post !{id})
-					.endrowcontent
-						div
-							p.toblue !{waterType}
-				p.toitalic= desc
-			.area
-				h3 Posts by !{name}
+				h3 POSTS BY !{name}
 				- for (var i=0; i<Math.min(posts.length,5); i+=1)
 					+riverpostli(posts[i]['id'],posts[i]['postName'],posts[i]['price'],posts[i]['bids'])
 	else
@@ -47,3 +54,6 @@ block content
 
 block styles
 	link(rel='stylesheet', href='styles/profile.css')
+
+block scripts
+	script(src="/js/profile.js",type="module")

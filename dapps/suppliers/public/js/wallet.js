@@ -101,6 +101,7 @@ function afterConnectTry(){
 function afterLoginSuccess(){
 	$('.loginaction').addClass('hide');
 	$('#signup').addClass('hide');
+	$('#profile').removeClass('hide');
 	$('#logout').removeClass('hide');
 	$('#lake-post').removeClass('done');
 	if (window.location.pathname=='/'){
@@ -185,6 +186,11 @@ $('.loginaction').click(function(){
 			} else utils.notification('Oops', ['Login failed – no profile name provided'], true);
 		});
 	}
+});
+
+$('#profile').click(function(){
+	console.log('click prof')
+	window.location.replace("/profile-"+state.profilename);
 });
 
 $('#logout').click(function(){

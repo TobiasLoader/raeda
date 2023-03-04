@@ -78,7 +78,6 @@ app.post('/api/riverlogin', (req, res) => {
 			if (riveridobj['found']){
 				let sessionid = 100000 + Math.floor(Math.random()*900000);
 				sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid,profileid:riveridobj.id};
-				console.log('in here',sessions[body.addr])
 				res.send(JSON.stringify({found:true,profileid:riveridobj.id,profilename:body.profilename,sessionid:sessionid}));
 			} else {
 				res.send(JSON.stringify({found:false}));
@@ -106,7 +105,26 @@ app.get('/post-:postid', (req, res) => {
 	const { headers, method, url, params } = req;
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
+		console.log('pre');
+		postinfo.bids = [
+			{
+				amount: 15,
+				accepted: true,
+				bidder: {
+					profileName: 'Toby'
+				}
+			},
+			{
+				amount: 10,
+				accepted: false,
+				bidder: {
+					profileName: 'Peter'
+				}
+			}		
+		];
+		console.log('post');
 		console.log(postinfo);
+
 		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
 		else res.render('viewpost',{found:false});
 	})
@@ -156,6 +174,24 @@ app.post('/api/river-simple-search', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.riverSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
 			res.send(searchrivertablefn({searchresults:search_res}));
+		});
+	});
+});
+
+app.post('/api/create-river-issuer-driver',(req,res)=>{
+	postExtractBody(req, (body)=>{
+		console.log(body);
+		raeda.createRiverIssuerDriver(body['rivername']).then((issuer_res)=>{
+			console.log(issuer_res);
+			res.send(issuer_res);
+		});
+	});
+});
+
+app.post('/api/river-add-driver',(req,res)=>{
+	postExtractBody(req, (body)=>{
+		raeda.addDriver(body['rivername'],body['driverdid']).then((issuer_res)=>{
+			res.send(issuer_res);
 		});
 	});
 });
