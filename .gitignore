@@ -139,8 +139,6 @@ bin/
 *.so
 *.dylib
 
-config.toml
-
 infrastructure/local/.vault/data
 infrastructure/local/.vault/plugins
 infrastructure/local/.vault/policies
