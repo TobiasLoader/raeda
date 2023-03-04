@@ -1,0 +1,49 @@
+extends ../../templates/layout.pug
+
+mixin riverpostli(postid,postname,price,bids)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
+	- let hasbid = bids.length>0
+	if hasbid==true
+		li.postli(onclick=url)
+			p !{postname}
+			.postliendrow
+				div.postbidprice
+					h2 !{bids[0].price}
+					span.bidcurrency wei
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
+	else
+		li.postli.postlinobid(onclick=url)
+			p !{postname}
+			.postliendrow
+				p.postnobid NO BID
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
+
+block content
+	if found
+		.area-container
+			.area
+				.posttitlerow
+					.titlecontent
+						h2 !{name}
+						p.toitalic.toblue (post !{id})
+					.endrowcontent
+						div
+							p.toblue !{waterType}
+				p.toitalic= desc
+			.area
+				h3 Posts by !{name}
+				- for (var i=0; i<Math.min(posts.length,5); i+=1)
+					+riverpostli(posts[i]['id'],posts[i]['postName'],posts[i]['price'],posts[i]['bids'])
+	else
+		.area-container
+			.area
+				h2.tored Error
+				p No post found with this id
+
+block styles
+	link(rel='stylesheet', href='styles/profile.css')

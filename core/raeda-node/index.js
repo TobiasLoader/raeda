@@ -42,6 +42,7 @@ const postDetailedFragment = gql`
 		iT
 		fT
 		exp
+		live
 		bucket{
 			category
 			value
@@ -122,7 +123,7 @@ function lakeGetBids(postId){
 // 	return byteArray;
 // };
 // 
-const bigToLittleEndianness = (string) => {
+const changeEndianness = (string) => {
 	const result = [];
 	let len = string.length - 2;
 	while (len >= 0) {
@@ -133,14 +134,13 @@ const bigToLittleEndianness = (string) => {
 }
 
 function intToBytesLittleEndian(v){
-	return '0x'+bigToLittleEndianness(ethers.utils.hexZeroPad('0x'+(v).toString(16), 4).substring(2));	
+	return '0x'+changeEndianness(ethers.utils.hexZeroPad('0x'+Number(v).toString(16), 4).substring(2));	
 }
 
 // get the bids as a lake (ie. supplier)
 async function getPost(postId){
 	// get from `the graph`
 	// PARAMS: postId
-
 	const query = gql`
 		query onePost($idvar:ID!){
 			posts(where:{id:$idvar}){
@@ -154,8 +154,32 @@ async function getPost(postId){
 	let res =  await client.query(query,{
 		idvar: intToBytesLittleEndian(postId)
 	}).toPromise();
-
-	return res.data.posts;
+	
+	let posts = res.data.posts;
+	const postobj = {};
+	if (posts.length>0){
+		postobj['found'] = true;
+		postobj['idbytes'] = posts[0].id;
+		postobj['id'] = parseInt('0x'+changeEndianness(posts[0].id.substring(2)));
+		postobj['postName'] = posts[0]['postName'];
+		postobj['description'] = posts[0]['description'];
+		postobj['price'] = posts[0]['price'];
+		postobj['iXx'] = posts[0]['iXx'];
+		postobj['iXy'] = posts[0]['iXy'];
+		postobj['fXx'] = posts[0]['fXx'];
+		postobj['fXy'] = posts[0]['fXy'];
+		postobj['iT'] = posts[0]['iT'];
+		postobj['fT'] = posts[0]['fT'];
+		postobj['exp'] = posts[0]['exp'];
+		postobj['live'] = posts[0]['live'];
+		postobj['bucket'] = posts[0]['bucket'];
+		postobj['poster'] = posts[0]['poster'];
+		postobj['bids'] = posts[0]['bids'];
+	} else {
+		postobj['found'] = false;
+	}
+	
+	return postobj;
 	// return []
 
 	// return {
@@ -213,34 +237,18 @@ async function lakeMyOpenBids(profileName){
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-
 	return res.data.bids;
-	// return [
-	// 	{
-	// 		'postid':1,
-	// 		'bidprice':'0.12',
-	// 		'info':'post1 on Rishin'
-	// 	},
-	// 	{
-	// 		'postid':2,
-	// 		'bidprice':'0.10',
-	// 		'info':'post2 on Hamzah'
-	// 	},
-	// 	{
-	// 		'postid':3,
-	// 		'bidprice':'0.09',
-	// 		'info':'post3 on Mary'
-	// 	}
-	// ];
 }
 
 // get the users (a lake) open posts
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
+	// console.log('lakeMyOpenPosts',profileName);
+
 	const query = gql`
 		query lakeOwnPosts($profileNameVar:String!){
-			posts(where:{poster_:{profileName:$profileNameVar}},first:4){
+			posts(where:{poster_:{profileName:$profileNameVar}},first:40){
 				...postListInfo
 			}
 		}
@@ -250,36 +258,49 @@ async function lakeMyOpenPosts(profileName){
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-	
 	return res.data.posts;
-
-	// return [
-	// 	{
-	// 		'postid':4,
-	// 		'postname':'POTATOES',
-	// 		'maxprice':'0.16',
-	// 		'bestprice':'0.11',
-	// 	},
-	// 	{
-	// 		'postid':5,
-	// 		'postname':'CARROTS',
-	// 		'maxprice':'0.10',
-	// 		'bestprice':'',
-	// 	},
-	// 	{
-	// 		'postid':6,
-	// 		'postname':'PAPER',
-	// 		'maxprice':'0.12',
-	// 		'bestprice':'0.08',
-	// 	},
-	// 	{
-	// 		'postid':7,
-	// 		'postname':'CHIPS',
-	// 		'maxprice':'0.06',
-	// 		'bestprice':'',
-	// 	}
-	// ];
 }
+
+// get the users (a lake) open bids
+async function riverMyOpenBids(profileName){
+	// get from `the graph`
+	// PARAMS: addr
+	
+	const query = gql`
+		query riverOwnBids($profileNameVar:String!){
+			bids(where:{bidder_:{profileName:$profileNameVar},accepted:false},first:4){
+				...bidListInfo
+			}
+		}
+		${bidListInfoFragment}
+	`;
+
+	let res =  await client.query(query,{
+		profileNameVar: profileName
+	}).toPromise();
+	return res.data.bids;
+}
+
+// get the users (a lake) open posts
+async function riverMyOpenPosts(profileName){
+	// get from `the graph`
+	// PARAMS: addr
+
+	const query = gql`
+		query riverOwnPosts($profileNameVar:String!){
+			posts(where:{poster_:{profileName:$profileNameVar}},first:40){
+				...postListInfo
+			}
+		}
+		${postListInfoFragment}
+	`;
+
+	let res =  await client.query(query,{
+		profileNameVar: profileName
+	}).toPromise();
+	return res.data.posts;
+}
+
 
 // ADD FUNCTION FOR FULL PROFILE VIEW WITH BIDS
 
@@ -295,27 +316,35 @@ async function getProfile(profileName){
 		${profileDetailedFragment}
 		${postListInfoFragment}
 	`
-	let res =  await client.query(query,{
+	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-	
-	return res.data.profiles;
-	// return {
-	// 	id: '0x01000000',
-	// 	profileName: 'Toby',
-	// 	waterType: 'LAKE',
-	// 	description: 'Writing books out of paper',
-	// };
+
+	let profiles = res.data.profiles;
+	const profileobj = {}
+
+	if (profiles.length>0){
+		profileobj['found'] = true;
+		profileobj['id'] = parseInt('0x'+changeEndianness(profiles[0].id.substring(2)));
+		profileobj['profileName'] = profiles[0]['profileName'];
+		profileobj['EOAs'] = profiles[0]['EOAs'];
+		profileobj['description'] = profiles[0]['description'];
+		profileobj['waterType'] = profiles[0]['waterType'];
+		profileobj['posts'] = profiles[0]['posts'];
+	} else {
+		profileobj['found'] = false;
+	}
+	return profileobj;
 }
 
 // search for river posts (as a lake) wrt simple criteria
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	let iXx_gt = lng-radius+180;
-	let iXx_lt = lng+radius+180;
-	let iXy_gt = lat-radius+90;
-	let iXy_lt = lat+radius+90;
+	let iXx_gt = parseInt(10000*(lng-radius/69+180));
+	let iXx_lt = parseInt(10000*(lng+radius/69+180));
+	let iXy_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXy_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
 
 	const query = gql`
 		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){
@@ -336,52 +365,108 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 		iXy_gt: iXy_gt,
 		iXy_lt: iXy_lt,
 	}).toPromise();
+	console.log('below res');
+	console.log(res);
 	return res.data.posts;
-	
-	// return [
-	// 	{
-	// 		'postid':8,
-	// 		'postname':'CHAIR',
-	// 		'river':'Hamzah',
-	// 		'rivermin':'0.08',
-	// 		'bestprice':'0.10'
-	// 	},
-	// 	{
-	// 		'postid':9,
-	// 		'postname':'TABLE',
-	// 		'river':'Mary',
-	// 		'rivermin':'0.14',
-	// 		'bestprice':''
-	// 	},
-	// 	{
-	// 		'postid':10,
-	// 		'postname':'CLOTH',
-	// 		'river':'Rishin',
-	// 		'rivermin':'0.16',
-	// 		'bestprice':''
-	// 	},
-	// 	{
-	// 		'postid':11,
-	// 		'postname':'CLOAK',
-	// 		'river':'Toby',
-	// 		'rivermin':'0.13',
-	// 		'bestprice':'0.13'
-	// 	},
-	// 	{
-	// 		'postid':12,
-	// 		'postname':'COAT',
-	// 		'river':'Juuso',
-	// 		'rivermin':'0.10',
-	// 		'bestprice':'0.14'
-	// 	}
-	// ];
 }
 
-async function lakeGetId(addr){
-	// returns lake Id from the graph query
-	// if no such id, return null
-	return 1;
+// search for river posts (as a lake) wrt simple criteria
+async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
+	// get from `the graph`
+	// PARAMS: lat,lng,radius,minprice,maxprice
+	let iXx_gt = parseInt(10000*(lng-radius/69+180));
+	let iXx_lt = parseInt(10000*(lng+radius/69+180));
+	let iXy_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXy_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
+
+	const query = gql`
+		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){
+			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gt:$minpricevar,price_lt:$maxpricevar}){
+				...postListInfo
+			}
+		}
+		${postListInfoFragment}
+	`;
+
+	const watertype = "LAKE";
+	let res = await client.query(query,{
+		waterTypevar: watertype,
+		minpricevar: minprice,
+		maxpricevar: maxprice,
+		iXx_gt: iXx_gt,
+		iXx_lt: iXx_lt,
+		iXy_gt: iXy_gt,
+		iXy_lt: iXy_lt,
+	}).toPromise();
+	console.log('below res');
+	console.log(res);
+	return res.data.posts;
 }
+
+async function lakeGetId(addr,profileName){
+	query = gql`
+		query lakeGetId($profileNameVar: String!){
+			profiles(where:{profileName: $profileNameVar}){
+				id
+				EOAs
+			}
+		}
+	`;
+	
+	const res = await client.query(query,{
+		profileNameVar: profileName
+	}).toPromise();
+
+	let profiles = res.data.profiles;
+	const profileobj = {}
+	
+	if (profiles.length>0){
+		profileobj['found'] = true;
+		profileobj['id'] = parseInt('0x'+changeEndianness(profiles[0].id.substring(2)));
+		profileobj['EOAs'] = profiles[0]['EOAs'];
+		if (!(profileobj['EOAs'].includes(addr))){
+			console.log("raedaNodeError: address is not associated with profile");
+			profileobj['found'] = false;
+		}
+	} else {
+		profileobj['found'] = false;
+		console.log("raedaNodeError: profile not found");
+	}
+	return profileobj;
+}
+
+async function riverGetId(addr,profileName){
+	query = gql`
+		query riverGetId($profileNameVar: String!){
+			profiles(where:{profileName: $profileNameVar}){
+				id
+				EOAs
+			}
+		}
+	`;
+	
+	const res = await client.query(query,{
+		profileNameVar: profileName
+	}).toPromise();
+
+	let profiles = res.data.profiles;
+	const profileobj = {}
+	
+	if (profiles.length>0){
+		profileobj['found'] = true;
+		profileobj['id'] = parseInt('0x'+changeEndianness(profiles[0].id.substring(2)));
+		profileobj['EOAs'] = profiles[0]['EOAs'];
+		if (!(profileobj['EOAs'].includes(addr))){
+			console.log("raedaNodeError: address is not associated with profile");
+			profileobj['found'] = false;
+		}
+	} else {
+		profileobj['found'] = false;
+		console.log("raedaNodeError: profile not found");
+	}
+	return profileobj;
+}
+
 
 
 // get the bids as a river (ie. logistics)
@@ -427,9 +512,14 @@ module.exports = {
 	lakeMyOpenBids,
 	lakeMyOpenPosts,
 	lakeSimpleSearch,
+	riverMyOpenBids,
+	riverMyOpenPosts,
+	riverSimpleSearch,
 	lakeGetId,
+	riverGetId,
 	riverGetBids,
 	getMessages,
 	postMessage,
+	getProfile,
 	_rustCall
 }

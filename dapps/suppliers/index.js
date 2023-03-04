@@ -73,14 +73,15 @@ app.get('/bid', (req, res) => {
 app.post('/api/lakelogin', (req, res) => {
 	postExtractBody(req,(body)=>{
 		console.log(body);
-		raeda.lakeGetId(body.addr).then((lakeid)=>{
-			console.log(lakeid)
-			if (lakeid==null)
-				res.send(JSON.stringify({success:false}));
-			else {
+		raeda.lakeGetId(body.addr,body.profilename).then((lakeidobj)=>{
+			console.log('lakeidobj',lakeidobj)
+			if (lakeidobj['found']){
 				let sessionid = 100000 + Math.floor(Math.random()*900000);
-				sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid,profileid:lakeid};
-				res.send(JSON.stringify({success:true,profileid:lakeid,sessionid:sessionid}));
+				sessions[body.addr] = {profilename:body.profilename,sessionid:sessionid,profileid:lakeidobj.id};
+				console.log('in here',sessions[body.addr])
+				res.send(JSON.stringify({found:true,profileid:lakeidobj.id,profilename:body.profilename,sessionid:sessionid}));
+			} else {
+				res.send(JSON.stringify({found:false}));
 			}
 		});
 	});
@@ -89,7 +90,7 @@ app.post('/api/lakelogin', (req, res) => {
 app.post('/api/checksessionid', (req, res) => {
 	postExtractBody(req,(body)=>{
 		if (body.addr in sessions && sessions[body.addr].sessionid==body.sessionid){
-			res.send(JSON.stringify({success:true,profileid:sessions[body.addr].profileid}));
+			res.send(JSON.stringify({success:true,profileid:sessions[body.addr].profileid,profilename:sessions[body.addr].profilename}));
 		} else {
 			res.send(JSON.stringify({success:false}));
 		}
@@ -106,7 +107,7 @@ app.get('/post-:postid', (req, res) => {
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
 		console.log(postinfo);
-		if (postinfo.length>0) res.render('viewpost',{found:true,post:postinfo[0]});
+		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
 		else res.render('viewpost',{found:false});
 	})
 });
@@ -160,10 +161,14 @@ app.post('/api/lake-simple-search', (req, res) => {
 });
 
 app.get('/profile-:name', (req, res) => {
-	postExtractBody(req,(body)=>{
-		raeda.getProfile(body['name']).then((prof)=>{
-			res.render('profile',{name:prof['name'],desc:prof['desc']});
-		});
+	const { headers, method, url, params } = req;
+	raeda.getProfile(params['name']).then((profileobj)=>{
+		if (profileobj['found']) {
+			res.render('profile',{found:true,name:profileobj['profileName'],desc:profileobj['description'],waterType:profileobj['waterType'],id:profileobj['id'],posts:profileobj['posts']});
+		} else {
+			console.log('not found')
+			res.render('profile',{found:false});
+		}
 	});
 });
 
