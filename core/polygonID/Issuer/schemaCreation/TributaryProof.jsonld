@@ -6,13 +6,13 @@
         "id": "@id",
         "type": "@type",
         "TributaryProof": {
-          "@id": "https://raw.githubusercontent.com/TobiasLoader/raeda/main/core/polygonID/schemaCreation/TributaryProof.jsonld#TributaryProof",
+          "@id": "https://raw.githubusercontent.com/TobiasLoader/raeda/main/core/polygonID/Issuer/schemaCreation/TributaryProof.jsonld#TributaryProof",
           "@context": {
             "@version": 1.1,
             "@protected": true,
             "id": "@id",
             "type": "@type",
-            "vocab": "https://github.com/TobiasLoader/raeda/main/core/polygonID/schemaCreation/TributaryProof.md#",
+            "vocab": "https://github.com/TobiasLoader/raeda/main/core/polygonID/Issuer/schemaCreation/TributaryProof.md#",
             "xsd": "http://www.w3.org/2001/XMLSchema#",
             "comeFromRiver": {
               "@id": "vocab:#comeFromRiver",
