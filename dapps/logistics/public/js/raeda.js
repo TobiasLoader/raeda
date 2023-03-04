@@ -102,12 +102,20 @@ export async function lakePost(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp
 
 // post as a river (ie. logistics)
 // TODO -- add authAddress
-export async function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,exp,iT=null,fT=null}){
+export async function riverPost(addr,minprice,postName,riverId,iXx,iXy,fXx,fXy,exp,{postDesc=null,iT=null,fT=null}={}){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
+			console.log('START')
+			console.log(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(minprice.toString(),"wei")})
 			let txn = await riverContract.initPost(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(minprice.toString(),"wei")});
+			console.log('TXN')
+			console.log(txn)
 			let txnreceipt = await txn.wait();
+			console.log('RECEIPT')
+			console.log(txnreceipt)
 			let postId = txnreceipt.events[1].args[0];
+			console.log('POSTID')
+			console.log(postId)
 			if (iT!=null) await riverContract.addInitialTime(postId,iT);
 			if (fT!=null) await riverContract.addFinalTime(postId,fT);
 			if (postDesc!=null) await riverContract.editDescription(postId,postDesc);
