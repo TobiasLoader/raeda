@@ -1,0 +1,25 @@
+{
+    "@context": [
+      {
+        "@version": 1.1,
+        "@protected": true,
+        "id": "@id",
+        "type": "@type",
+        "TributaryProof": {
+          "@id": "https://raw.githubusercontent.com/TobiasLoader/raeda/core/polygonID/schemaCreation/TributaryProof.jsonld#StreamProof",
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "id": "@id",
+            "type": "@type",
+            "vocab": "https://github.com/TobiasLoader/raeda/core/polygonID/schemaCreation/TributaryProof.md#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "comeFromRiver": {
+              "@id": "vocab:#comeFromRiver",
+              "@type": "xsd:integer"
+            }
+          }
+        }
+      }
+    ]
+  }
