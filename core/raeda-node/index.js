@@ -15,7 +15,7 @@ const { ethers } = require("ethers");
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph5'
+let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph6'
 
 const postListInfoFragment = gql`
 	fragment postListInfo on Post {
@@ -91,6 +91,60 @@ const profileDetailedFragment = gql`
 	}
 `
 
+const riverNameToDID = {}
+
+const createIdentityCall = `
+	{
+		"didMetadata": {
+			"method": "polygonid",
+			"blockchain": "polygon",
+			"network": "mumbai"
+		}
+	}
+`
+
+function setIdentityRiver(profileName){
+	//get identity from issuer node
+
+	function GETIDENTITY(call){
+		return `
+		{
+			"identifier": "did:polygonid:polygon:mumbai:2qNDpfD8A2zjdiDbrzKsKe5XoP583FeBkpPyJnUEVx",
+			"state": {
+				"claimsTreeRoot": "96041fd8c899994d8b493c9f844f8ff17f1218e5400bfe68cc659b5386a88b07",
+				"createdAt": "2023-02-22T14:55:34.89165+05:30",
+				"modifiedAt": "2023-02-22T14:55:34.89165+05:30",
+				"state": "569bd6c053d6ddf463245127a82570841a76099a4dab3c279c6b461cf0438408",
+				"status": "confirmed"
+			}
+		}
+		`
+	};
+
+	const DID = GETIDENTITY(createIdentityCall)['identifier'];
+
+	riverNameToDID[profileName] = DID;
+	//riverNameToDID[profileName] = did
+}
+
+function addDriver(profileName,driverWalletDid){
+
+	function MAKEURL(identitydid){
+		return '{{miniplatform-url}}/v1/${identitydid}/claims'
+	}
+
+	const endpoint = MAKEURL(riverNameToDID[profileName]);
+
+	
+
+	//gets did from profile Name and uses it to connect to endpoint
+	//creates credential, turns it into QR code
+}
+
+function verifyDriver(postId){
+	//submit a request with requestid=postid to smart contract
+	//generate the json QR code request thing	
+}
 
 
 const client = createClient({
