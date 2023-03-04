@@ -66,6 +66,7 @@ module.exports = {
   compilers: {
     solc: {
       version: "0.8.18",
+      docker: true,
     },
   },
   db: {
