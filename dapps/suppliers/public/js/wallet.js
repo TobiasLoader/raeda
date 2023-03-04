@@ -103,6 +103,11 @@ function afterLoginSuccess(){
 	$('#signup').addClass('hide');
 	$('#logout').removeClass('hide');
 	$('#lake-post').removeClass('done');
+	if (window.location.pathname=='/'){
+		console.log(state.profilename)
+		raeda.lakeMyOpenBids(state.profilename);
+		raeda.lakeMyOpenPosts(state.profilename);
+	}
 }
 
 function autoLoginSessionId(){
@@ -165,13 +170,15 @@ $('.loginaction').click(function(){
 			let profilename = $('#notification input').val();
 			if (profilename.length>0){
 				raeda.lakeLogin(state.address,profilename,state.signer).then((res)=>{
-					if (res['success']) {
+					console.log('res',res);
+					if (res['found']) {
 						state.login = true;
-						afterLoginSuccess();
 						utils.setCookie('sessionid',res['sessionid'],1);
 						$('.loginaction').addClass('hide');
 						state.profileid = res['profileid'];
 						state.profilename = res['profilename'];
+						console.log('after click name',state.profilename)
+						afterLoginSuccess();
 						utils.notification('Success', ['Login successful!','You signed in to the profile with id: '+state.profileid.toString()]);
 					} else utils.notification('Oops', ['Login failed – please try another profile name or wallet address.'], true);
 				});

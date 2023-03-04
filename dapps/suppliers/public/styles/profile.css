@@ -1,0 +1,30 @@
+.area {
+	padding:20px;
+}
+
+.posttitlerow {
+	margin-bottom:20px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.titlecontent {
+	display: inline-flex;
+}
+.titlecontent h2 {
+	margin-right: 10px;
+}
+.titlecontent p {
+	margin-top:5px;
+}
+
+.endrowcontent {
+	display:flex;
+}
+
+.endrowcontent > div {
+	margin-left: 10px;
+	border: rgba(168,168,168,0.3) 1px solid;
+	border-radius: 5px;
+	padding: 10px 15px;
+}

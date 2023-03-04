@@ -1,0 +1,39 @@
+extends ../../templates/layout.pug
+	
+block content
+	.area-container
+		.area
+			h2 New River Post
+			.textlabelfield
+				+requiredlabel('Post Name')
+				input(id="postname",placeholder="Carrot Supply")
+			.textlabelfield
+				label Post Description
+				input(id="postdesc",placeholder="One pallet of carrots, handle with care.")
+			.textlabelfield
+				+requiredlabel('Max Price')
+				input(id="postmaxprice",placeholder="£100")
+			.textlabelfield
+				+requiredlabel('Expiry Date & Time')
+				.inputrow
+					input(id="postexp-time",type="time",value=currenttime)
+					input(id="postexp-date",type="date",value=currentdate)
+			.textlabelfield
+				+requiredlabel('Start Location')
+				.inputrow
+					input(id="poststartloclat",placeholder="Latitude")
+					input(id="poststartloclng",placeholder="Longitude")
+			.textlabelfield
+				+requiredlabel('End Location')
+				.inputrow
+					input(id="postendloclat",placeholder="Latitude")
+					input(id="postendloclng",placeholder="Longitude")
+			.buttonrow
+				+jsmainbutton('prepostlogin','login','loginaction')
+				+jsmainbutton('river-post','Post!','done')
+
+block styles
+	link(rel='stylesheet', href='styles/newpost.css')
+
+block scripts
+	script(src="/js/newpost.js",type="module")

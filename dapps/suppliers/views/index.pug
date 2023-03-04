@@ -3,14 +3,16 @@ extends ../../templates/layout.pug
 block content
 	.area-container
 		.area-row
-			.area
+			.area.shortheightarea
 				h3 YOUR OPEN BIDS
 				ul#bid-list.area-ul
-				//	+buildopenlakebids()
-			.area
+					li.infoli.toblue Login to view your bids!
+					li.infoli.toitalic (or sign up if you don't have an account)
+			.area.shortheightarea
 				h3 YOUR OPEN POSTS
 				ul#post-list.area-ul
-				//	+buildopenlakeposts()
+					li.infoli.toblue Login to view your posts!
+					li.infoli.toitalic (or sign up if you don't have an account)
 		.area-row
 			.area
 				h3 SEARCH POSTS
@@ -42,4 +44,4 @@ block headerscripts
 	script(src="https://polyfill.io/v3/polyfill.min.js?features=default")
 
 block scripts
-	script(src="/js/dashboard.js")
+	script(type="module",src="/js/dashboard.js")

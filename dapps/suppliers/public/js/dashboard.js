@@ -1,10 +1,29 @@
+import * as wallet from "./wallet.js";
+
 $(document).ready(function() {
-	// fetchSimpleSearchMap();
-	lakeSimpleSearch();
-	lakeMyOpenBids();
-	lakeMyOpenPosts();
+	fetchSimpleSearchMap();
 	$('#search').click(function (){
 		lakeSimpleSearch();
+	});
+	document.getElementById('minprice').addEventListener('keyup', function() {
+		let v = document.getElementById('minprice').value;
+		if (!isNaN(v)){
+			minprice = parseInt(v);
+			if (minprice>maxprice){
+				maxprice = minprice;
+				document.getElementById('maxprice').value = maxprice;
+			}
+		} else {
+			document.getElementById('minprice').value = minprice;
+		}
+	});
+	document.getElementById('maxprice').addEventListener('keyup', function() {
+		let v = document.getElementById('maxprice').value;
+		if (!isNaN(v) && parseInt(v)>=minprice){
+			maxprice = parseInt(v);
+		} else {
+			document.getElementById('maxprice').value = maxprice;
+		}
 	});
 });
 
@@ -31,55 +50,6 @@ function lakeSimpleSearch(){
 		$('#searchtable').html(html);
 	});
 }
-
-function lakeMyOpenBids(){
-	fetch('/api/my-open-bids', {
-		method: 'post',
-		body:JSON.stringify({
-			'profilename':'Toby',
-		}),
-		headers: {'Content-Type': 'application/json'}
-	}).then((response) => {
-		return response.text();
-	}).then((html) => {
-		$('#bid-list').html(html);
-	});
-}
-
-function lakeMyOpenPosts(){
-	fetch('/api/my-open-posts', {
-		method: 'post',
-		body:JSON.stringify({
-			'profilename':'Toby',
-		}),
-		headers: {'Content-Type': 'application/json'}
-	}).then((response) => {
-		return response.text();
-	}).then((html) => {
-		$('#post-list').html(html);
-	});
-}
-
-document.getElementById('minprice').addEventListener('keyup', function() {
-	let v = document.getElementById('minprice').value;
-	if (!isNaN(v)){
-		minprice = parseInt(v);
-		if (minprice>maxprice){
-			maxprice = minprice;
-			document.getElementById('maxprice').value = maxprice;
-		}
-	} else {
-		document.getElementById('minprice').value = minprice;
-	}
-});
-document.getElementById('maxprice').addEventListener('keyup', function() {
-	let v = document.getElementById('maxprice').value;
-	if (!isNaN(v) && parseInt(v)>=minprice){
-		maxprice = parseInt(v);
-	} else {
-		document.getElementById('maxprice').value = maxprice;
-	}
-});
 
 /// INJECTING GOOGLE MAPS
 
@@ -219,6 +189,7 @@ function fetchSimpleSearchMap(){
 			window.initMap = initMap;
 			injectScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDugTSHPjCq4RHm7XFFC-07jptl0v8E3PE&libraries=drawing&v=weekly&callback=initMap').then(() => {
 				console.log('Google Maps script loaded');
+				lakeSimpleSearch();
 			}).catch(error => {
 				console.error(error);
 			});

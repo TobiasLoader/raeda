@@ -1,0 +1,28 @@
+mixin riverpostli(postid,postname,price,bids)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
+	- let hasbid = bids.length>0
+	if hasbid==true
+		li.postli(onclick=url)
+			p !{postname}
+			.postliendrow
+				div.postbidprice
+					h2 !{bids[0].price}
+					span.bidcurrency wei
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
+	else
+		li.postli.postlinobid(onclick=url)
+			p !{postname}
+			.postliendrow
+				p.postnobid NO BID
+				div.postbidprice
+					h2 !{price}
+					span.bidcurrency wei
+
+if openposts.length
+	- for(let i = 0; i < openposts.length; i+=1)
+		+riverpostli(openposts[i].id,openposts[i].postName,openposts[i].price,openposts[i].bids)
+else
+	li.postli.toblue.toitalic You have no open posts!
