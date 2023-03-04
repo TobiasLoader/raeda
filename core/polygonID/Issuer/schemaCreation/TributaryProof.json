@@ -4,7 +4,7 @@
     "$metadata": {
       "uris": {
         "jsonLdContext": "https://raw.githubusercontent.com/TobiasLoader/raeda/main/core/polygonID/schemaCreation/TributaryProof.jsonld",
-        "jsonSchema": "https://raw.githubusercontent.com/TobiasLoader/raeda/core/main/polygonID/schemaCreation/TributaryProof.json"
+        "jsonSchema": "https://raw.githubusercontent.com/TobiasLoader/raeda/main/core/polygonID/schemaCreation/TributaryProof.json"
       }
     },
     "required": [
