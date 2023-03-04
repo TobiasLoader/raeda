@@ -1,0 +1,21 @@
+extends ../../templates/layout.pug
+	
+block content
+	.area-container
+		.area
+			h2 Sign Up
+			.textlabelfield
+				label Profile Name
+				input(id="profilename",placeholder="Toby")
+			.textlabelfield
+				label Description
+				input(id="profiledesc",placeholder="Where I work / my position...")
+			.buttonrow
+				+jsmainbutton('connect','Connect Wallet')
+				+jsmainbutton('create-profile','Create Profile','done')
+
+block styles
+	link(rel='stylesheet', href='styles/createprofile.css')
+
+block scripts
+	script(src="/js/signup.js",type="module")

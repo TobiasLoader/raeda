@@ -41,13 +41,12 @@ export async function connectSignerContracts(signer){
 
 // RAEDA functions
 
-export async function createProfile(profilename,description){
+export async function createProfile(watertypeid,profilename,description){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			console.log(profileContract)
-			let response = await profileContract.createProfile(0,profilename,description);
-			console.log('creat pr',response)
-			console.log('create profile success');
+			let response = await profileContract.createProfile(watertypeid,profilename,description);
+			console.log('create profile success',response);
 			return true;
 		} catch (error) {
 			console.log(error);
@@ -68,7 +67,6 @@ export async function lakeLogin(addr,profilename,signer){
 export async function checkSessionId(addr,sessionid){
 	return await _checkSignerConnectedAsync(async ()=>{
 		return await _raedaLakeAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
-			console.log('check sesh',body)
 			return body;
 		});
 	});
@@ -113,17 +111,23 @@ export async function riverPost(addr,minprice,{postName,riverId,iXx,iXy,fXx,fXy,
 }
 
 // bid as a lake (ie. supplier)
-// function lakeBid(addr,bidprice,{postId,lakeId}){
-// 	try {
-// 		// bidPrice > minPrice (of riverPost)
-// 		lakeContract.bid(postId,lakeId,{from:addr,value:eth.utils(bidprice,towei)});
-// 		// returns bool success
-// 		return true;
-// 	} catch (error) {
-// 		console.log(error);
-// 		return false;
-// 	}
-// }
+export async function lakeBid(addr,bidprice,postId,bidderId){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			let txn = await lakeContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
+			console.log('make bid success',txn);
+			// let txnreceipt = await txn.wait();
+			// let postId = txnreceipt.events[1].args[0];
+			// if (iT!=null) await lakeContract.addInitialTime(postId,iT);
+			// if (fT!=null) await lakeContract.addFinalTime(postId,fT);
+			// if (postDesc!=null) await lakeContract.editDescription(postId,postDesc);
+			return true;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});	
+}
 
 // bid as a river (ie. logistics)
 // function riverBid(addr,bidprice,{postId,riverId}){
@@ -178,4 +182,34 @@ async function _checkSignerConnectedAsync(fnc,argsArray=[]){
 		console.log('initContracts(provider)')
 		return false;
 	}
+}
+
+
+export function lakeMyOpenBids(profileName){
+	console.log(profileName)
+	fetch('/api/my-open-bids', {
+		method: 'post',
+		body:JSON.stringify({
+			'profilename':profileName,
+		}),
+		headers: {'Content-Type': 'application/json'}
+	}).then((response) => {
+		return response.text();
+	}).then((html) => {
+		$('#bid-list').html(html);
+	});
+}
+
+export function lakeMyOpenPosts(profileName){
+	fetch('/api/my-open-posts', {
+		method: 'post',
+		body:JSON.stringify({
+			'profilename':profileName,
+		}),
+		headers: {'Content-Type': 'application/json'}
+	}).then((response) => {
+		return response.text();
+	}).then((html) => {
+		$('#post-list').html(html);
+	});
 }

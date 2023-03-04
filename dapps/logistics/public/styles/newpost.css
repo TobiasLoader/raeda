@@ -1,0 +1,38 @@
+.area {
+	max-height: 1000px;
+	padding:20px;
+}
+.textlabelfield {
+	display: flex;
+	flex-direction: column;
+	margin: 30px 0;
+}
+
+.textlabelfield input {
+	background: black;
+	outline: none;
+	color: white;
+	border: rgba(168,168,168,0.5) 1px solid;
+	margin-top: 5px;
+	height: 30px;
+	font-family: 'Montserrat Italic';
+	font-size: 15px;
+	padding: 5px 5px 5px 10px;
+	border-radius: 5px;
+}
+
+.textlabelfield input:focus {
+	border: rgba(96,195,111,1) 1px solid;
+}
+
+.textlabelfield label {
+	font-size:14px;
+}
+
+.inputrow > * {
+	margin-right:10px;
+}
+
+.labelreq {
+	color: rgb(96,195,111);
+}

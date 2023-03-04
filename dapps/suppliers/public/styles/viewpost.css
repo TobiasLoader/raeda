@@ -107,3 +107,10 @@
 .textlabelfield label {
 	font-size:14px;
 }
+
+.smallbox {
+	border: rgba(168,168,168,0.3) 1px solid;
+	border-radius: 5px;
+	padding: 10px 15px;
+	width:fit-content;
+}

@@ -31,10 +31,12 @@
   "homepage": "https://github.com/truffle-box/polygon-box#readme",
   "devDependencies": {
     "@maticnetwork/maticjs": "^2.0.40",
+    "@openzeppelin/truffle-upgrades": "^1.17.1",
     "@truffle/hdwallet-provider": "^1.4.2",
     "dotenv": "^9.0.0"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.8.2",
     "ethers": "^6.0.8",
     "solc": "^0.8.18"
   }

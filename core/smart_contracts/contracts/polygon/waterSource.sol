@@ -1,16 +1,19 @@
 pragma solidity ^0.8.18;
 
 import "./profile.sol";
+// import "./verifyTributary.sol";
 
 abstract contract waterSource {
 
     profile profileContract;
+    // verifyTributary verifyTributaryContract;
+    address verifyTributaryAddress;
 
     uint16 private postIdCount = 0;
     uint16 private bidIdCount = 0;
 
     // enum whichBucketValue {INT,BOOL,STRING}
-    enum dealStates {NOTCLOSED,LAKECLOSED,RIVERCLOSED,BOTHCLOSED}
+    enum dealStates {NOTCLOSED,VERIFIED,LAKECLOSED,RIVERCLOSED,BOTHCLOSED}
     // enum waterTypes {LAKE,RIVER}
 
 
@@ -68,6 +71,10 @@ abstract contract waterSource {
         owner = msg.sender;
     }
 
+    function setVerifyTributaryAddress(address _verifyTributaryAddress) external {
+        require(msg.sender == owner);
+        verifyTributaryAddress = _verifyTributaryAddress;
+    }
     // fallback() external payable {
 
     // }
@@ -84,7 +91,7 @@ abstract contract waterSource {
     function initPost(string calldata _postName, uint16 _profileId,uint64 _iXx,uint64 _iXy,uint64 _fXx,uint64 _fXy,uint64 _exp) payable external {
         require(waterSource.authorise(_profileId, msg.sender),"Error: EOA is not associated with this user");
         require(_exp>block.timestamp,"Error: expiry time is in the past");
-        postIdCount +=1;
+        postIdCount +=2;
         collection[postIdCount].EOA = msg.sender; 
         collection[postIdCount].price = msg.value; 
         collection[postIdCount].postName = _postName;        
@@ -264,9 +271,10 @@ abstract contract waterSource {
 
     function closeDeal(uint16 _postId,uint16 _profileId) external {
         require(waterSource.involvedInDeal(_postId,_profileId),"Error: profileId not associated with this deal");
+        require(pendingDeals[_postId]!=dealStates.NOTCLOSED,"Error: deal needs to be verified before it can be closed");
         waterTypes userWaterType;
         (userWaterType, , ) = profileContract.profiles(_profileId);
-        if (pendingDeals[_postId] == dealStates.NOTCLOSED){
+        if (pendingDeals[_postId] == dealStates.VERIFIED){
             if (userWaterType == waterTypes.LAKE){
                 pendingDeals[_postId] = dealStates.LAKECLOSED;
             }

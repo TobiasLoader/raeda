@@ -21,6 +21,8 @@ mixin lakepostli(postid,postname,price,bids)
 					h2 !{price}
 					span.bidcurrency wei
 
-
-- for(let i = 0; i < openposts.length; i+=1)
-	+lakepostli(openposts[i].id,openposts[i].postName,openposts[i].price,openposts[i].bids)
+if openposts.length
+	- for(let i = 0; i < openposts.length; i+=1)
+		+lakepostli(openposts[i].id,openposts[i].postName,openposts[i].price,openposts[i].bids)
+else
+	li.postli.toblue.toitalic You have no open posts!

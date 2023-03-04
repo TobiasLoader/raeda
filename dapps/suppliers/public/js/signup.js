@@ -32,7 +32,7 @@ $('#create-profile').click(()=>{
 	} else if (pdesc==''){
 		utils.notification('Oops', ['You cannot leave the description field empty'], true);
 	} else {
-		raeda.createProfile(pname,pdesc).then((v)=>{
+		raeda.createProfile(0,pname,pdesc).then((v)=>{
 			if (v){
 				afterLoginSuccess();
 				raeda.lakeLogin(wallet.state.address,pname,wallet.state.signer).then((res)=>{

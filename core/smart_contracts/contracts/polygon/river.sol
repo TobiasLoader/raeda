@@ -6,7 +6,15 @@ import "./waterSource.sol";
 
 contract river is waterSource{
 
+    uint16 private postIdCount = 1;
+
+
     constructor(address _profileContractAddress) waterSource(_profileContractAddress) {}
+
+    function verifyOnRiverPost(uint16 _postId) external {
+        require(msg.sender == verifyTributaryAddress,"Error: this function can only be triggered by the verifying contract");
+        pendingDeals[_postId] = dealStates.VERIFIED;
+    }
 
     function bidReqs(uint16 _postId,uint _bidAmount) internal view override returns(bool){
         return (_bidAmount > collection[_postId].price);
