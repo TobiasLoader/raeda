@@ -40,10 +40,10 @@ contract verifyTributary is ZKPVerifier{
         // require(requestId == LAKE_ON_RIVER_REQUEST_ID || requestId == RIVER_ON_LAKE_REQUEST_ID,"Error: invalid request id");
 
         if (requestId % 2 == 0){
-            lake.verifyOnOwnPost(requestId);
+            lakeContract.verifyOnOwnPost(uint16(requestId));
         }
         else {
-            river.verifyOnRiverPost(requestId);
+            riverContract.verifyOnRiverPost(uint16(requestId));
         }
 
     }

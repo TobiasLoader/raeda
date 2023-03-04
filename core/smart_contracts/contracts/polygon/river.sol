@@ -14,6 +14,7 @@ contract river is waterSource{
     function verifyOnRiverPost(uint16 _postId) external {
         require(msg.sender == verifyTributaryAddress,"Error: this function can only be triggered by the verifying contract");
         pendingDeals[_postId] = dealStates.VERIFIED;
+        emit pendingEvent(_postId, dealStates.VERIFIED);
     }
 
     function bidReqs(uint16 _postId,uint _bidAmount) internal view override returns(bool){

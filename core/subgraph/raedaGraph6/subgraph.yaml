@@ -1,0 +1,93 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+features:
+  - fullTextSearch
+dataSources:
+  - kind: ethereum
+    name: profile
+    network: mumbai
+    source:
+      address: "0x19b4B0Bdf0383bb222cB400b0eF2F33585889E05"
+      abi: profile
+      startBlock: 32704354
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - addressEvent
+        - profileEvent
+      abis:
+        - name: profile
+          file: ./abis/profile.json
+      eventHandlers:
+        - event: addressEvent(indexed uint16,indexed address)
+          handler: handleaddressEvent
+        - event: profileEvent(indexed uint16)
+          handler: handleprofileEvent
+      file: ./src/profile.ts
+  - kind: ethereum
+    name: lake
+    network: mumbai
+    source:
+      address: "0xA0F7742A9042AC9B8008cE60D443369bE4AE53A0"
+      abi: lake
+      startBlock: 32704354
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - bidEvent
+        - bucketEvent
+        - pendingEvent
+        - postEvent
+        - resetEvent
+      abis:
+        - name: lake
+          file: ./abis/lake.json
+      eventHandlers:
+        - event: bidEvent(indexed uint16,indexed uint16,indexed bool)
+          handler: handlebidEvent
+        - event: bucketEvent(indexed uint16,indexed string)
+          handler: handlebucketEvent
+        - event: pendingEvent(indexed uint16,indexed uint8)
+          handler: handlependingEvent
+        - event: postEvent(indexed uint16,indexed bool)
+          handler: handlepostEvent
+        - event: resetEvent(indexed uint16)
+          handler: handleresetEvent
+      file: ./src/lake.ts
+  - kind: ethereum
+    name: river
+    network: mumbai
+    source:
+      address: "0xA5270a34347AfD1b3E56D6db6b02d805afD106EC"
+      abi: river
+      startBlock: 32704354
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - riverbidEvent
+        - riverbucketEvent
+        - riverpendingEvent
+        - riverpostEvent
+        - riverresetEvent
+      abis:
+        - name: river
+          file: ./abis/river.json
+      eventHandlers:
+        - event: riverbidEvent(indexed uint16,indexed uint16,indexed bool)
+          handler: handleriverbidEvent
+        - event: riverbucketEvent(indexed uint16,indexed string)
+          handler: handleriverbucketEvent
+        - event: riverpendingEvent(indexed uint16,indexed uint8)
+          handler: handleriverpendingEvent
+        - event: riverpostEvent(indexed uint16,indexed bool)
+          handler: handleriverpostEvent
+        - event: riverresetEvent(indexed uint16)
+          handler: handleriverresetEvent
+      file: ./src/river.ts
