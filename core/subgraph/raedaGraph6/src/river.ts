@@ -1,9 +1,9 @@
 import {
   river,
-  riverbidEvent as riverbidEventEvent,
-  riverbucketEvent as riverbucketEventEvent,
-  riverpostEvent as riverpostEventEvent,
-  riverresetEvent as riverresetEventEvent
+  bidEvent as riverbidEventEvent,
+  bucketEvent as riverbucketEventEvent,
+  postEvent as riverpostEventEvent,
+  resetEvent as riverresetEventEvent
 } from "../generated/river/river"
 import {
   Post,
@@ -12,6 +12,7 @@ import {
 import { BigInt, Result } from '@graphprotocol/graph-ts'
 import { Bytes } from '@graphprotocol/graph-ts'
 import { store } from '@graphprotocol/graph-ts'
+import { log } from '@graphprotocol/graph-ts'
 
 
 export function handleriverbidEvent(event: riverbidEventEvent): void {
@@ -44,10 +45,11 @@ export function handleriverpostEvent(event: riverpostEventEvent): void {
   const contract = river.bind(event.address)
   const IdBytes = Bytes.fromI32(event.params._postId)
 
-  let postEntity = Post.load(IdBytes)
-  if (postEntity==null){
-    postEntity = new Post(IdBytes)
-  }
+  log.debug("ASDOIDSFNOA",['bleh'])
+  // let postEntity = Post.load(IdBytes)
+  // if (postEntity==null){
+  let postEntity = new Post(IdBytes)
+  
 
   const postFromCont = contract.collection(event.params._postId)
 

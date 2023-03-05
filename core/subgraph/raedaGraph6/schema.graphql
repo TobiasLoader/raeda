@@ -29,19 +29,19 @@ type Post @entity {
   id: Bytes!
   # postId: BigInt!
   postName: String!
-  description: String!
+  description: String
   # posterId: Bytes!
   # posterWaterType: waterTypes!
   EOA: Bytes!
   price: BigInt!
-  iXx: BigInt!
-  iXy: BigInt!
-  fXx: BigInt!
-  fXy: BigInt!
+  iXx: BigInt
+  iXy: BigInt
+  fXx: BigInt
+  fXy: BigInt
   iT: BigInt
   fT: BigInt
-  exp: BigInt!
-  live: Boolean!
+  exp: BigInt
+  live: Boolean
   # bucketCategories: [String!]
   # bucketValues: [String!]
   bucket: [Bucket!] @derivedFrom(field: "post")
@@ -54,7 +54,7 @@ type Bucket @entity(immutable: true) {
   id: Bytes!
   category: String!
   value: String!
-  post: Post
+  post: Post!
 }
 
 # type lakePost @entity {

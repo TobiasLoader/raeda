@@ -161,13 +161,21 @@ export class Post extends Entity {
     this.set("postName", Value.fromString(value));
   }
 
-  get description(): string {
+  get description(): string | null {
     let value = this.get("description");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set description(value: string) {
-    this.set("description", Value.fromString(value));
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
   }
 
   get EOA(): Bytes {
@@ -188,40 +196,72 @@ export class Post extends Entity {
     this.set("price", Value.fromBigInt(value));
   }
 
-  get iXx(): BigInt {
+  get iXx(): BigInt | null {
     let value = this.get("iXx");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set iXx(value: BigInt) {
-    this.set("iXx", Value.fromBigInt(value));
+  set iXx(value: BigInt | null) {
+    if (!value) {
+      this.unset("iXx");
+    } else {
+      this.set("iXx", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get iXy(): BigInt {
+  get iXy(): BigInt | null {
     let value = this.get("iXy");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set iXy(value: BigInt) {
-    this.set("iXy", Value.fromBigInt(value));
+  set iXy(value: BigInt | null) {
+    if (!value) {
+      this.unset("iXy");
+    } else {
+      this.set("iXy", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get fXx(): BigInt {
+  get fXx(): BigInt | null {
     let value = this.get("fXx");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set fXx(value: BigInt) {
-    this.set("fXx", Value.fromBigInt(value));
+  set fXx(value: BigInt | null) {
+    if (!value) {
+      this.unset("fXx");
+    } else {
+      this.set("fXx", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get fXy(): BigInt {
+  get fXy(): BigInt | null {
     let value = this.get("fXy");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set fXy(value: BigInt) {
-    this.set("fXy", Value.fromBigInt(value));
+  set fXy(value: BigInt | null) {
+    if (!value) {
+      this.unset("fXy");
+    } else {
+      this.set("fXy", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get iT(): BigInt | null {
@@ -258,13 +298,21 @@ export class Post extends Entity {
     }
   }
 
-  get exp(): BigInt {
+  get exp(): BigInt | null {
     let value = this.get("exp");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set exp(value: BigInt) {
-    this.set("exp", Value.fromBigInt(value));
+  set exp(value: BigInt | null) {
+    if (!value) {
+      this.unset("exp");
+    } else {
+      this.set("exp", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get live(): boolean {
@@ -386,21 +434,13 @@ export class Bucket extends Entity {
     this.set("value", Value.fromString(value));
   }
 
-  get post(): Bytes | null {
+  get post(): Bytes {
     let value = this.get("post");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value!.toBytes();
   }
 
-  set post(value: Bytes | null) {
-    if (!value) {
-      this.unset("post");
-    } else {
-      this.set("post", Value.fromBytes(<Bytes>value));
-    }
+  set post(value: Bytes) {
+    this.set("post", Value.fromBytes(value));
   }
 }
 

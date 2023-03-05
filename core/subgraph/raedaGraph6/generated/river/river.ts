@@ -10,16 +10,16 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class riverbidEvent extends ethereum.Event {
-  get params(): riverbidEvent__Params {
-    return new riverbidEvent__Params(this);
+export class bidEvent extends ethereum.Event {
+  get params(): bidEvent__Params {
+    return new bidEvent__Params(this);
   }
 }
 
-export class riverbidEvent__Params {
-  _event: riverbidEvent;
+export class bidEvent__Params {
+  _event: bidEvent;
 
-  constructor(event: riverbidEvent) {
+  constructor(event: bidEvent) {
     this._event = event;
   }
 
@@ -36,16 +36,16 @@ export class riverbidEvent__Params {
   }
 }
 
-export class riverbucketEvent extends ethereum.Event {
-  get params(): riverbucketEvent__Params {
-    return new riverbucketEvent__Params(this);
+export class bucketEvent extends ethereum.Event {
+  get params(): bucketEvent__Params {
+    return new bucketEvent__Params(this);
   }
 }
 
-export class riverbucketEvent__Params {
-  _event: riverbucketEvent;
+export class bucketEvent__Params {
+  _event: bucketEvent;
 
-  constructor(event: riverbucketEvent) {
+  constructor(event: bucketEvent) {
     this._event = event;
   }
 
@@ -58,16 +58,16 @@ export class riverbucketEvent__Params {
   }
 }
 
-export class riverpendingEvent extends ethereum.Event {
-  get params(): riverpendingEvent__Params {
-    return new riverpendingEvent__Params(this);
+export class pendingEvent extends ethereum.Event {
+  get params(): pendingEvent__Params {
+    return new pendingEvent__Params(this);
   }
 }
 
-export class riverpendingEvent__Params {
-  _event: riverpendingEvent;
+export class pendingEvent__Params {
+  _event: pendingEvent;
 
-  constructor(event: riverpendingEvent) {
+  constructor(event: pendingEvent) {
     this._event = event;
   }
 
@@ -80,16 +80,16 @@ export class riverpendingEvent__Params {
   }
 }
 
-export class riverpostEvent extends ethereum.Event {
-  get params(): riverpostEvent__Params {
-    return new riverpostEvent__Params(this);
+export class postEvent extends ethereum.Event {
+  get params(): postEvent__Params {
+    return new postEvent__Params(this);
   }
 }
 
-export class riverpostEvent__Params {
-  _event: riverpostEvent;
+export class postEvent__Params {
+  _event: postEvent;
 
-  constructor(event: riverpostEvent) {
+  constructor(event: postEvent) {
     this._event = event;
   }
 
@@ -102,16 +102,16 @@ export class riverpostEvent__Params {
   }
 }
 
-export class riverresetEvent extends ethereum.Event {
-  get params(): riverresetEvent__Params {
-    return new riverresetEvent__Params(this);
+export class resetEvent extends ethereum.Event {
+  get params(): resetEvent__Params {
+    return new resetEvent__Params(this);
   }
 }
 
-export class riverresetEvent__Params {
-  _event: riverresetEvent;
+export class resetEvent__Params {
+  _event: resetEvent;
 
-  constructor(event: riverresetEvent) {
+  constructor(event: resetEvent) {
     this._event = event;
   }
 

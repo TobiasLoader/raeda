@@ -80,14 +80,14 @@ dataSources:
         - name: river
           file: ./abis/river.json
       eventHandlers:
-        - event: riverbidEvent(indexed uint16,indexed uint16,indexed bool)
+        - event: bidEvent(indexed uint16,indexed uint16,indexed bool)
           handler: handleriverbidEvent
-        - event: riverbucketEvent(indexed uint16,indexed string)
+        - event: bucketEvent(indexed uint16,indexed string)
           handler: handleriverbucketEvent
-        - event: riverpendingEvent(indexed uint16,indexed uint8)
+        - event: pendingEvent(indexed uint16,indexed uint8)
           handler: handleriverpendingEvent
-        - event: riverpostEvent(indexed uint16,indexed bool)
+        - event: postEvent(indexed uint16,indexed bool)
           handler: handleriverpostEvent
-        - event: riverresetEvent(indexed uint16)
+        - event: resetEvent(indexed uint16)
           handler: handleriverresetEvent
       file: ./src/river.ts
