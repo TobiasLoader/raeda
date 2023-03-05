@@ -1,0 +1,87 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+features:
+  - fullTextSearch
+dataSources:
+  - kind: ethereum
+    name: profile
+    network: mumbai
+    source:
+      address: "0xacBdBd10791262589B5de030a5990845D714A731"
+      abi: profile
+      startBlock: 32737317
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - addressEvent
+        - profileEvent
+      abis:
+        - name: profile
+          file: profile\abis\profile.json
+      eventHandlers:
+        - event: addressEvent(indexed uint16,indexed address)
+          handler: handleaddressEvent
+        - event: profileEvent(indexed uint16)
+          handler: handleprofileEvent
+      file: profile\profile.wasm
+  - kind: ethereum
+    name: lake
+    network: mumbai
+    source:
+      address: "0x21a991cf6c59cdD505bF9Dd6ADB120d2FDFA46BE"
+      abi: lake
+      startBlock: 32737317
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - bidEvent
+        - bucketEvent
+        - postEvent
+        - resetEvent
+      abis:
+        - name: lake
+          file: lake\abis\lake.json
+      eventHandlers:
+        - event: bidEvent(indexed uint16,indexed uint16)
+          handler: handlebidEvent
+        - event: bucketEvent(indexed uint16,indexed string)
+          handler: handlebucketEvent
+        - event: postEvent(indexed uint16,indexed uint8)
+          handler: handlepostEvent
+        - event: resetEvent(indexed uint16)
+          handler: handleresetEvent
+      file: lake\lake.wasm
+  - kind: ethereum
+    name: river
+    network: mumbai
+    source:
+      address: "0xdFf17343E71eDAb3460c541F52c19C97c8e6EbBe"
+      abi: river
+      startBlock: 32737317
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - riverbidEvent
+        - riverbucketEvent
+        - riverpostEvent
+        - riverresetEvent
+      abis:
+        - name: river
+          file: river\abis\river.json
+      eventHandlers:
+        - event: bidEvent(indexed uint16,indexed uint16)
+          handler: handleriverbidEvent
+        - event: bucketEvent(indexed uint16,indexed string)
+          handler: handleriverbucketEvent
+        - event: postEvent(indexed uint16,indexed uint8)
+          handler: handleriverpostEvent
+        - event: resetEvent(indexed uint16)
+          handler: handleriverresetEvent
+      file: river\river.wasm
