@@ -58,7 +58,7 @@ block content
 						.buttonrow
 							+jsmainbutton('makebidexp','cannot place bid','done')
 				.area
-					h2 Bids
+					h3 Bids
 					if (post['bids'].length>0)
 						- for (var i=0; i<post['bids'].length; i+=1)
 							+riverbidonpost(post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['bids'][i]['accepted'])

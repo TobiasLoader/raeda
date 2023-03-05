@@ -15,13 +15,16 @@ const { ethers } = require("ethers");
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph6'
+let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph7'
 
 const postListInfoFragment = gql`
 	fragment postListInfo on Post {
 		id
 		postName
 		price
+		poster{
+			profileName
+		}
 		bids(orderBy:amount,orderDirection:desc,first:1){
 			amount
 		}
@@ -54,7 +57,7 @@ const postDetailedFragment = gql`
 			description
 		}
 		bids{
-			# id
+			id
 			amount
 			accepted
 			bidder {
@@ -67,9 +70,11 @@ const postDetailedFragment = gql`
 
 const bidListInfoFragment = gql`
 	fragment bidListInfo on Bid {
+		id
 		amount
 		accepted
 		post{
+			id
 			postName
 			poster{
 				profileName
@@ -146,39 +151,45 @@ async function getPost(postId){
 			}
 		}
 		${postDetailedFragment}
-		
 	`;
 	
 	client = createClient({
 		url: apiEndpoint
 	});
-	let res =  await client.query(query,{
+	let res = await client.query(query,{
 		idvar: intToBytesLittleEndian(postId)
 	}).toPromise();
 	
-	let posts = res.data.posts;
+	console.log(res)
+	
 	const postobj = {};
-	if (posts.length>0){
-		postobj['found'] = true;
-		postobj['idbytes'] = posts[0].id;
-		postobj['id'] = parseInt('0x'+changeEndianness(posts[0].id.substring(2)));
-		postobj['postName'] = posts[0]['postName'];
-		postobj['description'] = posts[0]['description'];
-		postobj['price'] = posts[0]['price'];
-		postobj['iXx'] = posts[0]['iXx'];
-		postobj['iXy'] = posts[0]['iXy'];
-		postobj['fXx'] = posts[0]['fXx'];
-		postobj['fXy'] = posts[0]['fXy'];
-		postobj['iT'] = posts[0]['iT'];
-		postobj['fT'] = posts[0]['fT'];
-		postobj['exp'] = posts[0]['exp'];
-		postobj['live'] = posts[0]['live'];
-		postobj['bucket'] = posts[0]['bucket'];
-		postobj['poster'] = posts[0]['poster'];
-		postobj['bids'] = posts[0]['bids'];
+	if (res.data!=undefined){
+		let posts = res.data.posts;
+		if (posts.length>0){
+			postobj['found'] = true;
+			postobj['idbytes'] = posts[0].id;
+			postobj['id'] = parseInt('0x'+changeEndianness(posts[0].id.substring(2)));
+			postobj['postName'] = posts[0]['postName'];
+			postobj['description'] = posts[0]['description'];
+			postobj['price'] = posts[0]['price'];
+			postobj['iXx'] = posts[0]['iXx'];
+			postobj['iXy'] = posts[0]['iXy'];
+			postobj['fXx'] = posts[0]['fXx'];
+			postobj['fXy'] = posts[0]['fXy'];
+			postobj['iT'] = posts[0]['iT'];
+			postobj['fT'] = posts[0]['fT'];
+			postobj['exp'] = posts[0]['exp'];
+			postobj['live'] = posts[0]['live'];
+			postobj['bucket'] = posts[0]['bucket'];
+			postobj['poster'] = posts[0]['poster'];
+			postobj['bids'] = posts[0]['bids'];
+		} else {
+			postobj['found'] = false;
+		}
 	} else {
 		postobj['found'] = false;
 	}
+	
 	
 	return postobj;
 	// return []
@@ -241,6 +252,9 @@ async function lakeMyOpenBids(profileName){
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
+	console.log('		HERREEEEEE')
+	console.log(res.data.bids);
+	console.log('		HERREEEEEE')
 	return res.data.bids;
 }
 
@@ -363,10 +377,12 @@ async function getProfile(profileName){
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	let iXx_gt = parseInt(10000*(lng-radius/69+180));
-	let iXx_lt = parseInt(10000*(lng+radius/69+180));
-	let iXy_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
-	let iXy_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	console.log(lat,lng,radius,minprice,maxprice)
+	let iXx_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXx_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXy_gt = parseInt(10000*(lng-radius/69+180));
+	let iXy_lt = parseInt(10000*(lng+radius/69+180));
+	console.log(iXx_gt,iXx_lt,iXy_gt,iXy_lt)
 
 	const query = gql`
 		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){

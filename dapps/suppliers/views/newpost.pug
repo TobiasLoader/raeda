@@ -18,16 +18,18 @@ block content
 				.inputrow
 					input(id="postexp-time",type="time",value=currenttime)
 					input(id="postexp-date",type="date",value=currentdate)
-			.textlabelfield
-				+requiredlabel('Start Location')
-				.inputrow
-					input(id="poststartloclat",placeholder="Latitude")
-					input(id="poststartloclng",placeholder="Longitude")
-			.textlabelfield
-				+requiredlabel('End Location')
-				.inputrow
-					input(id="postendloclat",placeholder="Latitude")
-					input(id="postendloclng",placeholder="Longitude")
+			//.textlabelfield
+			//	+requiredlabel('Start Location')
+			//	.inputrow
+			//		input(id="poststartloclat",placeholder="Latitude")
+			//		input(id="poststartloclng",placeholder="Longitude")
+			//.textlabelfield
+			//	+requiredlabel('End Location')
+			//	.inputrow
+			//		input(id="postendloclat",placeholder="Latitude")
+			//		input(id="postendloclng",placeholder="Longitude")
+			#map-container
+				#loc-map
 			.buttonrow
 				+jsmainbutton('prepostlogin','login','loginaction')
 				+jsmainbutton('lake-post','Post!','done')

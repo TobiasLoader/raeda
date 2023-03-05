@@ -89,9 +89,27 @@
 	height:30px;
 } */
 
+.bidid {
+	display: flex;
+	line-height: 30px;
+}
+.bidid > *{
+	margin:0 7px;
+}
+
 .bidprice {
 	display: flex;
 	color:rgb(83, 130, 201);
+	line-height: 30px;
+}
+
+.bidendrow {
+	display: flex;
+	line-height: 35px;
+}
+
+.bidendrow > * {
+	margin-left:10px;
 }
 
 .biddesc, .bidcurrency {
@@ -142,6 +160,7 @@
 .postbidprice {
 	display: flex;
 	color:rgb(83, 130, 201);
+	line-height: 30px;
 }
 
 .postnobid {
@@ -172,6 +191,10 @@
 
 tr.riverpostli {
 	cursor:pointer;
+}
+
+.riverpostli h2 {
+	line-height: 32px;
 }
 
 .riverpostli:last-child {
@@ -321,6 +344,7 @@ h1 {
 
 h2 {
 	margin:0;
+	font-size:20px;
 }
 
 h3 {

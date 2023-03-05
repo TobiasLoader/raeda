@@ -106,9 +106,15 @@ app.get('/post-:postid', (req, res) => {
 	const { headers, method, url, params } = req;
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
-		// console.log(postinfo);
-		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
-		else res.render('viewpost',{found:false,post:{id:-1}});
+		if (postinfo['found']) {
+			let bidlist = [];
+			for (var b=0; b<postinfo['bids'].length; b+=1){
+				bidlist.push(postinfo['bids'][b]['id']);
+			}
+			console.log(bidlist);
+			res.render('viewpost',{found:true,post:postinfo,bidlist:bidlist});
+		}
+		else res.render('viewpost',{found:false,post:{id:-1},bidlist:[]});
 	})
 });
 
@@ -138,7 +144,9 @@ app.post('/api/post_message', (req, res) => {
 
 app.post('/api/my-open-bids', (req, res) => {
 	postExtractBody(req,(body)=>{
+		console.log('OPENBIDS LINE 141')
 		raeda.lakeMyOpenBids(body['profilename']).then((openbids)=>{
+			console.log(openbids)
 			res.send(myopenbidsfn({openbids:openbids}));
 		});	
 	});
@@ -149,7 +157,7 @@ app.post('/api/my-open-posts', (req, res) => {
 		console.log('get OPEN POSTS')
 		console.log(body['profilename'])
 		raeda.lakeMyOpenPosts(body['profilename']).then((openposts)=>{
-			console.log('OPENPOSTS LINE 152',openposts)
+			// console.log('OPENPOSTS LINE 152',openposts)
 			res.send(myopenpostsfn({openposts:openposts}));
 		});	
 	});
@@ -158,6 +166,7 @@ app.post('/api/my-open-posts', (req, res) => {
 app.post('/api/lake-simple-search', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
+			console.log('SEARCH',search_res)
 			res.send(searchrivertablefn({searchresults:search_res}));
 		});
 	});

@@ -92,6 +92,7 @@
 .bidprice {
 	display: flex;
 	color:rgb(96,195,111);
+	line-height: 30px;
 }
 
 .biddesc, .bidcurrency {

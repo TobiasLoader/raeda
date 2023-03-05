@@ -1,5 +1,20 @@
 extends ../../templates/layout.pug
-	
+
+mixin lakebidonpost(bidid,biddername,bidprice,accepted)
+	li.bidli
+		div.bidprice
+			h2 !{bidprice}
+			span.bidcurrency wei
+		div.bidid
+			p.toitalic ID
+			h3.toblue !{bidid}
+		div.bidendrow
+			h3.toblue !{biddername}
+			if (accepted)
+				p.toitalic accepted
+			else
+				p.toitalic pending
+
 block content
 	if found
 		.area-container
@@ -18,10 +33,10 @@ block content
 									p.tored INACTIVE
 							div
 								- let profileurl = "/profile-"+post['poster']['profileName']
-								a(href=profileurl) !{post['poster']['profileName']}
+								a(id="postnamelink",href=profileurl) !{post['poster']['profileName']}
 							div
 								h3
-									| > 
+									| < 
 									span.toblue wei 
 									| !{post['price']}
 					//.minarea
@@ -30,6 +45,8 @@ block content
 					else
 						p !{post['description']}
 					- let datetime = new Date(parseInt(post['exp'])*1000)
+					#map-container
+						#loc-map
 					.buttonrow
 						div.smallbox
 							p
@@ -47,14 +64,15 @@ block content
 						.buttonrow
 							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
 							+jsmainbutton('makebid','make bid')
+							+jsmainbutton('choosebid','choose bid','hide')
 					else
 						.buttonrow
 							+jsmainbutton('makebidexp','cannot place bid','done')
 				.area
-					h2 Bids
+					h3 Bids
 					if (post['bids'].length>0)
 						- for (var i=0; i<post['bids'].length; i+=1)
-							p yess
+							+lakebidonpost(post['bids'][i]['id'],post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['bids'][i]['accepted'])
 					else
 						p.toitalic.toblue(style="margin-top:10px") Be the first to make a bid!
 			.area-row
@@ -77,4 +95,9 @@ block styles
 block scripts
 	script(src="/js/viewpost.js",type="module")
 	script.
-		let postid = '!{post["id"]}'
+		let postid = '!{post["id"]}';
+		let bidlist = [!{bidlist}];
+		let bigstartlat = !{post["iXx"]};
+		let bigstartlng = !{post["iXy"]};
+		let bigendlat = !{post["fXx"]};
+		let bigendlng = !{post["fXy"]};

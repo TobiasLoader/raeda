@@ -1,13 +1,14 @@
 
-mixin riverpostli(postid,postname,river,hasbid,rivermin,bestprice)
-	- let url = "window.location.href='/post-"+postid+"'"
+mixin riverpostli(postid,postname,rivername,hasbid,price,bestprice)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
 	if hasbid==true
 		tr.riverpostli(onclick=url)
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
+			td.toblue !{postname}
+			td.toitalic by !{rivername}
+			td.riverpostbidprice.price
 				div
-					h2 !{rivermin}
+					h2 !{price}
 					span.bidcurrency eth
 			td.riverpostbidprice.bestbid
 				div
@@ -15,11 +16,11 @@ mixin riverpostli(postid,postname,river,hasbid,rivermin,bestprice)
 					span.bidcurrency eth
 	else
 		tr.riverpostli.postlinobid(onclick=url)
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
+			td.toblue !{postname}
+			td.toitalic by !{rivername}
+			td.riverpostbidprice.price
 				div
-					h2 !{rivermin}
+					h2 !{price}
 					span.bidcurrency eth
 			td.riverpostbidprice.bestbid
 				div
@@ -35,10 +36,10 @@ table.posttable
 	tbody
 		if (searchresults.length)
 			- for(let i = 0; i < searchresults.length; i+=1)
-				if searchresults[i].bestprice!=''
-					+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,true,searchresults[i].rivermin,searchresults[i].bestprice)
+				if searchresults[i].bids.length>0
+					+riverpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].price,true,searchresults[i].price,100)
 				else
-					+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,false,searchresults[i].rivermin,'-')
+					+riverpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].poster.profileName,false,searchresults[i].price,'-')
 		else
 			tr.riverpostli.postlinobid
 				td No Results!
