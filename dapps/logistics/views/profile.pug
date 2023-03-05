@@ -39,8 +39,8 @@ block content
 				.area(id="adddriverarea",class="hide")
 					h3 Add Driver
 					.textlabelfield
-						+requiredlabel('Driver Public Address')
-						input(id='driver-pub-addr',placeholder='0x..')
+						+requiredlabel('Driver DID (decentralised identity)')
+						input(id='driver-pub-addr',placeholder='did:---:---')
 					+jsmainbutton('adddriver','Add Driver')
 			.area
 				h3 POSTS BY !{name}
@@ -50,7 +50,7 @@ block content
 		.area-container
 			.area
 				h2.tored Error
-				p No post found with this id
+				p No profile found with this name
 
 block styles
 	link(rel='stylesheet', href='styles/profile.css')

@@ -4,9 +4,9 @@ let profileContract;
 let lakeContract;
 let riverContract;
 
-let PROFILE_ADDR="0x963Ee3D90D3f83a56940b1604b33e7C6f70d6cfF"
-let LAKE_ADDR="0x5c67979d86B28A3EB607c00808F3dD05fd90f63a"
-let RIVER_ADDR="0x0a6635b82e003337bbeA9325Dc3c624A2E835FdD"
+let PROFILE_ADDR="0x19b4B0Bdf0383bb222cB400b0eF2F33585889E05"
+let LAKE_ADDR="0xA0F7742A9042AC9B8008cE60D443369bE4AE53A0"
+let RIVER_ADDR="0xA5270a34347AfD1b3E56D6db6b02d805afD106EC"
 
 let contractsInitiated = false;
 let signerConnected = false;
@@ -59,6 +59,7 @@ export async function createProfileRiver(profilename,description){
 		try {
 			let response = await profileContract.createProfile(1,profilename,description);
 			console.log('create profile success',response);
+			console.log('about to create issuer')
 			let createissuer = await fetch('/api/create-river-issuer-driver', {
 				method: 'post',
 				body:JSON.stringify({
@@ -66,7 +67,7 @@ export async function createProfileRiver(profilename,description){
 				}),
 				headers: {'Content-Type': 'application/json'}
 			}).then((res) => {
-				console.log(res);
+				console.log('/api/create-river-issuer-driver',res);
 				return true;
 			});
 			return createissuer;
@@ -89,15 +90,23 @@ export async function lakeLogin(addr,profilename,signer){
 export async function riverLogin(addr,profilename,signer){
 	return await _checkSignerConnectedAsync(async ()=>{
 		let signature = await signer.signMessage(profilename);
-		return await _raedaLakeAPICall('riverlogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
+		return await _raedaRiverAPICall('riverlogin',{addr:addr,profilename:profilename,signature:signature}).then((body)=>{
 			return body;
 		});
 	});
 }
 
-export async function checkSessionId(addr,sessionid){
+export async function lakeCheckSessionId(addr,sessionid){
 	return await _checkSignerConnectedAsync(async ()=>{
 		return await _raedaLakeAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
+			return body;
+		});
+	});
+}
+
+export async function riverCheckSessionId(addr,sessionid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		return await _raedaRiverAPICall('checksessionid',{addr:addr,sessionid:sessionid}).then((body)=>{
 			return body;
 		});
 	});
@@ -153,7 +162,7 @@ export async function riverPost(addr,minprice,postName,riverId,iXx,iXy,fXx,fXy,e
 export async function lakeBid(addr,bidprice,postId,bidderId){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
-			let txn = await lakeContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
+			let txn = await riverContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
 			console.log('make bid success',txn);
 			// let txnreceipt = await txn.wait();
 			// let postId = txnreceipt.events[1].args[0];
@@ -173,7 +182,8 @@ export async function lakeBid(addr,bidprice,postId,bidderId){
 export async function riverBid(addr,bidprice,postId,bidderId){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
-			let txn = await riverContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
+			let txn = await lakeContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
+			// let debug = await lakeContract.bids(postId,2)
 			console.log('make bid success',txn);
 			// let txnreceipt = await txn.wait();
 			// let postId = txnreceipt.events[1].args[0];
@@ -188,8 +198,37 @@ export async function riverBid(addr,bidprice,postId,bidderId){
 	});	
 }
 
+export async function addDriver(profilename,driverdid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			return _raedaRiverAPICall('river-add-driver',{
+				'rivername':profilename,
+				'driverdid':driverdid
+			}).then((body)=>{
+				console.log(body);
+				return true;
+			});
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});	
+}
+
 function _raedaLakeAPICall(method, params = null, local=true){
 	let url = 'https://lake.raeda.app';
+	if (local) url = 'http://127.0.0.1:3000'
+	return fetch(url+'/api/'+method, {
+		method: 'post',
+		body: JSON.stringify(params),
+		headers: {'Content-Type': 'application/json'}
+	}).then((res) => res.json()).then((body) => {
+		return body;
+	});
+}
+
+function _raedaRiverAPICall(method, params = null, local=true){
+	let url = 'https://river.raeda.app';
 	if (local) url = 'http://127.0.0.1:3000'
 	return fetch(url+'/api/'+method, {
 		method: 'post',
@@ -261,7 +300,6 @@ export function lakeMyOpenPosts(profileName){
 }
 
 export function riverMyOpenBids(profileName){
-	console.log(profileName)
 	fetch('/api/my-open-bids', {
 		method: 'post',
 		body:JSON.stringify({

@@ -106,27 +106,27 @@ app.get('/post-:postid', (req, res) => {
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
 		console.log('pre');
-		postinfo.bids = [
-			{
-				amount: 15,
-				accepted: true,
-				bidder: {
-					profileName: 'Toby'
-				}
-			},
-			{
-				amount: 10,
-				accepted: false,
-				bidder: {
-					profileName: 'Peter'
-				}
-			}		
-		];
+		// postinfo.bids = [
+		// 	{
+		// 		amount: 15,
+		// 		accepted: true,
+		// 		bidder: {
+		// 			profileName: 'Toby'
+		// 		}
+		// 	},
+		// 	{
+		// 		amount: 10,
+		// 		accepted: false,
+		// 		bidder: {
+		// 			profileName: 'Peter'
+		// 		}
+		// 	}		
+		// ];
 		console.log('post');
 		console.log(postinfo);
 
 		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
-		else res.render('viewpost',{found:false});
+		else res.render('viewpost',{found:false,post:{id:-1}});
 	})
 });
 
@@ -182,7 +182,7 @@ app.post('/api/create-river-issuer-driver',(req,res)=>{
 	postExtractBody(req, (body)=>{
 		console.log(body);
 		raeda.createRiverIssuerDriver(body['rivername']).then((issuer_res)=>{
-			console.log(issuer_res);
+			console.log('/api/create-river-issuer-driver',issuer_res);
 			res.send(issuer_res);
 		});
 	});
@@ -190,7 +190,9 @@ app.post('/api/create-river-issuer-driver',(req,res)=>{
 
 app.post('/api/river-add-driver',(req,res)=>{
 	postExtractBody(req, (body)=>{
+		console.log(body)
 		raeda.addDriver(body['rivername'],body['driverdid']).then((issuer_res)=>{
+			console.log('/api/river-add-driver',issuer_res)
 			res.send(issuer_res);
 		});
 	});

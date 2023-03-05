@@ -1,22 +1,18 @@
+import * as wallet from "./wallet.js";
+import * as raeda from "./raeda.js";
+import * as utils from "./utils.js";
+
 $('#adddriver').click(function(){
-	let driverdid = $('#makebidprice').val();
+	let driverdid = $('#driver-pub-addr').val();
 	if (driverdid!=''){
-		wallet.requiresLogin(()=>
-			console.log('add river');
-			fetch('/api/river-add-driver', {
-				method: 'post',
-				body:JSON.stringify({
-					'rivername':profilename,
-					'driverdid':driverdid
-				}),
-				headers: {'Content-Type': 'application/json'}
-			}).then((res) => {
-				console.log(res);
-				notification('Driver Added', ['Success! Driver with did added.']);
-				return true;
-			});
+		raeda.addDriver(wallet.state.profilename, driverdid).then((v)=>{
+			if (v){
+				utils.notification('Driver Added', ['Success! Driver with did added.']);
+			} else {
+				utils.notification('Yikes', ['Unable to add driver.']);
+			}
 		});
 	} else {
-		notification('Driver did field empty', ['Oops! You cannot leave the driver did field empty.'],true);
+		utils.notification('Driver did field empty', ['Oops! You cannot leave the driver did field empty.'],true);
 	}
 });

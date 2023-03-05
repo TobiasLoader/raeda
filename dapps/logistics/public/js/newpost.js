@@ -23,7 +23,7 @@ $('#connect-prepost').click(function(){
 $('#river-post').click(function(){
 	let pname = $('#postname').val();
 	let pdesc = $('#postdesc').val();
-	let pmaxprice = $('#postmaxprice').val();
+	let pminprice = $('#postminprice').val();
 	let pexp = Math.round(new Date($('#postexp-date').val()+'T'+$('#postexp-time').val()).valueOf()/1000);
 	// console.log('pexp here',pexp);
 	// console.log(pexp);
@@ -33,12 +33,12 @@ $('#river-post').click(function(){
 	let pfy = $('#postendloclng').val();
 	if (pname==''){
 		utils.notification('Oops', ['You cannot leave the post name field empty'], true);
-	} else if (pmaxprice==''){
-		utils.notification('Oops', ['You cannot leave the max price field empty'], true);
+	} else if (pminprice==''){
+		utils.notification('Oops', ['You cannot leave the min price field empty'], true);
 	} else if (parseFloat(pexp)==NaN){
 		utils.notification('Oops', ['Expiry time must be a number'], true);
-	} else if (parseFloat(pmaxprice)==NaN){
-		utils.notification('Oops', ['Max price must be a number'], true);
+	} else if (parseFloat(pminprice)==NaN){
+		utils.notification('Oops', ['Min price must be a number'], true);
 	} else if (parseFloat(pix)==NaN || parseFloat(piy)==NaN){
 		utils.notification('Oops', ['The start location coordinates must be numbers.'], true);
 	} else if (parseFloat(pfx)==NaN || parseFloat(pfy)==NaN){
@@ -48,7 +48,7 @@ $('#river-post').click(function(){
 		let locmult = 1000; // to be 10000 once rishin has got his act together
 		
 		let pid = wallet.state.profileid;
-		pmaxprice = parseFloat(pmaxprice);
+		pminprice = parseFloat(pminprice);
 		pix = BigInt(parseInt(parseFloat(pix)*locmult));
 		piy = BigInt(parseInt(parseFloat(piy)*locmult));
 		pfx = BigInt(parseInt(parseFloat(pfx)*locmult));
@@ -58,7 +58,8 @@ $('#river-post').click(function(){
 			utils.notification('Oops', ['The expiry data is in the past.'], true);
 		} else {
 			utils.notification('Sign wallet then wait :)', ['Complete wallet signature then wait for post to be added to the blockchain – it should be done shortly.']);
-			raeda.riverPost(wallet.state.address,pmaxprice,pname,pid,pix,piy,pfx,pfy,pexp,{postDesc:pdesc}).then((v)=>{
+			console.log('HEREE',wallet.state.address,pminprice,pname,pid,pix,piy,pfx,pfy,pexp,{postDesc:pdesc});
+			raeda.riverPost(wallet.state.address,pminprice,pname,pid,pix,piy,pfx,pfy,pexp,{postDesc:pdesc}).then((v)=>{
 				if (v){
 					utils.buttonnotification('Yess', ['Post was uploaded successfully.'],[{'name':'done','classes':['newpostdone']}]);
 					$('.notifbtn.newpostdone').click(function(){

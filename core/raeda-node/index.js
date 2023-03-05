@@ -91,63 +91,7 @@ const profileDetailedFragment = gql`
 	}
 `
 
-const riverNameToDID = {}
-
-const createIdentityCall = `
-	{
-		"didMetadata": {
-			"method": "polygonid",
-			"blockchain": "polygon",
-			"network": "mumbai"
-		}
-	}
-`
-
-function setIdentityRiver(profileName){
-	//get identity from issuer node
-
-	function GETIDENTITY(call){
-		return `
-		{
-			"identifier": "did:polygonid:polygon:mumbai:2qNDpfD8A2zjdiDbrzKsKe5XoP583FeBkpPyJnUEVx",
-			"state": {
-				"claimsTreeRoot": "96041fd8c899994d8b493c9f844f8ff17f1218e5400bfe68cc659b5386a88b07",
-				"createdAt": "2023-02-22T14:55:34.89165+05:30",
-				"modifiedAt": "2023-02-22T14:55:34.89165+05:30",
-				"state": "569bd6c053d6ddf463245127a82570841a76099a4dab3c279c6b461cf0438408",
-				"status": "confirmed"
-			}
-		}
-		`
-	};
-
-	const DID = GETIDENTITY(createIdentityCall)['identifier'];
-
-	riverNameToDID[profileName] = DID;
-	//riverNameToDID[profileName] = did
-}
-
-function addDriver(profileName,driverWalletDid){
-
-	function MAKEURL(identitydid){
-		return '{{miniplatform-url}}/v1/${identitydid}/claims'
-	}
-
-	const endpoint = MAKEURL(riverNameToDID[profileName]);
-
-	
-
-	//gets did from profile Name and uses it to connect to endpoint
-	//creates credential, turns it into QR code
-}
-
-function verifyDriver(postId){
-	//submit a request with requestid=postid to smart contract
-	//generate the json QR code request thing	
-}
-
-
-const client = createClient({
+let client = createClient({
 	url: apiEndpoint
 })
 
@@ -205,6 +149,9 @@ async function getPost(postId){
 		
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		idvar: intToBytesLittleEndian(postId)
 	}).toPromise();
@@ -287,7 +234,10 @@ async function lakeMyOpenBids(profileName){
 		}
 		${bidListInfoFragment}
 	`;
-
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -298,7 +248,7 @@ async function lakeMyOpenBids(profileName){
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	// console.log('lakeMyOpenPosts',profileName);
+	console.log('lakeMyOpenPosts LINE 247',profileName);
 
 	const query = gql`
 		query lakeOwnPosts($profileNameVar:String!){
@@ -308,10 +258,18 @@ async function lakeMyOpenPosts(profileName){
 		}
 		${postListInfoFragment}
 	`;
+	
+	console.log('query LINE 258',query);
 
-	let res =  await client.query(query,{
+	client = createClient({
+		url: apiEndpoint
+	});
+	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
+	
+	console.log('res LINE 264',res);
+	
 	return res.data.posts;
 }
 
@@ -329,9 +287,13 @@ async function riverMyOpenBids(profileName){
 		${bidListInfoFragment}
 	`;
 
-	let res =  await client.query(query,{
+	client = createClient({
+		url: apiEndpoint
+	});
+	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
+	console.log('BIDS',profileName,query,res)
 	return res.data.bids;
 }
 
@@ -349,6 +311,9 @@ async function riverMyOpenPosts(profileName){
 		${postListInfoFragment}
 	`;
 
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -370,6 +335,9 @@ async function getProfile(profileName){
 		${profileDetailedFragment}
 		${postListInfoFragment}
 	`
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -410,6 +378,10 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	`;
 
 	const watertype = "LAKE";
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		waterTypevar: watertype,
 		minpricevar: minprice,
@@ -443,6 +415,10 @@ async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 	`;
 
 	const watertype = "LAKE";
+	
+	client = createClient({
+		url: apiEndpoint
+	});
 	let res = await client.query(query,{
 		waterTypevar: watertype,
 		minpricevar: minprice,
@@ -460,20 +436,23 @@ async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 async function lakeGetId(addr,profileName){
 	query = gql`
 		query lakeGetId($profileNameVar: String!){
-			profiles(where:{profileName: $profileNameVar}){
+			profiles(where:{profileName: $profileNameVar,waterType:"LAKE"}){
 				id
 				EOAs
 			}
 		}
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	const res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
 
 	let profiles = res.data.profiles;
 	const profileobj = {}
-	
+	console.log(profiles);
 	if (profiles.length>0){
 		profileobj['found'] = true;
 		profileobj['id'] = parseInt('0x'+changeEndianness(profiles[0].id.substring(2)));
@@ -492,13 +471,16 @@ async function lakeGetId(addr,profileName){
 async function riverGetId(addr,profileName){
 	query = gql`
 		query riverGetId($profileNameVar: String!){
-			profiles(where:{profileName: $profileNameVar}){
+			profiles(where:{profileName: $profileNameVar,waterType:"RIVER"}){
 				id
 				EOAs
 			}
 		}
 	`;
 	
+	client = createClient({
+		url: apiEndpoint
+	});
 	const res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
@@ -536,6 +518,41 @@ function riverGetBids(postId){
 	}];
 }
 
+
+const createIdentityCall = `
+	{
+		"didMetadata": {
+			"method": "polygonid",
+			"blockchain": "polygon",
+			"network": "mumbai"
+		}
+	}
+`
+// 
+// function setIdentityRiver(profileName){
+// 	//get identity from issuer node
+// 
+// 	function GETIDENTITY(call){
+// 		return `
+// 		{
+// 			"identifier": "did:polygonid:polygon:mumbai:2qNDpfD8A2zjdiDbrzKsKe5XoP583FeBkpPyJnUEVx",
+// 			"state": {
+// 				"claimsTreeRoot": "96041fd8c899994d8b493c9f844f8ff17f1218e5400bfe68cc659b5386a88b07",
+// 				"createdAt": "2023-02-22T14:55:34.89165+05:30",
+// 				"modifiedAt": "2023-02-22T14:55:34.89165+05:30",
+// 				"state": "569bd6c053d6ddf463245127a82570841a76099a4dab3c279c6b461cf0438408",
+// 				"status": "confirmed"
+// 			}
+// 		}
+// 		`
+// 	};
+// 
+// 	const DID = GETIDENTITY(createIdentityCall)['identifier'];
+// 
+// 	riverNameToDID[profileName] = DID;
+// 	//riverNameToDID[profileName] = did
+// }
+
 // this var should be stored securely on rust server (in db)
 let polygonid_dids = {};
 
@@ -553,9 +570,19 @@ async function createRiverIssuerDriver(rivername){
 async function addDriver(rivername,driverdid){
 	// contact Issuer Node (on ngrok)
 	// get unique qr code from params:
-	// - 
+	// - polygonid_dids[rivername]
 	// - driverdid
 	console.log(rivername,driverdid);
+	
+	function MAKEURL(identitydid){
+		return '{{miniplatform-url}}/v1/${identitydid}/claims';
+	}
+	
+	const endpoint = MAKEURL(polygonid_dids[rivername]);
+	
+	//gets did from profile Name and uses it to connect to endpoint
+	//creates credential, turns it into QR code
+	
 	let qr = JSON.parse({
 		"body": {
 			"credentials": [
@@ -573,13 +600,20 @@ async function addDriver(rivername,driverdid){
 		"typ": "application/iden3comm-plain-json",
 		"type": "https://iden3-communication.io/credentials/1.0/offer"
 	});
-	console.log(qr);
+	// console.log(qr);
 	return {
 		'rivername':rivername,
 		'success':true,
 		'qr': qr
 	};
 }
+
+
+function verifyDriver(postId){
+	//submit a request with requestid=postid to smart contract
+	//generate the json QR code request thing	
+}
+
 
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 

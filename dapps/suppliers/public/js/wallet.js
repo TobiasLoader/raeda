@@ -105,7 +105,8 @@ function afterLoginSuccess(){
 	$('#logout').removeClass('hide');
 	$('#lake-post').removeClass('done');
 	if (window.location.pathname=='/'){
-		console.log(state.profilename)
+		console.log(state.profilename);
+		// console.log('SHOULD BE HERE -- SHOULD BE HERE');
 		raeda.lakeMyOpenBids(state.profilename);
 		raeda.lakeMyOpenPosts(state.profilename);
 	}
@@ -114,7 +115,7 @@ function afterLoginSuccess(){
 function autoLoginSessionId(){
 	state.sessionid = utils.getCookie('sessionid');
 	if (state.connected && state.sessionid!=null){
-		raeda.checkSessionId(state.address,state.sessionid).then((res)=>{
+		raeda.lakeCheckSessionId(state.address,state.sessionid).then((res)=>{
 			if (res['success']){
 				console.log(res)
 				state.login = true;
