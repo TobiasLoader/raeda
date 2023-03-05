@@ -106,9 +106,16 @@ function afterLoginSuccess(){
 	$('#lake-post').removeClass('done');
 	if (window.location.pathname=='/'){
 		console.log(state.profilename);
-		// console.log('SHOULD BE HERE -- SHOULD BE HERE');
 		raeda.lakeMyOpenBids(state.profilename);
 		raeda.lakeMyOpenPosts(state.profilename);
+	}
+	if (window.location.pathname.substring(0,5)=='/post'){
+		console.log($('#postnamelink').text(),state.profilename)
+		if ($('#postnamelink').text()==state.profilename){
+			$('#messageposter').addClass('hide');
+			$('#makebid').addClass('hide');
+			$('#choosebid').removeClass('hide');
+		}
 	}
 }
 

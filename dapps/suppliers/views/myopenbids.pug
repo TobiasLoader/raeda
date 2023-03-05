@@ -1,13 +1,20 @@
-mixin lakebidli(postid,bidprice,info)
-	- let url = "window.location.href='/post-"+postid+"'"
+mixin lakebidli(postid,postname,bidprice,accepted)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
 	li.bidli(onclick=url)
 		div.bidprice
 			h2 !{bidprice}
 			span.bidcurrency wei
-		p.biddesc !{info}
+		div.bidendrow
+			h3.toblue !{postname}
+			if (accepted)
+				p.toitalic accepted
+			else
+				p.toitalic pending
 
 if (openbids.length)
 	- for(let i = 0; i < openbids.length; i+=1)
-		+lakebidli(openbids[i].postid,openbids[i].bidprice,openbids[i].info)
+		//p= openbids[i].post.id
+		+lakebidli(openbids[i].post.id,openbids[i].post.postName,openbids[i].amount,openbids[i].accepted)
 else
 	li.bidli.toblue.toitalic You have no open bids!
