@@ -15,7 +15,7 @@ const { ethers } = require("ethers");
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph8'
+let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedasubgraph'
 
 const postListInfoFragment = gql`
 	fragment postListInfo on Post {
@@ -488,27 +488,27 @@ async function getWinningBid(postId){
 
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 
-let l = true;
-
-function _rustCall(method, params = null, local=false){
-	let url = 'https://rust.raeda.app';
-	if (local) url = 'http://0.0.0.0:8000'
-	return fetch(url+'/api/'+method, {
-		method: 'post',
-		body: JSON.stringify(params),
-		headers: {'Content-Type': 'application/json'}
-	}).then((res) => res.json()).then((body) => {
-		return body;
-	});
-}
-
-function getMessages(from,to){
-	return _rustCall('messages',{'from':from,'to':to},l);
-}
-
-function postMessage(from,to,msg){
-	return _rustCall('messages',{'from':from,'to':to,'msg':msg},l);
-}
+// let l = true;
+// 
+// function _rustCall(method, params = null, local=false){
+// 	let url = 'https://rust.raeda.app';
+// 	if (local) url = 'http://0.0.0.0:8000'
+// 	return fetch(url+'/api/'+method, {
+// 		method: 'post',
+// 		body: JSON.stringify(params),
+// 		headers: {'Content-Type': 'application/json'}
+// 	}).then((res) => res.json()).then((body) => {
+// 		return body;
+// 	});
+// }
+// 
+// function getMessages(from,to){
+// 	return _rustCall('messages',{'from':from,'to':to},l);
+// }
+// 
+// function postMessage(from,to,msg){
+// 	return _rustCall('messages',{'from':from,'to':to,'msg':msg},l);
+// }
 
 module.exports = {
 	getPost,
@@ -520,9 +520,6 @@ module.exports = {
 	riverSimpleSearch,
 	lakeGetId,
 	riverGetId,
-	getMessages,
-	postMessage,
 	getProfile,
 	getWinningBid,
-	_rustCall
 }
