@@ -1,28 +1,14 @@
 raeda: blockchain logistics
 ===========================
 
-*Supply chains are like rivers, flowing strong and free,*
-
-*Carrying goods from source to destination, tirelessly,*
-
-*Like water from one lake to another, they journey on,*
-
-*Through warehouses and trucks, they carry on.*
-
 raeda is a solution to the fragmentation, inefficiency, and lack of competition in the logistics market. We use crucial features of Web3 technologies, a clean user interface, and incentive alignment to provide a marketplace for logistics providers (***rivers***) and suppliers (***lakes***) to interact. A lake looking to transport goods can log-in to a customized portal, where they can browse available routes posted by rivers, or make a post for rivers to bid on. Enforced by smart contracts, the lake can trust that the flow from initiating an interaction to transferring goods is secured. Moreover, raeda is a minimalistic platform, designed intentionally for developers to build on; we foresee a future where lakes and rivers are able to filter and focus on niche wants with various extensions, each inheriting the reliability of the raeda platform.
 
 At ETHDenver 2023, we have produced an MVP of the raeda platform, with an additional front-end user-interface. Before we illustrate our stack, we will briefly justify the need for raeda.
 
+
+
 Logistics Markets Currently: Inefficient, Fragmented, Opaque, yet Growing
 -------------------------------------------------------------------------
-
-*Like a river, a supply chain starts with a source,*
-
-*Where raw materials and products are gathered with force,*
-
-*From there, it flows downstream, through every phase,*
-
-*Manufacturing, transportation, and distribution in its ways.*
 
 -        **Inefficiency**: 35% of miles driven by trucks are empty. raeda provides a way for logistics providers to optimise for their backhaul, by posting unfilled cargo space.
 
@@ -32,16 +18,10 @@ Logistics Markets Currently: Inefficient, Fragmented, Opaque, yet Growing
 
 -        **Growing:** the freight brokerage industry is expected to grow to $86 billion in 2026, from $60 billion in 2019. raeda is positioned to facilitate this growth.
 
+
+
 A Marketplace
 -------------
-
-*As a river nourishes the land and all it surrounds,*
-
-*The supply chain brings products to where they are bound,*
-
-*Improving lives, providing goods that people need,*
-
-*An integral part of our modern world, indeed.*
 
 The essence of raeda is the on-chain marketplace, with two parts:
 
@@ -61,16 +41,10 @@ The contracts are deployed on the Polygon Mumbai Testnet, with addresses:
 
 -        RIVER_ADDRESS="0xdFf17343E71eDAb3460c541F52c19C97c8e6EbBe"
 
+
+
 Composability
 -------------
-
-*As a river's tributaries join and add to its flow,*
-
-*Suppliers, manufacturers, and distributors help it grow,*
-
-*Each one contributing to the chain, their unique part,*
-
-*With their skills and expertise, they make it an art.*
 
 In addition to the smart contracts, which developers can build into their own appss, we have produced a front-end JavaScript library for transacting with the smart contracts:
 
@@ -94,6 +68,8 @@ c)       an app which specializes in publishing the ESG (environmental, so
 
 Using web3-esque technologies here is essential, as it allows extensions to raeda to inherit the trust-worthiness of the raeda platform.
 
+
+
 raeda.app
 ---------
 
@@ -107,16 +83,10 @@ These two portals provide symmetrical dashboards for lakes and rivers to view th
 
 The front-end writes to the smart contracts through the MetaMask wallet, which also acts as a provider.
 
+
+
 Technical Details
 -----------------
-
-*Let us remember the workers who make it all possible,*
-
-*From the manufacturers to the transporters, they are capable,*
-
-*Their hard work and dedication are the heart of the chain,*
-
-*Without them, the journey would be in vain.*
 
 ### L2 Solution
 
@@ -134,6 +104,7 @@ We are currently deployed on the Polygon Mumbai Testnet, with the goal to deploy
 
 We faced no particular challenges in interacting with the Polygon Mumbai Testnet, and we believe raeda can provide a useful addition to the Polygon ecosystem.
 
+
 ### Truffle
 
 For smart contract development, we used the Truffle Polygon Box:
@@ -144,6 +115,7 @@ which was unboxed here:
 
 -        https://github.com/TobiasLoader/raeda/tree/main/core/smart_contracts
 
+
 Benefits:
 
 -        The truffle-config.polygon.js, and its integration with touchenv, was extremely helpful for initialising and debugging, whilst also being securer than alternatives (e.g. hardhat)
@@ -151,6 +123,7 @@ Benefits:
 -        Writing the deploy contract was simple
 
 -        Helpful VSCode extension
+
 
 Drawbacks:
 
@@ -164,9 +137,11 @@ Drawbacks:
 
 -        Had to manually set the latest version of the solc compiler
 
+
 ### Infura
 
 We used the Infura endpoint for the Polygon Mumbai Testnet when deploying contracts (and temporarily at various other points). The only time it led to issues was when using the HDWalletProvider as part of the truffle-config.polygon.js. In this case, it was fixed by passing the parameter `disableConfirmationListener:true` under the polygon_infura_testnet network.
+
 
 ### The Graph
 
@@ -192,16 +167,10 @@ For querying, we did not find it easy to implement the graph-cli client into our
 
 Finally, the process of initialising a new subgraph deployment environment every time new smart contracts were deployed did become a slow process, although given more time, we would've have looked to automate this process.
 
+
+
 Impact
 ------
-
-*Just like a river, the supply chain may face hurdles,*
-
-*Natural disasters, political strife, and market curdles,*
-
-*But it finds its way through, adapting and adjusting,*
-
-*Its resilience and flexibility are indeed astounding.*
 
 We aim for raeda to have a positive impact on the world, whilst being self-sustaining. One way to illustrate raeda's positive impact is through the United Nation Sustainable Development Goals:
 
@@ -217,16 +186,10 @@ Moving forward, we plan for raeda to become self-sustaining by monetizing the sm
 
 We are also working on plans to motivate and onboard users.
 
+
+
 Next Steps
 ----------
-
-*So, let us cherish and celebrate this great network,*
-
-*From source to destination, a journey we embark,*
-
-*Like a river's journey, the chain flows,*
-
-*Bringing progress and prosperity wherever it goes.*
 
 Our next steps for raeda on the technical side, in increasing order of difficulty to implement, are as follows:
 
