@@ -1,0 +1,14 @@
+{
+  "mumbai": {
+    "profile": {
+      "address": "0xb23b8eAD105c08e10ddAE90170C2CAe7413E86D6",
+      "startBlock": 32723114
+    },
+    "lake": {
+      "address": "0x539F513d56b6fBEC15f965C6dE5f556B513B4a24"
+    },
+    "river": {
+      "address": "0xEb366a7004bd4164Ea7bf511580513DA7550997d"
+    }
+  }
+}
