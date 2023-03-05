@@ -9,12 +9,6 @@ const server = http.createServer(app);
 const pug = require('pug');
 app.use(express.static('public'));
 
-const cors = require('cors');
-app.use(cors({
-	origin: ['http://localhost:3001'],
-	methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
-}));
-
 app.set('views', './views')
 app.set('view engine', 'pug');
 

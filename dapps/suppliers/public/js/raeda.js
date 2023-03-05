@@ -188,7 +188,7 @@ export async function riverBid(addr,bidprice,postId,bidderId){
 	});	
 }
 
-function _raedaLakeAPICall(method, params = null, local=true){
+function _raedaLakeAPICall(method, params = null, local=false){
 	let url = 'https://lake.raeda.app';
 	if (local) url = 'http://127.0.0.1:3000'
 	return fetch(url+'/api/'+method, {
@@ -200,7 +200,7 @@ function _raedaLakeAPICall(method, params = null, local=true){
 	});
 }
 
-function _raedaRiverAPICall(method, params = null, local=true){
+function _raedaRiverAPICall(method, params = null, local=false){
 	let url = 'https://river.raeda.app';
 	if (local) url = 'http://127.0.0.1:3000'
 	return fetch(url+'/api/'+method, {
