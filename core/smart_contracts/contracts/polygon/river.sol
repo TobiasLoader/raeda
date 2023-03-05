@@ -10,22 +10,20 @@ contract river is waterSource{
     uint16 private bidIdCount;
 
 
-    constructor(address _profileContractAddress) waterSource(_profileContractAddress) {
-        profileContract = profile(_profileContractAddress);
-        owner = msg.sender;
-        postIdCount = 1;
-        bidIdCount = 0;
-    }
+    constructor(address _profileContractAddress, uint16 _initialPostId,uint16 _initialBidId) waterSource(_profileContractAddress,_initialPostId, _initialBidId) {}
 
-    function verifyOnRiverPost(uint16 _postId) external {
-        require(msg.sender == verifyTributaryAddress,"Error: this function can only be triggered by the verifying contract");
-        pendingDeals[_postId] = dealStates.VERIFIED;
-        emit pendingEvent(_postId, dealStates.VERIFIED);
-    }
+    // function verifyOnRiverPost(uint16 _postId) external {
+    //     require(msg.sender == verifyTributaryAddress,"Error: this function can only be triggered by the verifying contract");
+    //     pendingDeals[_postId] = dealStates.VERIFIED;
+    //     emit pendingEvent(_postId, dealStates.VERIFIED);
+    // }
+
 
     function bidReqs(uint16 _postId,uint _bidAmount) internal view override returns(bool){
         return (_bidAmount > collection[_postId].price);
     }
+    
+
 
     function payout(uint16 _postId) internal override {
         collection[_postId].EOA.call{value:collection[_postId].price}("");
