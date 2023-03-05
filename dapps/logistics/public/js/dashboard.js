@@ -1,4 +1,5 @@
 import * as wallet from "./wallet.js";
+import * as utils from "./utils.js";
 
 $(document).ready(function() {
 	fetchSimpleSearchMap();
@@ -7,23 +8,12 @@ $(document).ready(function() {
 	});
 	document.getElementById('minprice').addEventListener('keyup', function() {
 		let v = document.getElementById('minprice').value;
-		if (!isNaN(v)){
-			minprice = parseInt(v);
-			if (minprice>maxprice){
-				maxprice = minprice;
-				document.getElementById('maxprice').value = maxprice;
-			}
-		} else {
-			document.getElementById('minprice').value = minprice;
-		}
+		if (!isNaN(v)) minprice = parseInt(v);
+
 	});
 	document.getElementById('maxprice').addEventListener('keyup', function() {
 		let v = document.getElementById('maxprice').value;
-		if (!isNaN(v) && parseInt(v)>=minprice){
-			maxprice = parseInt(v);
-		} else {
-			document.getElementById('maxprice').value = maxprice;
-		}
+		if (!isNaN(v)) maxprice = parseInt(v);
 	});
 });
 
@@ -34,21 +24,24 @@ var searchlng = 0;
 var searchradius = 10;
 
 function riverSimpleSearch(){
-	fetch('/api/river-simple-search', {
-		method: 'post',
-		body:JSON.stringify({
-			'lat':searchlat,
-			'lng':searchlng,
-			'radius':searchradius,
-			'minprice':minprice,
-			'maxprice':maxprice
-		}),
-		headers: {'Content-Type': 'application/json'}
-	}).then((response) => {
-		return response.text();
-	}).then((html) => {
-		$('#searchtable').html(html);
-	});
+	if (minprice>maxprice)
+		utils.notification('Oops', ['Min price cannot be more than Max price.'], true);
+	else 
+		fetch('/api/river-simple-search', {
+			method: 'post',
+			body:JSON.stringify({
+				'lat':searchlat,
+				'lng':searchlng,
+				'radius':searchradius,
+				'minprice':minprice,
+				'maxprice':maxprice
+			}),
+			headers: {'Content-Type': 'application/json'}
+		}).then((response) => {
+			return response.text();
+		}).then((html) => {
+			$('#searchtable').html(html);
+		});
 }
 
 /// INJECTING GOOGLE MAPS

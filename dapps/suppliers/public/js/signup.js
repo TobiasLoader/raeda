@@ -35,7 +35,7 @@ $('#create-profile').click(()=>{
 	} else {
 		raeda.createProfileLake(pname,pdesc).then((v)=>{
 			if (v){
-				utils.notification('Success', ['Successfully create a new profile.','Please now sign in to the profile ('+pname+')']);
+				utils.notification('Success', ['Successfully create a new profile.','Please now log in to '+pname]);
 				// afterLoginSuccess();
 				// raeda.lakeLogin(wallet.state.address,pname,wallet.state.signer).then((res)=>{
 				// 	if (res['success']) {

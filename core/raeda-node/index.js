@@ -15,7 +15,7 @@ const { ethers } = require("ethers");
 
 /////////////// LAKE -- SUPPLIER ///////////////////
 
-let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph7'
+let apiEndpoint = 'https://api.thegraph.com/subgraphs/name/rishin01/raedagraph8'
 
 const postListInfoFragment = gql`
 	fragment postListInfo on Post {
@@ -45,7 +45,7 @@ const postDetailedFragment = gql`
 		iT
 		fT
 		exp
-		live
+		postState
 		bucket{
 			category
 			value
@@ -59,20 +59,17 @@ const postDetailedFragment = gql`
 		bids{
 			id
 			amount
-			accepted
 			bidder {
 				profileName
 			}
 		}
-		pendingValue
 	}
 `
-
+// removed accepted
 const bidListInfoFragment = gql`
 	fragment bidListInfo on Bid {
 		id
 		amount
-		accepted
 		post{
 			id
 			postName
@@ -96,36 +93,12 @@ const profileDetailedFragment = gql`
 	}
 `
 
+
 let client = createClient({
 	url: apiEndpoint
 })
 
-// get the bids as a lake (ie. supplier)
-// -> for the <lakePost> with id <postId>: get all the <riverBid>'s.
-function lakeGetBids(postId){
-	// get from `the graph`
-	// PARAMS: postId
-	return [{
-		'postId':postId,
-		'riverAddress':'0x01',
-		'bidPrice':'0.12eth',
-		'bidderId':'102'
-	}];
-}
 
-// longToByteArray = function(/*long*/long) {
-// 	// we want to represent the input as a 8-bytes array
-// 	var byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
-// 
-// 	for ( var index = 0; index < byteArray.length; index ++ ) {
-// 		var byte = long & 0xff;
-// 		byteArray [ index ] = byte;
-// 		long = (long - byte) / 256 ;
-// 	}
-// 
-// 	return byteArray;
-// };
-// 
 const changeEndianness = (string) => {
 	const result = [];
 	let len = string.length - 2;
@@ -179,7 +152,7 @@ async function getPost(postId){
 			postobj['iT'] = posts[0]['iT'];
 			postobj['fT'] = posts[0]['fT'];
 			postobj['exp'] = posts[0]['exp'];
-			postobj['live'] = posts[0]['live'];
+			postobj['postState'] = posts[0]['postState'];
 			postobj['bucket'] = posts[0]['bucket'];
 			postobj['poster'] = posts[0]['poster'];
 			postobj['bids'] = posts[0]['bids'];
@@ -192,54 +165,15 @@ async function getPost(postId){
 	
 	
 	return postobj;
-	// return []
-
-	// return {
-	// 	'id':postId,
-	// 	'postName':'Cargo trousers',
-	// 	'price':102,
-	// 	'iXx':1,
-	// 	'iXy':0,
-	// 	'fXx':1,
-	// 	'fXy':2,
-	// 	'iT':0,
-	// 	'fT':0,
-	// 	'exp':10000,
-	// 	'live':true,
-	// 	'bucket': {},
-	// 	'pendingValue':'',
-	// 	'description':'A good description of the product with data like general shape/size etc.',
-	// 	'poster':{
-	// 		'profileName':'Toby'
-	// 	},
-	// 	'bids':[
-	// 		{
-	// 			'amount':20,
-	// 			'accepted':false,
-	// 			'bidder': {
-	// 				'profileName':'Rishin'
-	// 			}
-	// 		},
-	// 		{
-	// 			'amount':25,
-	// 			'accepted':true,
-	// 			'bidder': {
-	// 				'profileName':'Hamzah'
-	// 			}
-	// 		}
-	// 	]
-	// };
 }
 
 
 // get the users (a lake) open bids
 async function lakeMyOpenBids(profileName){
-	// get from `the graph`
-	// PARAMS: addr
-	
+	// removed: accepted:false
 	const query = gql`
 		query lakeOwnBids($profileNameVar:String!){
-			bids(where:{bidder_:{profileName:$profileNameVar},accepted:false},first:4){
+			bids(where:{bidder_:{profileName:$profileNameVar}},first:4){
 				...bidListInfo
 			}
 		}
@@ -252,9 +186,11 @@ async function lakeMyOpenBids(profileName){
 	let res =  await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-	console.log('		HERREEEEEE')
+	if (res.data==undefined){
+		console.log(res);
+		return [];
+	}
 	console.log(res.data.bids);
-	console.log('		HERREEEEEE')
 	return res.data.bids;
 }
 
@@ -262,7 +198,6 @@ async function lakeMyOpenBids(profileName){
 async function lakeMyOpenPosts(profileName){
 	// get from `the graph`
 	// PARAMS: addr
-	console.log('lakeMyOpenPosts LINE 247',profileName);
 
 	const query = gql`
 		query lakeOwnPosts($profileNameVar:String!){
@@ -273,17 +208,13 @@ async function lakeMyOpenPosts(profileName){
 		${postListInfoFragment}
 	`;
 	
-	console.log('query LINE 258',query);
-
 	client = createClient({
 		url: apiEndpoint
 	});
 	let res = await client.query(query,{
 		profileNameVar: profileName
 	}).toPromise();
-	
-	console.log('res LINE 264',res);
-	
+		
 	return res.data.posts;
 }
 
@@ -294,7 +225,7 @@ async function riverMyOpenBids(profileName){
 	
 	const query = gql`
 		query riverOwnBids($profileNameVar:String!){
-			bids(where:{bidder_:{profileName:$profileNameVar},accepted:false},first:4){
+			bids(where:{bidder_:{profileName:$profileNameVar}},first:4){
 				...bidListInfo
 			}
 		}
@@ -377,23 +308,21 @@ async function getProfile(profileName){
 async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	console.log(lat,lng,radius,minprice,maxprice)
 	let iXx_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
 	let iXx_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
 	let iXy_gt = parseInt(10000*(lng-radius/69+180));
 	let iXy_lt = parseInt(10000*(lng+radius/69+180));
-	console.log(iXx_gt,iXx_lt,iXy_gt,iXy_lt)
-
+	
 	const query = gql`
 		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){
-			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gt:$minpricevar,price_lt:$maxpricevar}){
+			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gte:$minpricevar,price_lte:$maxpricevar}){
 				...postListInfo
 			}
 		}
 		${postListInfoFragment}
 	`;
 
-	const watertype = "LAKE";
+	const watertype = "RIVER";
 	
 	client = createClient({
 		url: apiEndpoint
@@ -407,8 +336,6 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 		iXy_gt: iXy_gt,
 		iXy_lt: iXy_lt,
 	}).toPromise();
-	console.log('below res');
-	console.log(res);
 	return res.data.posts;
 }
 
@@ -416,14 +343,14 @@ async function lakeSimpleSearch(lat,lng,radius,minprice,maxprice){
 async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 	// get from `the graph`
 	// PARAMS: lat,lng,radius,minprice,maxprice
-	let iXx_gt = parseInt(10000*(lng-radius/69+180));
-	let iXx_lt = parseInt(10000*(lng+radius/69+180));
-	let iXy_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
-	let iXy_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXx_gt = parseInt(10000*(lat-Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXx_lt = parseInt(10000*(lat+Math.sin(lat)*Math.sin(lat)*radius/69+90));
+	let iXy_gt = parseInt(10000*(lng-radius/69+180));
+	let iXy_lt = parseInt(10000*(lng+radius/69+180));
 
 	const query = gql`
 		query quickSearch($waterTypevar: String!,$minpricevar:BigInt!,$maxpricevar:BigInt!,$iXx_gt:BigInt!,$iXx_lt:BigInt!,$iXy_gt:BigInt!,$iXy_lt:BigInt!){
-			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gt:$minpricevar,price_lt:$maxpricevar}){
+			posts(where:{poster_:{waterType:$waterTypevar},iXx_gt:$iXx_gt,iXx_lt:$iXx_lt,iXy_gt:$iXy_gt,iXy_lt:$iXy_lt,price_gte:$minpricevar,price_lte:$maxpricevar}){
 				...postListInfo
 			}
 		}
@@ -444,8 +371,6 @@ async function riverSimpleSearch(lat,lng,radius,minprice,maxprice){
 		iXy_gt: iXy_gt,
 		iXy_lt: iXy_lt,
 	}).toPromise();
-	console.log('below res');
-	console.log(res);
 	return res.data.posts;
 }
 
@@ -519,22 +444,6 @@ async function riverGetId(addr,profileName){
 	return profileobj;
 }
 
-
-
-// get the bids as a river (ie. logistics)
-// -> for the <riverPost> with id <postId>: get all the <lakeBid>'s.
-function riverGetBids(postId){
-	// get from `the graph`
-	// PARAMS: postId
-	return [{
-		'postid':13,
-		'postId':postId,
-		'lakeAddress':'0x01',
-		'bidPrice':'0.12eth',
-	}];
-}
-
-
 const createIdentityCall = `
 	{
 		"didMetadata": {
@@ -544,92 +453,38 @@ const createIdentityCall = `
 		}
 	}
 `
-// 
-// function setIdentityRiver(profileName){
-// 	//get identity from issuer node
-// 
-// 	function GETIDENTITY(call){
-// 		return `
-// 		{
-// 			"identifier": "did:polygonid:polygon:mumbai:2qNDpfD8A2zjdiDbrzKsKe5XoP583FeBkpPyJnUEVx",
-// 			"state": {
-// 				"claimsTreeRoot": "96041fd8c899994d8b493c9f844f8ff17f1218e5400bfe68cc659b5386a88b07",
-// 				"createdAt": "2023-02-22T14:55:34.89165+05:30",
-// 				"modifiedAt": "2023-02-22T14:55:34.89165+05:30",
-// 				"state": "569bd6c053d6ddf463245127a82570841a76099a4dab3c279c6b461cf0438408",
-// 				"status": "confirmed"
-// 			}
-// 		}
-// 		`
-// 	};
-// 
-// 	const DID = GETIDENTITY(createIdentityCall)['identifier'];
-// 
-// 	riverNameToDID[profileName] = DID;
-// 	//riverNameToDID[profileName] = did
-// }
 
-// this var should be stored securely on rust server (in db)
-let polygonid_dids = {};
 
-async function createRiverIssuerDriver(rivername){
-	// contact Issuer Node (on ngrok)
-	// get (private) river 'did' back
-	let privateriver_did = '1234567890';
-	polygonid_dids[rivername] = privateriver_did;
-	console.log(polygonid_dids); // for debug
-	return {
-		'rivername':rivername,
-		'success':true
-	};
-}
-async function addDriver(rivername,driverdid){
-	// contact Issuer Node (on ngrok)
-	// get unique qr code from params:
-	// - polygonid_dids[rivername]
-	// - driverdid
-	console.log(rivername,driverdid);
-	
-	function MAKEURL(identitydid){
-		return '{{miniplatform-url}}/v1/${identitydid}/claims';
-	}
-	
-	const endpoint = MAKEURL(polygonid_dids[rivername]);
-	
-	//gets did from profile Name and uses it to connect to endpoint
-	//creates credential, turns it into QR code
-	
-	let qr = JSON.parse({
-		"body": {
-			"credentials": [
-				{
-					"description": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld#KYCAgeCredential",
-					"id": "75d7ca20-b1ea-11ed-9bd2-2e7e0e869740"
+async function getWinningBid(postId){
+	const query = gql`
+		query ($idvar: ID!){
+			posts(where:{id:$idvar}){
+				winningBid{
+					bidder{
+						profileName
+					}
 				}
-			],
-			"url": "http://localhost:3001/v1/agent"
-		},
-		"from": "did:polygonid:polygon:mumbai:2qPUbMiYD8qFVjM6KLTY5qSMQpR9x6aSRfNByRkckm",
-		"id": "cf858ea9-ab66-4c3c-8c55-e99885b086e0",
-		"thid": "cf858ea9-ab66-4c3c-8c55-e99885b086e0",
-		"to": "did:polygonid:polygon:mumbai:2qNZRvFrnVfANm9UTJ3Wn3AP4wmy9CUvX1qpYE28up",
-		"typ": "application/iden3comm-plain-json",
-		"type": "https://iden3-communication.io/credentials/1.0/offer"
+			}
+		}
+	`;
+	client = createClient({
+		url: apiEndpoint
 	});
-	// console.log(qr);
-	return {
-		'rivername':rivername,
-		'success':true,
-		'qr': qr
-	};
+	console.log(intToBytesLittleEndian(postId))
+	let res = await client.query(query,{
+		idvar: intToBytesLittleEndian(postId)
+	}).toPromise();
+	let bidderobj = {};
+	console.log('data',res.data)
+	console.log('posts',res.data.posts)
+	if (res.data == undefined || res.data.posts == undefined || res.data.posts.length==0  || res.data.posts[0].winningBid==undefined || res.data.posts[0].winningBid.bidder==undefined || res.data.posts[0].winningBid.bidder.profileName==undefined) {
+		bidderobj['found'] = false;
+	} else {
+		bidderobj['found'] = true;
+		bidderobj['profileName'] = res.data.posts[0].winningBid.bidder.profileName;
+	}
+	return bidderobj;
 }
-
-
-function verifyDriver(postId){
-	//submit a request with requestid=postid to smart contract
-	//generate the json QR code request thing	
-}
-
 
 /////////////// MESSENGER -- APPLIES TO BOTH LAKE & RIVER ///////////////////
 
@@ -657,7 +512,6 @@ function postMessage(from,to,msg){
 
 module.exports = {
 	getPost,
-	lakeGetBids,
 	lakeMyOpenBids,
 	lakeMyOpenPosts,
 	lakeSimpleSearch,
@@ -666,11 +520,9 @@ module.exports = {
 	riverSimpleSearch,
 	lakeGetId,
 	riverGetId,
-	riverGetBids,
 	getMessages,
 	postMessage,
 	getProfile,
-	createRiverIssuerDriver,
-	addDriver,
+	getWinningBid,
 	_rustCall
 }

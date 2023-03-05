@@ -6,28 +6,30 @@ block content
 			h2 New River Post
 			.textlabelfield
 				+requiredlabel('Post Name')
-				input(id="postname",placeholder="Carrot Supply")
+				input(id="postname",placeholder="Boulder to Denver, 12 printers' worth of space.")
 			.textlabelfield
 				label Post Description
-				input(id="postdesc",placeholder="One pallet of carrots, handle with care.")
+				input(id="postdesc",placeholder="12 meters squared of free floor area.")
 			.textlabelfield
 				+requiredlabel('Min Price')
-				input(id="postminprice",placeholder="£100")
+				input(id="postminprice",placeholder="100 wei")
 			.textlabelfield
 				+requiredlabel('Expiry Date & Time')
 				.inputrow
 					input(id="postexp-time",type="time",value=currenttime)
 					input(id="postexp-date",type="date",value=currentdate)
-			.textlabelfield
-				+requiredlabel('Start Location')
-				.inputrow
-					input(id="poststartloclat",placeholder="Latitude")
-					input(id="poststartloclng",placeholder="Longitude")
-			.textlabelfield
-				+requiredlabel('End Location')
-				.inputrow
-					input(id="postendloclat",placeholder="Latitude")
-					input(id="postendloclng",placeholder="Longitude")
+			//.textlabelfield
+			//	+requiredlabel('Start Location')
+			//	.inputrow
+			//		input(id="poststartloclat",placeholder="Latitude")
+			//		input(id="poststartloclng",placeholder="Longitude")
+			//.textlabelfield
+			//	+requiredlabel('End Location')
+			//	.inputrow
+			//		input(id="postendloclat",placeholder="Latitude")
+			//		input(id="postendloclng",placeholder="Longitude")
+			#map-container
+				#loc-map
 			.buttonrow
 				+jsmainbutton('prepostlogin','login','loginaction')
 				+jsmainbutton('river-post','Post!','done')

@@ -7,6 +7,16 @@ export function getABI(filename){
 				  "internalType": "address",
 				  "name": "_profileContractAddress",
 				  "type": "address"
+				},
+				{
+				  "internalType": "uint16",
+				  "name": "_initialPostId",
+				  "type": "uint16"
+				},
+				{
+				  "internalType": "uint16",
+				  "name": "_initialBidId",
+				  "type": "uint16"
 				}
 			  ],
 			  "stateMutability": "nonpayable",
@@ -26,12 +36,6 @@ export function getABI(filename){
 				  "internalType": "uint16",
 				  "name": "_bidId",
 				  "type": "uint16"
-				},
-				{
-				  "indexed": true,
-				  "internalType": "bool",
-				  "name": "_accepted",
-				  "type": "bool"
 				}
 			  ],
 			  "name": "bidEvent",
@@ -67,28 +71,9 @@ export function getABI(filename){
 				},
 				{
 				  "indexed": true,
-				  "internalType": "enum waterSource.dealStates",
-				  "name": "_dealState",
+				  "internalType": "enum waterSource.post_states",
+				  "name": "_postState",
 				  "type": "uint8"
-				}
-			  ],
-			  "name": "pendingEvent",
-			  "type": "event"
-			},
-			{
-			  "anonymous": false,
-			  "inputs": [
-				{
-				  "indexed": true,
-				  "internalType": "uint16",
-				  "name": "_postId",
-				  "type": "uint16"
-				},
-				{
-				  "indexed": true,
-				  "internalType": "bool",
-				  "name": "_live",
-				  "type": "bool"
 				}
 			  ],
 			  "name": "postEvent",
@@ -195,11 +180,6 @@ export function getABI(filename){
 				  "internalType": "uint256",
 				  "name": "bidAmount",
 				  "type": "uint256"
-				},
-				{
-				  "internalType": "bool",
-				  "name": "accepted",
-				  "type": "bool"
 				}
 			  ],
 			  "stateMutability": "view",
@@ -356,14 +336,14 @@ export function getABI(filename){
 				  "type": "uint64"
 				},
 				{
-				  "internalType": "bool",
-				  "name": "live",
-				  "type": "bool"
-				},
-				{
 				  "internalType": "uint16",
 				  "name": "winningBidId",
 				  "type": "uint16"
+				},
+				{
+				  "internalType": "enum waterSource.post_states",
+				  "name": "postState",
+				  "type": "uint8"
 				}
 			  ],
 			  "stateMutability": "view",
@@ -582,43 +562,11 @@ export function getABI(filename){
 			  "inputs": [
 				{
 				  "internalType": "uint16",
-				  "name": "",
-				  "type": "uint16"
-				}
-			  ],
-			  "name": "pendingDeals",
-			  "outputs": [
-				{
-				  "internalType": "enum waterSource.dealStates",
-				  "name": "",
-				  "type": "uint8"
-				}
-			  ],
-			  "stateMutability": "view",
-			  "type": "function"
-			},
-			{
-			  "inputs": [
-				{
-				  "internalType": "uint16",
 				  "name": "_postId",
 				  "type": "uint16"
 				}
 			  ],
 			  "name": "refundExpiredPost",
-			  "outputs": [],
-			  "stateMutability": "nonpayable",
-			  "type": "function"
-			},
-			{
-			  "inputs": [
-				{
-				  "internalType": "address",
-				  "name": "_verifyTributaryAddress",
-				  "type": "address"
-				}
-			  ],
-			  "name": "setVerifyTributaryAddress",
 			  "outputs": [],
 			  "stateMutability": "nonpayable",
 			  "type": "function"
@@ -632,19 +580,6 @@ export function getABI(filename){
 				}
 			  ],
 			  "name": "takeDownPost",
-			  "outputs": [],
-			  "stateMutability": "nonpayable",
-			  "type": "function"
-			},
-			{
-			  "inputs": [
-				{
-				  "internalType": "uint16",
-				  "name": "_postId",
-				  "type": "uint16"
-				}
-			  ],
-			  "name": "verifyOnOwnPost",
 			  "outputs": [],
 			  "stateMutability": "nonpayable",
 			  "type": "function"

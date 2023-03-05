@@ -9,9 +9,9 @@ mixin riverpostli(postid,postname,price,bids)
 			p !{postname}
 			.postliendrow
 				div.postbidprice
-					h2 !{bids[0].price}
+					h2 !{bids[0].amount}
 					span.bidcurrency wei
-				div.postbidprice
+				div.postbidprice.bidstardardprice
 					h2 !{price}
 					span.bidcurrency wei
 	else
@@ -36,12 +36,6 @@ block content
 							div
 								p.toblue !{waterType}
 					p.toitalic= desc
-				.area(id="adddriverarea",class="hide")
-					h3 Add Driver
-					.textlabelfield
-						+requiredlabel('Driver DID (decentralised identity)')
-						input(id='driver-pub-addr',placeholder='did:---:---')
-					+jsmainbutton('adddriver','Add Driver')
 			.area
 				h3 POSTS BY !{name}
 				- for (var i=0; i<Math.min(posts.length,5); i+=1)
@@ -54,6 +48,3 @@ block content
 
 block styles
 	link(rel='stylesheet', href='styles/profile.css')
-
-block scripts
-	script(src="/js/profile.js",type="module")

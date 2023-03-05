@@ -1,13 +1,15 @@
-mixin riverbidli(postid,bidprice,info)
-	- let url = "window.location.href='/post-"+postid+"'"
+mixin riverbidli(postid,postname,bidprice)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
 	li.bidli(onclick=url)
 		div.bidprice
 			h2 !{bidprice}
 			span.bidcurrency wei
-		p.biddesc !{info}
-
+		div.bidendrow
+			h3.toblue !{postname}
+	
 if (openbids.length)
 	- for(let i = 0; i < openbids.length; i+=1)
-		+riverbidli(openbids[i].postid,openbids[i].bidprice,openbids[i].info)
+		+riverbidli(openbids[i].post.id,openbids[i].post.postName,openbids[i].amount)
 else
 	li.bidli.toblue.toitalic You have no open bids!

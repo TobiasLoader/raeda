@@ -114,3 +114,14 @@
 	padding: 10px 15px;
 	width:fit-content;
 }
+
+#map-container {
+	padding: 0;
+	margin-top:20px;
+	margin-bottom:30px;
+}
+
+#loc-map {
+	height: 300px;
+	border-radius: 5px;
+}

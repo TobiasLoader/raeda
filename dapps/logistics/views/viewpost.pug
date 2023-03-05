@@ -1,11 +1,16 @@
 extends ../../templates/layout.pug
 
-mixin riverbidonpost(biddername,bidprice,info)
+mixin riverbidonpost(bidid,biddername,bidprice,postState)
 	li.bidli
 		div.bidprice
 			h2 !{bidprice}
 			span.bidcurrency wei
-		p.biddesc !{info}
+		div.bidid
+			p.toitalic ID
+			h3.toblue !{bidid}
+		div.bidendrow
+			h3.toblue !{biddername}
+			p.toitalic !{postState}
 
 block content
 	if found
@@ -17,18 +22,18 @@ block content
 							h2 !{post['postName']}
 							p.toitalic.toblue (post !{post['id']})
 						.endrowcontent
-							- if (post['live'])
+							- if (post['postState']!=="CLOSED")
 								div
-									p.toblue LIVE
+									p#poststate.toblue= post['postState']
 							- else
 								div
-									p.tored INACTIVE
+									p#poststate.tored= post['postState']
 							div
 								- let profileurl = "/profile-"+post['poster']['profileName']
-								a(href=profileurl) !{post['poster']['profileName']}
+								a(id="postnamelink",href=profileurl) !{post['poster']['profileName']}
 							div
 								h3
-									| > 
+									| < 
 									span.toblue wei 
 									| !{post['price']}
 					//.minarea
@@ -36,6 +41,8 @@ block content
 						p.toitalic.tored NO DESCRIPTION
 					else
 						p !{post['description']}
+					#map-container
+						#loc-map
 					- let datetime = new Date(parseInt(post['exp'])*1000)
 					.buttonrow
 						div.smallbox
@@ -50,18 +57,21 @@ block content
 								| !{datetime.getHours()}
 								| :
 								| !{datetime.getMinutes()}
-					if (post['live'])
+					if (post['postState']=="LIVE")
 						.buttonrow
 							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
 							+jsmainbutton('makebid','make bid')
+							+jsmainbutton('choosebid','choose bid','hide')
 					else
 						.buttonrow
+							+jsmainbutton('closedeal','close deal','hide')
+							+jsmainbutton('closedeal-opp','close deal','hide')
 							+jsmainbutton('makebidexp','cannot place bid','done')
 				.area
 					h3 Bids
 					if (post['bids'].length>0)
 						- for (var i=0; i<post['bids'].length; i+=1)
-							+riverbidonpost(post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['bids'][i]['accepted'])
+							+riverbidonpost(post['bids'][i]['id'],post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['postState'])
 					else
 						p.toitalic.toblue(style="margin-top:10px") Be the first to make a bid!
 			.area-row
@@ -84,4 +94,9 @@ block styles
 block scripts
 	script(src="/js/viewpost.js",type="module")
 	script.
-		let postid = '!{post["id"]}'
+		let postid = '!{post["id"]}';
+		let bidlist = [!{bidlist}];
+		let bigstartlat = !{post["iXx"]};
+		let bigstartlng = !{post["iXy"]};
+		let bigendlat = !{post["fXx"]};
+		let bigendlng = !{post["fXy"]};

@@ -9,7 +9,7 @@
 
 #postarea {
 	flex:2;
-	min-height: 550px;
+	/* min-height: 550px; */
 }
 
 .posttitlerow {

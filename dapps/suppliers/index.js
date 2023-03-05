@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 const cors = require('cors');
 app.use(cors({
-	origin: ['http://localhost:3000'],
+	origin: ['http://localhost:3001'],
 	methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 
@@ -22,7 +22,7 @@ app.set('view engine', 'pug');
 const raeda = require('./../../core/raeda-node');
 const port = process.env.PORT || 3000;
 
-const searchrivertablefn = pug.compileFile('views/searchrivertable.pug');
+const searchlaketablefn = pug.compileFile('views/searchlaketable.pug');
 const myopenbidsfn = pug.compileFile('views/myopenbids.pug');
 const myopenpostsfn = pug.compileFile('views/myopenposts.pug');
 
@@ -62,12 +62,6 @@ app.get('/signup', (req, res) => {
 
 app.get('/advancedsearch', (req, res) => {
 	res.render('advancedsearch');
-});
-
-
-app.get('/bid', (req, res) => {
-	let bids = raeda.lakeGetBids('1')[0].bidPrice;
-	res.render('bid',{bids:bids});
 });
 
 app.post('/api/lakelogin', (req, res) => {
@@ -111,7 +105,7 @@ app.get('/post-:postid', (req, res) => {
 			for (var b=0; b<postinfo['bids'].length; b+=1){
 				bidlist.push(postinfo['bids'][b]['id']);
 			}
-			console.log(bidlist);
+			// console.log(bidlist);
 			res.render('viewpost',{found:true,post:postinfo,bidlist:bidlist});
 		}
 		else res.render('viewpost',{found:false,post:{id:-1},bidlist:[]});
@@ -167,7 +161,7 @@ app.post('/api/lake-simple-search', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.lakeSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
 			console.log('SEARCH',search_res)
-			res.send(searchrivertablefn({searchresults:search_res}));
+			res.send(searchlaketablefn({searchresults:search_res}));
 		});
 	});
 });
@@ -184,6 +178,18 @@ app.get('/profile-:name', (req, res) => {
 	});
 });
 
+app.post('/api/get-winning-bid', (req, res) => {
+	postExtractBody(req,(body)=>{
+		raeda.getWinningBid(body.postid).then((bidderobj)=>{
+			console.log('bidderobj',bidderobj)
+			if (bidderobj['found']){
+				res.end(bidderobj['profileName']);
+			} else {
+				res.end('');
+			}
+		});
+	});
+});
 
 app.get('/favicon', (req, res) => {
 	res.send('no favicon yet');
