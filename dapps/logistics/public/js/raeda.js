@@ -4,9 +4,9 @@ let profileContract;
 let lakeContract;
 let riverContract;
 
-let PROFILE_ADDR="0xbe019F04bCE4d6F232A4932474510A4ee84DC95A"
-let LAKE_ADDR="0x8Ae622944DC9DD0f9A69fCd6B1F9746c4a1d48Be"
-let RIVER_ADDR="0xCD6059F92E6a588C8f4e37512cEDa75cB7686cC2"
+let PROFILE_ADDR="0xb23b8eAD105c08e10ddAE90170C2CAe7413E86D6"
+let LAKE_ADDR="0x539F513d56b6fBEC15f965C6dE5f556B513B4a24"
+let RIVER_ADDR="0xEb366a7004bd4164Ea7bf511580513DA7550997d"
 
 let contractsInitiated = false;
 let signerConnected = false;
@@ -58,19 +58,8 @@ export async function createProfileRiver(profilename,description){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			let response = await profileContract.createProfile(1,profilename,description);
-			console.log('create profile success',response);
-			console.log('about to create issuer')
-			let createissuer = await fetch('/api/create-river-issuer-driver', {
-				method: 'post',
-				body:JSON.stringify({
-					'rivername':profilename,
-				}),
-				headers: {'Content-Type': 'application/json'}
-			}).then((res) => {
-				console.log('/api/create-river-issuer-driver',res);
-				return true;
-			});
-			return createissuer;
+			// console.log(response)
+			return true;
 		} catch (error) {
 			console.log(error);
 			return false;
@@ -119,7 +108,9 @@ export async function lakePost(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp
 		try {
 			let txn = await lakeContract.initPost(postName,lakeId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(maxprice.toString(),"wei")});
 			let txnreceipt = await txn.wait();
-			let postId = txnreceipt.events[1].args[0];
+			// console.log(txnreceipt,txnreceipt.events[1].args[0])
+			// let postId = txnreceipt.events[1].args[0];
+			let postId = parseInt(txnreceipt.events[1].topics[1],16);
 			if (iT!=null) await lakeContract.addInitialTime(postId,iT);
 			if (fT!=null) await lakeContract.addFinalTime(postId,fT);
 			if (postDesc!=null) await lakeContract.editDescription(postId,postDesc);
@@ -136,17 +127,18 @@ export async function lakePost(addr,maxprice,postName,lakeId,iXx,iXy,fXx,fXy,exp
 export async function riverPost(addr,minprice,postName,riverId,iXx,iXy,fXx,fXy,exp,{postDesc=null,iT=null,fT=null}={}){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
-			console.log('START')
-			console.log(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(minprice.toString(),"wei")})
+			// console.log('START')
+			// console.log(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(minprice.toString(),"wei")})
 			let txn = await riverContract.initPost(postName,riverId,iXx,iXy,fXx,fXy,exp,{from:addr,value:ethers.utils.parseUnits(minprice.toString(),"wei")});
-			console.log('TXN')
-			console.log(txn)
+			// console.log('TXN')
+			// console.log(txn)
 			let txnreceipt = await txn.wait();
-			console.log('RECEIPT')
-			console.log(txnreceipt)
-			let postId = txnreceipt.events[1].args[0];
-			console.log('POSTID')
-			console.log(postId)
+			// console.log('RECEIPT')
+			// console.log(txnreceipt)
+			// let postId = txnreceipt.events[1].topics[1];
+			let postId = parseInt(txnreceipt.events[1].topics[1],16);
+			// console.log('POSTID')
+			// console.log(postId)
 			if (iT!=null) await riverContract.addInitialTime(postId,iT);
 			if (fT!=null) await riverContract.addFinalTime(postId,fT);
 			if (postDesc!=null) await riverContract.editDescription(postId,postDesc);
@@ -163,7 +155,7 @@ export async function lakeBid(addr,bidprice,postId,bidderId){
 	return await _checkSignerConnectedAsync(async ()=>{
 		try {
 			let txn = await riverContract.bid(postId,bidderId,{from:addr,value:ethers.utils.parseUnits(bidprice.toString(),"wei")});
-			console.log('make bid success',txn);
+			// console.log('make bid success',txn);
 			// let txnreceipt = await txn.wait();
 			// let postId = txnreceipt.events[1].args[0];
 			// if (iT!=null) await lakeContract.addInitialTime(postId,iT);
@@ -198,26 +190,9 @@ export async function riverBid(addr,bidprice,postId,bidderId){
 	});	
 }
 
-export async function addDriver(profilename,driverdid){
-	return await _checkSignerConnectedAsync(async ()=>{
-		try {
-			return _raedaRiverAPICall('river-add-driver',{
-				'rivername':profilename,
-				'driverdid':driverdid
-			}).then((body)=>{
-				console.log(body);
-				return true;
-			});
-		} catch (error) {
-			console.log(error);
-			return false;
-		}
-	});	
-}
-
 function _raedaLakeAPICall(method, params = null, local=true){
 	let url = 'https://lake.raeda.app';
-	if (local) url = 'http://127.0.0.1:3000'
+	if (local) url = 'http://127.0.0.1:3001'
 	return fetch(url+'/api/'+method, {
 		method: 'post',
 		body: JSON.stringify(params),
@@ -229,7 +204,7 @@ function _raedaLakeAPICall(method, params = null, local=true){
 
 function _raedaRiverAPICall(method, params = null, local=true){
 	let url = 'https://river.raeda.app';
-	if (local) url = 'http://127.0.0.1:3000'
+	if (local) url = 'http://127.0.0.1:3001'
 	return fetch(url+'/api/'+method, {
 		method: 'post',
 		body: JSON.stringify(params),
@@ -324,5 +299,55 @@ export function riverMyOpenPosts(profileName){
 		return response.text();
 	}).then((html) => {
 		$('#post-list').html(html);
+	});
+}
+
+export async function lakeChooseBid(postid,bidid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			let response = await lakeContract.acceptBid(postid,bidid);
+			console.log('accept bid success',response);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});
+}
+
+export async function riverChooseBid(postid,bidid){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			let response = await riverContract.acceptBid(postid,bidid);
+			console.log('accept bid success',response);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});
+}
+
+export async function lakeCloseDeal(postid,profileId){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			let response = await lakeContract.closeDeal(postid,profileId);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	});
+}
+
+export async function riverCloseDeal(postid,profileId){
+	return await _checkSignerConnectedAsync(async ()=>{
+		try {
+			let response = await riverContract.closeDeal(postid,profileId);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
 	});
 }

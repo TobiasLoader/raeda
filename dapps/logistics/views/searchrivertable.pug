@@ -1,33 +1,33 @@
-
-mixin riverpostli(postid,postname,river,hasbid,rivermin,bestprice)
-	- let url = "window.location.href='/post-"+postid+"'"
+mixin searchpostli(postid,postname,rivername,hasbid,price,bestprice)
+	- let intpostid = parseInt('0x'+postid.substring(2).match(/../g).reverse().join(''));
+	- let url = "window.location.href='/post-"+intpostid+"'"
 	if hasbid==true
-		tr.riverpostli(onclick=url)
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
+		tr.searchpostli(onclick=url)
+			td.toblue !{postname}
+			td.toitalic by !{rivername}
+			td.searchpostbidprice.price
 				div
-					h2 !{rivermin}
-					span.bidcurrency eth
-			td.riverpostbidprice.bestbid
+					h2 !{price}
+					span.bidcurrency wei
+			td.searchpostbidprice.bestbid
 				div
 					h2 !{bestprice}
-					span.bidcurrency eth
+					span.bidcurrency wei
 	else
-		tr.riverpostli.postlinobid(onclick=url)
-			td !{postname}
-			td.toitalic by !{river}
-			td.riverpostbidprice.rivermin
+		tr.searchpostli.postlinobid(onclick=url)
+			td.toblue !{postname}
+			td.toitalic by !{rivername}
+			td.searchpostbidprice.price
 				div
-					h2 !{rivermin}
-					span.bidcurrency eth
-			td.riverpostbidprice.bestbid
+					h2 !{price}
+					span.bidcurrency wei
+			td.searchpostbidprice.bestbid
 				div
 					h2 ––
-					span.bidcurrency eth
+					span.bidcurrency wei
 
 table.posttable
-	thead.riverpostli
+	thead.searchpostli
 		th 
 		th 
 		th.prices Min Price
@@ -35,10 +35,10 @@ table.posttable
 	tbody
 		if (searchresults.length)
 			- for(let i = 0; i < searchresults.length; i+=1)
-				if searchresults[i].bestprice!=''
-					+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,true,searchresults[i].rivermin,searchresults[i].bestprice)
+				if searchresults[i].bids.length>0
+					+searchpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].price,true,searchresults[i].price,100)
 				else
-					+riverpostli(searchresults[i].postid,searchresults[i].postname,searchresults[i].river,false,searchresults[i].rivermin,'-')
+					+searchpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].poster.profileName,false,searchresults[i].price,'-')
 		else
-			tr.riverpostli.postlinobid
+			tr.searchpostli.postlinobid
 				td No Results!

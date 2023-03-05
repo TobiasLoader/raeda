@@ -28,7 +28,7 @@
 	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 	max-height: 500px;
 	overflow: scroll;
-	max-width:800px;
+	max-width:900px;
 }
 
 .area.shortheightarea {
@@ -175,58 +175,58 @@
 	border-collapse: collapse; 
 }
 
-.riverpostli {
+.searchpostli {
 	height:32px;
 	padding: 2px 0;
 	border-bottom: rgb(36, 36, 36) 1px solid;
 }
-.riverpostli th {
+.searchpostli th {
 	color:rgb(83, 130, 201);
 	text-align:left;
 }
 
-.riverpostli th.prices {
+.searchpostli th.prices {
 	text-align:right;
 }
 
-tr.riverpostli {
+tr.searchpostli {
 	cursor:pointer;
 }
 
-.riverpostli h2 {
+.searchpostli h2 {
 	line-height: 32px;
 }
 
-.riverpostli:last-child {
+.searchpostli:last-child {
 	border: none;
 }
 
-tr.riverpostli:hover {
+tr.searchpostli:hover {
 	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(168,168,168, 0.15) 100%);
 }
 
-tr.riverpostli.postlinobid:hover {
+tr.searchpostli.postlinobid:hover {
 	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.15) 100%);
 }
 
-.riverpostbidprice > div {
+.searchpostbidprice > div {
 	display: inline-flex;
 	float: right;
 }
 
-.riverpostli .riverpostbidprice.rivermin {
+.searchpostli .searchpostbidprice.rivermin {
 	color:rgba(168, 168, 168,0.5);
 }
 
-.riverpostli.postlinobid .riverpostbidprice.rivermin {
+.searchpostli.postlinobid .searchpostbidprice.rivermin {
 	color:rgb(83, 130, 201);
 }
 
-.riverpostli .riverpostbidprice.bestbid {
+.searchpostli .searchpostbidprice.bestbid {
 	color:rgb(168, 168, 168);
 }
 
-.riverpostli.postlinobid .riverpostbidprice.bestbid {
+.searchpostli.postlinobid .searchpostbidprice.bestbid {
 	color:rgb(201, 83, 83);
 }
 

@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 const cors = require('cors');
 app.use(cors({
-	origin: ['http://localhost:3000'],
+	origin: ['http://localhost:3000','http://localhost:3001'],
 	methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 
@@ -20,7 +20,8 @@ app.set('view engine', 'pug');
 
 // raeda package
 const raeda = require('./../../core/raeda-node');
-const port = process.env.PORT || 3000;
+const port = 3001;
+// const port = process.env.PORT || 3000;
 
 const searchrivertablefn = pug.compileFile('views/searchrivertable.pug');
 const myopenbidsfn = pug.compileFile('views/myopenbids.pug');
@@ -50,7 +51,6 @@ app.get('/profile', (req, res) => {
 
 app.get('/newpost', (req, res) => {
 	let d = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-	// let cd = d.getFullYear().toString()+'-'+d.getMonth().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+'-'+d.getDate().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
 	let cd = d.toISOString().split('T')[0];
 	let ct = d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString()+':'+d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}).toString();
 	res.render('newpost',{currenttime:ct,currentdate:cd});
@@ -62,12 +62,6 @@ app.get('/signup', (req, res) => {
 
 app.get('/advancedsearch', (req, res) => {
 	res.render('advancedsearch');
-});
-
-
-app.get('/bid', (req, res) => {
-	let bids = raeda.riverGetBids('1')[0].bidPrice;
-	res.render('bid',{bids:bids});
 });
 
 app.post('/api/riverlogin', (req, res) => {
@@ -101,57 +95,43 @@ app.post('/api/accept_bid', (req, res) => {
 });
 
 app.get('/post-:postid', (req, res) => {
-	///:postid
 	const { headers, method, url, params } = req;
 	const postid = params['postid'];
 	raeda.getPost(postid).then((postinfo)=>{
-		console.log('pre');
-		// postinfo.bids = [
-		// 	{
-		// 		amount: 15,
-		// 		accepted: true,
-		// 		bidder: {
-		// 			profileName: 'Toby'
-		// 		}
-		// 	},
-		// 	{
-		// 		amount: 10,
-		// 		accepted: false,
-		// 		bidder: {
-		// 			profileName: 'Peter'
-		// 		}
-		// 	}		
-		// ];
-		console.log('post');
-		console.log(postinfo);
-
-		if (postinfo['found']) res.render('viewpost',{found:true,post:postinfo});
-		else res.render('viewpost',{found:false,post:{id:-1}});
+		if (postinfo['found']) {
+			let bidlist = [];
+			for (var b=0; b<postinfo['bids'].length; b+=1){
+				bidlist.push(postinfo['bids'][b]['id']);
+			}
+			console.log(bidlist);
+			console.log('postinfo',postinfo);
+			res.render('viewpost',{found:true,post:postinfo,bidlist:bidlist});
+		}
+		else res.render('viewpost',{found:false,post:{id:-1},bidlist:[]});
 	})
 });
 
-
-app.get('/messenger', (req, res) => {
-	raeda.getMessages('0x02','0x01').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.render('messenger',{res:txt});
-	});
-});
-
-
-app.get('/messenger-:name', (req, res) => {
-	const { headers, method, url, params } = req;
-	raeda.getMessages('0x02','0x01').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.render('message',{name:params['name']});
-	});
-});
+// app.get('/messenger', (req, res) => {
+// 	raeda.getMessages('0x02','0x01').then((rust_res)=>{
+// 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+// 		res.render('messenger',{res:txt});
+// 	});
+// });
+// 
+// 
+// app.get('/messenger-:name', (req, res) => {
+// 	const { headers, method, url, params } = req;
+// 	raeda.getMessages('0x02','0x01').then((rust_res)=>{
+// 		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+// 		res.render('message',{name:params['name']});
+// 	});
+// });
 
 app.post('/api/post_message', (req, res) => {
-	raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.send(txt);
-	});
+	// raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
+	// 	let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+	// 	res.send(txt);
+	// });
 });
 
 app.post('/api/my-open-bids', (req, res) => {
@@ -173,27 +153,8 @@ app.post('/api/my-open-posts', (req, res) => {
 app.post('/api/river-simple-search', (req, res) => {
 	postExtractBody(req,(body)=>{
 		raeda.riverSimpleSearch(body['lat'],body['lng'],body['radius'],body['minprice'],body['maxprice']).then((search_res)=>{
+			console.log('SEARCH',search_res)
 			res.send(searchrivertablefn({searchresults:search_res}));
-		});
-	});
-});
-
-app.post('/api/create-river-issuer-driver',(req,res)=>{
-	postExtractBody(req, (body)=>{
-		console.log(body);
-		raeda.createRiverIssuerDriver(body['rivername']).then((issuer_res)=>{
-			console.log('/api/create-river-issuer-driver',issuer_res);
-			res.send(issuer_res);
-		});
-	});
-});
-
-app.post('/api/river-add-driver',(req,res)=>{
-	postExtractBody(req, (body)=>{
-		console.log(body)
-		raeda.addDriver(body['rivername'],body['driverdid']).then((issuer_res)=>{
-			console.log('/api/river-add-driver',issuer_res)
-			res.send(issuer_res);
 		});
 	});
 });
@@ -201,12 +162,28 @@ app.post('/api/river-add-driver',(req,res)=>{
 app.get('/profile-:name', (req, res) => {
 	const { headers, method, url, params } = req;
 	raeda.getProfile(params['name']).then((profileobj)=>{
+		console.log('profileobj',profileobj)
 		if (profileobj['found']) {
 			res.render('profile',{found:true,name:profileobj['profileName'],desc:profileobj['description'],waterType:profileobj['waterType'],id:profileobj['id'],posts:profileobj['posts']});
 		} else {
 			console.log('not found')
 			res.render('profile',{found:false});
 		}
+	});
+});
+
+
+app.post('/api/get-winning-bid', (req, res) => {
+	postExtractBody(req,(body)=>{
+		console.log(body);
+		raeda.getWinningBid(body.postid).then((bidderobj)=>{
+			console.log('bidderobj',bidderobj)
+			if (bidderobj['found']){
+				res.end(bidderobj['profileName']);
+			} else {
+				res.end('');
+			}
+		});
 	});
 });
 

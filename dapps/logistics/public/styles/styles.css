@@ -20,7 +20,7 @@
 .area {
 	flex:1; 
 	border: rgba(168, 168, 168,0.3) 1px solid;
-	background: linear-gradient(20deg, rgb(28, 41, 31) 20%, rgb(36, 36, 36) 100%);
+	background: linear-gradient(20deg, rgb(29, 37, 31) 20%, rgb(36, 36, 36) 100%);
 	border-radius: 5px;
 	padding: 20px 20px 10px 20px;
 	margin: 20px;
@@ -28,7 +28,7 @@
 	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 	max-height: 500px;
 	overflow: scroll;
-	max-width:800px;
+	max-width:900px;
 }
 
 .area.shortheightarea {
@@ -52,7 +52,7 @@
 .minarea {
 	flex:1; 
 	border: rgba(168, 168, 168,0.3) 1px solid;
-	background: linear-gradient(20deg, rgb(28, 41, 31) 20%, rgb(36, 36, 36) 100%);
+	background: linear-gradient(20deg, rgb(29, 37, 31) 20%, rgb(36, 36, 36) 100%);
 	border-radius: 5px;
 	box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 	overflow: scroll;
@@ -81,7 +81,7 @@
 }
 
 .bidli:hover {
-	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(96,195,111, 0.15) 100%);
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(96,195,111, 0.10) 100%);
 }
 
 /* .bidli img {
@@ -89,10 +89,27 @@
 	height:30px;
 } */
 
+.bidid {
+	display: flex;
+	line-height: 30px;
+}
+.bidid > *{
+	margin:0 7px;
+}
+
 .bidprice {
 	display: flex;
 	color:rgb(96,195,111);
 	line-height: 30px;
+}
+
+.bidendrow {
+	display: flex;
+	line-height: 35px;
+}
+
+.bidendrow > * {
+	margin-left:10px;
 }
 
 .biddesc, .bidcurrency {
@@ -121,7 +138,7 @@
 }
 
 .postli:hover {
-	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(96,195,111, 0.15) 100%);
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(96,195,111, 0.10) 100%);
 }
 
 .postli.postlinobid:hover {
@@ -137,12 +154,16 @@
 }
 
 .postliendrow > * {
-	margin-left: 15px;
+	margin-left: 20px;
 }
 
 .postbidprice {
 	display: flex;
 	color:rgb(96,195,111);
+}
+
+.bidstardardprice.postbidprice{
+	color:rgb(168,168,168);
 }
 
 .postnobid {
@@ -157,54 +178,58 @@
 	border-collapse: collapse; 
 }
 
-.riverpostli {
+.searchpostli {
 	height:32px;
 	padding: 2px 0;
-	border-bottom: rgb(55 55 55) 1px solid;
+	border-bottom: rgb(36, 36, 36) 1px solid;
 }
-.riverpostli th {
+.searchpostli th {
 	color:rgb(96,195,111);
 	text-align:left;
 }
 
-.riverpostli th.prices {
+.searchpostli th.prices {
 	text-align:right;
 }
 
-tr.riverpostli {
+tr.searchpostli {
 	cursor:pointer;
 }
 
-.riverpostli:last-child {
+.searchpostli h2 {
+	line-height: 32px;
+}
+
+.searchpostli:last-child {
 	border: none;
 }
 
-tr.riverpostli:hover {
+tr.searchpostli:hover {
 	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(168,168,168, 0.15) 100%);
 }
 
-tr.riverpostli.postlinobid:hover {
-	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(83, 130, 201, 0.15) 100%);
+tr.searchpostli.postlinobid:hover {
+	background: linear-gradient(200deg, rgba(0,0,0,0) 0%,  rgba(96,195,111, 0.15) 100%);
 }
 
-.riverpostbidprice > div {
+.searchpostbidprice > div {
 	display: inline-flex;
 	float: right;
 }
 
-.riverpostli .riverpostbidprice.rivermin {
+.searchpostli .searchpostbidprice.rivermin {
 	color:rgba(168, 168, 168,0.5);
 }
 
-.riverpostli.postlinobid .riverpostbidprice.rivermin {
+.searchpostli.postlinobid .searchpostbidprice.rivermin {
 	color:rgb(96,195,111);
 }
 
-.riverpostli .riverpostbidprice.bestbid {
+.searchpostli .searchpostbidprice.bestbid {
 	color:rgb(168, 168, 168);
 }
 
-.riverpostli.postlinobid .riverpostbidprice.bestbid {
+.searchpostli.postlinobid .searchpostbidprice.bestbid {
 	color:rgb(201, 83, 83);
 }
 
@@ -306,7 +331,7 @@ html {
 }
 
 body {
-	background: linear-gradient(20deg, rgb(36, 36, 36) 0%, rgb(28, 41, 31) 100%);
+	background: linear-gradient(20deg, rgb(36, 36, 36) 0%, rgb(29, 37, 31) 100%);
 	min-height:100%;
 	font-family: "Montserrat", sans-serif;
 	margin:0;
@@ -322,6 +347,7 @@ h1 {
 
 h2 {
 	margin:0;
+	font-size:20px;
 }
 
 h3 {

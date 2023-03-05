@@ -14,11 +14,11 @@ $('#placebid').click(function(){
 	let bidprice = $('#makebidprice').val();
 	wallet.requiresLogin(()=>{
 		if (bidprice!=''){
-			console.log('place bid');
-			console.log(wallet.state.address,bidprice,postid,wallet.state.profileid);
+			// console.log('place bid');
+			// console.log(wallet.state.address,bidprice,postid,wallet.state.profileid);
 			raeda.lakeBid(wallet.state.address,bidprice,postid,wallet.state.profileid).then((success)=>{
 				if (success){
-					utils.notification('Success!', ['Your bid was successful!','The creator of the post will be notified.']);
+					utils.notification('Success!', ['Your bid was successful!','The creator of the post will be notified.','It may take a couple of minutes for the UI to update.']);
 				} else {
 					utils.notification('Error!', ['Your bid was unsuccessful!','Possible issues could be: you can\'t bid on a post of the same water type, the post is expired, you have not met the bidding requirements (less than the max bid).'], true);
 				}
@@ -47,8 +47,32 @@ $('#choosebid').click(function(){
 		} else {
 			raeda.lakeChooseBid(postid,parseInt(bidchoice)).then((res)=>{
 				console.log(res);
-				utils.notification('Success!', ['You have indicated that you would like to accept the bid with id '+bidchoice]);
+				utils.notification('Success!', ['You intend to accept the bid with id '+bidchoice,'The post state will soon be moved to PENDING.','This may take a couple of minutes.']);
 			});
+		}
+	});
+});
+
+$('#closedeal').click(function(){
+	console.log(parseInt(postid),wallet.state.profileid)
+	raeda.lakeCloseDeal(parseInt(postid),wallet.state.profileid).then((res)=>{
+		console.log(res);
+		if (res){
+			utils.notification('Deal Closed!', ['You have done all required on your end to close the deal.','The other party needs to also do this for the transaction to go through.','It will likely take a couple minutes for the post state to update.']);
+		} else {
+			utils.notification('Oops!', ['The attempt to close the deal failed.','Please try again.']);
+		}
+	});
+});
+
+$('#closedeal-opp').click(function(){
+	console.log(parseInt(postid),wallet.state.profileid)
+	raeda.riverCloseDeal(parseInt(postid),wallet.state.profileid).then((res)=>{
+		console.log(res);
+		if (res){
+			utils.notification('Deal Closed!', ['You have done all required on your end to close the deal.','The other party needs to also do this for the transaction to go through.','It will likely take a couple minutes for the post state to update.']);
+		} else {
+			utils.notification('Oops!', ['The attempt to close the deal failed.','Please try again.']);
 		}
 	});
 });
@@ -174,4 +198,3 @@ function loadMap(bigstartlat, bigstartlng, bigendlat, bigendlng){
 		console.error(error);
 	});
 }
-//1297280 750036 1297280 754036

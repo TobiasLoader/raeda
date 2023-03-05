@@ -108,8 +108,30 @@ function afterLoginSuccess(){
 		raeda.riverMyOpenBids(state.profilename);
 		raeda.riverMyOpenPosts(state.profilename);
 	}
-	if (window.location.pathname=='/profile-'+state.profilename){
-		$('#adddriverarea').removeClass('hide');
+	if (window.location.pathname.substring(0,5)=='/post'){
+		if ($('#postnamelink').text()==state.profilename){
+			if ($('#poststate').text()=="LIVE"){
+				$('#messageposter').addClass('hide');
+				$('#makebid').addClass('hide');
+				$('#choosebid').removeClass('hide');
+			} else if ($('#poststate').text()=="PENDING" || $('#poststate').text()=="LAKECLOSED"){
+				$('#closedeal').removeClass('hide');
+			}
+		} else {
+			if ($('#poststate').text()=="PENDING"){
+				fetch('/api/get-winning-bid', {
+					method: 'post',
+					body:JSON.stringify({
+						'postid':postid
+					}),
+					headers: {'Content-Type': 'application/json'}
+				}).then((body) => body.text()).then((biddername)=>{
+					if (biddername!='' && biddername==state.profilename){
+						$('#closedeal-opp').removeClass('hide');
+					}
+				});
+			}
+		}
 	}
 }
 

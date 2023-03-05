@@ -36,3 +36,13 @@
 .labelreq {
 	color: rgb(96,195,111);
 }
+
+#map-container {
+	padding: 0;
+	margin-bottom:30px;
+}
+
+#loc-map {
+	height: 300px;
+	border-radius: 5px;
+}

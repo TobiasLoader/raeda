@@ -1,6 +1,6 @@
 extends ../../templates/layout.pug
 
-mixin lakebidonpost(bidid,biddername,bidprice,accepted)
+mixin lakebidonpost(bidid,biddername,bidprice,postState)
 	li.bidli
 		div.bidprice
 			h2 !{bidprice}
@@ -10,10 +10,7 @@ mixin lakebidonpost(bidid,biddername,bidprice,accepted)
 			h3.toblue !{bidid}
 		div.bidendrow
 			h3.toblue !{biddername}
-			if (accepted)
-				p.toitalic accepted
-			else
-				p.toitalic pending
+			p.toitalic !{postState}
 
 block content
 	if found
@@ -25,18 +22,18 @@ block content
 							h2 !{post['postName']}
 							p.toitalic.toblue (post !{post['id']})
 						.endrowcontent
-							- if (post['live'])
+							- if (post['postState']!=="CLOSED")
 								div
-									p.toblue LIVE
+									p#poststate.toblue= post['postState']
 							- else
 								div
-									p.tored INACTIVE
+									p#poststate.tored= post['postState']
 							div
 								- let profileurl = "/profile-"+post['poster']['profileName']
 								a(id="postnamelink",href=profileurl) !{post['poster']['profileName']}
 							div
 								h3
-									| < 
+									| > 
 									span.toblue wei 
 									| !{post['price']}
 					//.minarea
@@ -44,9 +41,9 @@ block content
 						p.toitalic.tored NO DESCRIPTION
 					else
 						p !{post['description']}
-					- let datetime = new Date(parseInt(post['exp'])*1000)
 					#map-container
 						#loc-map
+					- let datetime = new Date(parseInt(post['exp'])*1000)
 					.buttonrow
 						div.smallbox
 							p
@@ -60,19 +57,20 @@ block content
 								| !{datetime.getHours()}
 								| :
 								| !{datetime.getMinutes()}
-					if (post['live'])
+					if (post['postState']=="LIVE")
 						.buttonrow
-							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
 							+jsmainbutton('makebid','make bid')
 							+jsmainbutton('choosebid','choose bid','hide')
 					else
 						.buttonrow
+							+jsmainbutton('closedeal','close deal','hide')
+							+jsmainbutton('closedeal-opp','close deal','hide')
 							+jsmainbutton('makebidexp','cannot place bid','done')
 				.area
 					h3 Bids
 					if (post['bids'].length>0)
 						- for (var i=0; i<post['bids'].length; i+=1)
-							+lakebidonpost(post['bids'][i]['id'],post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['bids'][i]['accepted'])
+							+lakebidonpost(post['bids'][i]['id'],post['bids'][i]['bidder']['profileName'],post['bids'][i]['amount'],post['postState'])
 					else
 						p.toitalic.toblue(style="margin-top:10px") Be the first to make a bid!
 			.area-row
