@@ -59,7 +59,6 @@ block content
 								| !{datetime.getMinutes()}
 					if (post['postState']=="LIVE")
 						.buttonrow
-							+mainbutton('messageposter','message','/messenger-'+post['poster']['profileName'])
 							+jsmainbutton('makebid','make bid')
 							+jsmainbutton('choosebid','choose bid','hide')
 					else

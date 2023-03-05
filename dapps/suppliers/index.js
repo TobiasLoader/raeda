@@ -114,26 +114,26 @@ app.get('/post-:postid', (req, res) => {
 
 
 app.get('/messenger', (req, res) => {
-	raeda.getMessages('0x02','0x01').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.render('messenger',{res:txt});
-	});
+	// raeda.getMessages('0x02','0x01').then((rust_res)=>{
+	// 	let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+	// 	res.render('messenger',{res:txt});
+	// });
 });
 
 
 app.get('/messenger-:name', (req, res) => {
-	const { headers, method, url, params } = req;
-	raeda.getMessages('0x02','0x01').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.render('message',{name:params['name']});
-	});
+	// const { headers, method, url, params } = req;
+	// raeda.getMessages('0x02','0x01').then((rust_res)=>{
+	// 	let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+	// 	res.render('message',{name:params['name']});
+	// });
 });
 
 app.post('/api/post_message', (req, res) => {
-	raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
-		let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
-		res.send(txt);
-	});
+	// raeda.postMessage('0x02','0x01','really cool msg').then((rust_res)=>{
+	// 	let txt = 'From: ' + rust_res['from'] + ' – To: ' + rust_res['to'] + ' – Msg: ' + rust_res['msg'];
+	// 	res.send(txt);
+	// });
 });
 
 app.post('/api/my-open-bids', (req, res) => {
