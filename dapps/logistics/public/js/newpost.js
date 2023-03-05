@@ -48,14 +48,14 @@ $('#river-post').click(function(){
 		utils.notification('Oops', ['The end location coordinates must be numbers.'], true);
 	} else {
 		// standard used by raeda: 1/10,000 of lat/lng coordinate
-		let locmult = 1000; // to be 10000 once rishin has got his act together
+		let locmult = 10000; // to be 10000 once rishin has got his act together
 		
 		let pid = wallet.state.profileid;
 		pminprice = parseFloat(pminprice);
-		pix = BigInt(parseInt(parseFloat(pix)*locmult));
-		piy = BigInt(parseInt(parseFloat(piy)*locmult));
-		pfx = BigInt(parseInt(parseFloat(pfx)*locmult));
-		pfy = BigInt(parseInt(parseFloat(pfy)*locmult));
+		pix = BigInt(parseInt(parseFloat(startlat+90)*locmult));
+		piy = BigInt(parseInt(parseFloat(startlng+180)*locmult));
+		pfx = BigInt(parseInt(parseFloat(endlat+90)*locmult));
+		pfy = BigInt(parseInt(parseFloat(endlng+180)*locmult));
 		pexp = BigInt(pexp);
 		if (pexp<1677783696){
 			utils.notification('Oops', ['The expiry data is in the past.'], true);
