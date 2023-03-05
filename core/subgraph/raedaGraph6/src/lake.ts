@@ -80,10 +80,10 @@ export function handlepostEvent(event: postEventEvent): void {
   const contract = lake.bind(event.address)
   const IdBytes = Bytes.fromI32(event.params._postId)
 
-  let postEntity = Post.load(IdBytes)
-  if (postEntity==null){
-    postEntity = new Post(IdBytes)
-  }
+  // let postEntity = Post.load(IdBytes)
+  // if (postEntity==null){
+  let postEntity = new Post(IdBytes)
+  
 
   const postFromCont = contract.collection(event.params._postId)
 

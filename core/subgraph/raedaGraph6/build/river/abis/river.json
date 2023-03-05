@@ -32,7 +32,7 @@
         "type": "bool"
       }
     ],
-    "name": "riverbidEvent",
+    "name": "bidEvent",
     "type": "event"
   },
   {
@@ -51,7 +51,7 @@
         "type": "string"
       }
     ],
-    "name": "riverbucketEvent",
+    "name": "bucketEvent",
     "type": "event"
   },
   {
@@ -70,7 +70,7 @@
         "type": "uint8"
       }
     ],
-    "name": "riverpendingEvent",
+    "name": "pendingEvent",
     "type": "event"
   },
   {
@@ -89,7 +89,7 @@
         "type": "bool"
       }
     ],
-    "name": "riverpostEvent",
+    "name": "postEvent",
     "type": "event"
   },
   {
@@ -102,7 +102,7 @@
         "type": "uint16"
       }
     ],
-    "name": "riverresetEvent",
+    "name": "resetEvent",
     "type": "event"
   },
   {

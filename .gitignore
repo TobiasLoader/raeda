@@ -156,3 +156,5 @@ infrastructure/local/.vault/file
 # vendor/
 
 .DS_STORE
+
+smart_contracts2/
