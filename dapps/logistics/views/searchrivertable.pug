@@ -30,13 +30,13 @@ table.posttable
 	thead.searchpostli
 		th 
 		th 
-		th.prices Min Price
+		th.prices Max Price
 		th.prices Best Bid
 	tbody
 		if (searchresults.length)
 			- for(let i = 0; i < searchresults.length; i+=1)
 				if searchresults[i].bids.length>0
-					+searchpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].price,true,searchresults[i].price,100)
+					+searchpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].price,true,searchresults[i].price,searchresults[i].bids[0].amount)
 				else
 					+searchpostli(searchresults[i].id,searchresults[i].postName,searchresults[i].poster.profileName,false,searchresults[i].price,'-')
 		else
