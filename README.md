@@ -5,7 +5,7 @@ raeda
 - [lake.raeda.app](https://lake.raeda.app)
 - [river.raeda.app](https://river.raeda.app)
 
-### Information site:
+### Information site:
 - [raeda.link](https://www.raeda.link/)
 
 ### Read below for detailed explanation ☟
