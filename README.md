@@ -5,15 +5,13 @@ raeda
 - [lake.raeda.app](https://lake.raeda.app)
 - [river.raeda.app](https://river.raeda.app)
 
-### Information site:
+### Information site:
 - [raeda.link](https://www.raeda.link/)
 
 ### Read below for detailed explanation ☟
 
 ![Lake RAEDA App Dashboard](https://github.com/TobiasLoader/raeda/blob/main/dapps/suppliers/public/assets/img/lake-raeda-app.png)
 ![River RAEDA App Dashboard](https://github.com/TobiasLoader/raeda/blob/main/dapps/logistics/public/assets/img/river-raeda-app.png)
-
-===========================
 
 ## Blockchain Logistics
 
