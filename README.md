@@ -1,8 +1,23 @@
 raeda
 ===========================
+
+### Dapps:
+- [lake.raeda.app](https://lake.raeda.app)
+- [river.raeda.app](https://river.raeda.app)
+
+### Information site:
+- [raeda.link](https://www.raeda.link/)
+
+### Read below for detailed explanation ☟
+
+![Lake RAEDA App Dashboard](https://github.com/TobiasLoader/raeda/blob/main/dapps/suppliers/public/assets/img/lake-raeda-app.png)
+![River RAEDA App Dashboard](https://github.com/TobiasLoader/raeda/blob/main/dapps/logistics/public/assets/img/river-raeda-app.png)
+
+===========================
+
 ## Blockchain Logistics
 
-raeda is a solution to the fragmentation, inefficiency, and lack of competition in the logistics market. We use crucial features of Web3 technologies, a clean user interface, and incentive alignment to provide a marketplace for logistics providers (***rivers***) and suppliers (***lakes***) to interact. A lake looking to transport goods can log-in to a customized portal, where they can browse available routes posted by rivers, or make a post for rivers to bid on. Enforced by smart contracts, the lake can trust that the flow from initiating an interaction to transferring goods is secured. Moreover, raeda is a minimalistic platform, designed intentionally for developers to build on; we foresee a future where lakes and rivers are able to filter and focus on niche wants with various extensions, each inheriting the reliability of the raeda platform.
+RAEDA is a solution to the fragmentation, inefficiency, and lack of competition in the logistics market. We use crucial features of Web3 technologies, a clean user interface, and incentive alignment to provide a marketplace for logistics providers (***rivers***) and suppliers (***lakes***) to interact. A lake looking to transport goods can log-in to a customized portal, where they can browse available routes posted by rivers, or make a post for rivers to bid on. Enforced by smart contracts, the lake can trust that the flow from initiating an interaction to transferring goods is secured. Moreover, raeda is a minimalistic platform, designed intentionally for developers to build on; we foresee a future where lakes and rivers are able to filter and focus on niche wants with various extensions, each inheriting the reliability of the raeda platform.
 
 At ETHDenver 2023, we have produced an MVP of the raeda platform, with an additional front-end user-interface. Before we illustrate our stack, we will briefly justify the need for raeda.
 
